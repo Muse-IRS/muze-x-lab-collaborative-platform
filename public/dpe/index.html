@@ -16,6 +16,7 @@
         <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
         <div class="nav-links">
           <a href="../energy/">Énergie</a>
+          <a href="../rgpd/">RGPD</a>
           <a href="../privacy.html">Confidentialité</a>
         </div>
       </nav>
@@ -26,6 +27,17 @@
   </header>
 
   <main class="shell content-stack">
+    <section class="panel rgpd-local-header" aria-labelledby="dpe-rgpd-title">
+      <p class="eyebrow">RGPD local · ce module</p>
+      <h2 id="dpe-rgpd-title">Où vont les données dans le module DPE ?</h2>
+      <div class="principle-grid rgpd-module-grid">
+        <article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans la source publique ADEME.</span></article>
+        <article><strong>Source externe</strong><span>Requête directe du navigateur vers data.ademe.fr. Pas de serveur Muze-X Lab intermédiaire.</span></article>
+        <article><strong>Affichage</strong><span>Résumé minimisé. Adresse complète seulement après action explicite de l’utilisateur.</span></article>
+        <article><strong>Limite</strong><span>Lecture documentaire. Aucun verdict juridique ou réglementaire automatique.</span></article>
+      </div>
+    </section>
+
     <section class="panel" aria-labelledby="lookup-title">
       <p class="eyebrow">Source publique ADEME</p>
       <h2 id="lookup-title">Rechercher un DPE</h2>
@@ -68,6 +80,8 @@
       <p class="eyebrow">Confidentialité</p>
       <h2>Adresse minimisée par défaut</h2>
       <p>Lorsque la source ADEME renvoie une adresse complète, le résumé affiche uniquement une localisation réduite lorsque cela est possible. L’adresse complète n’apparaît qu’après une action explicite.</p>
+      <a class="inline" href="../rgpd/">Voir la couche RGPD transversale</a>
+      <span aria-hidden="true"> · </span>
       <a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
     </section>
   </main>
