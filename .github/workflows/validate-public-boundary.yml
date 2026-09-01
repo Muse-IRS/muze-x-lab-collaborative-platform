@@ -1,0 +1,48 @@
+name: Validate public boundary
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required public files
+        run: |
+          test -f public/index.html
+          test -f public/privacy.html
+          test -f public/dpe/index.html
+          test -f public/dpe/app.js
+          test -f public/energy/index.html
+          test -f public/energy/app.js
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check public/dpe/app.js
+          node --check public/energy/app.js
+
+      - name: Enforce public repository boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RniE 'github\.com/Muse-IRS|adaptive_closed_loop|adaptive-closed-loop|backtest|research_protocol|systemic_matrix|phase6[a-z]?' public; then
+            echo 'Private/research implementation marker found in public artifact.' >&2
+            exit 1
+          fi
+
+      - name: Reject committed environment files
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -type f -name '.env' -o -name '.env.local' | grep -q .; then
+            echo 'Environment secret file must not be committed.' >&2
+            exit 1
+          fi
