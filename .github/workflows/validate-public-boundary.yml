@@ -23,11 +23,14 @@ jobs:
           test -f public/dpe/app.js
           test -f public/energy/index.html
           test -f public/energy/app.js
+          test -f public/rgpd/index.html
+          test -f public/rgpd/app.js
 
       - name: Check JavaScript syntax
         run: |
           node --check public/dpe/app.js
           node --check public/energy/app.js
+          node --check public/rgpd/app.js
 
       - name: Enforce public repository boundary
         shell: bash
