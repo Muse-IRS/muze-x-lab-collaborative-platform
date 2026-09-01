@@ -23,14 +23,11 @@ jobs:
           test -f public/dpe/app.js
           test -f public/energy/index.html
           test -f public/energy/app.js
-          test -f public/rgpd/index.html
-          test -f public/rgpd/app.js
 
       - name: Check JavaScript syntax
         run: |
           node --check public/dpe/app.js
           node --check public/energy/app.js
-          node --check public/rgpd/app.js
 
       - name: Enforce public repository boundary
         shell: bash
@@ -38,6 +35,19 @@ jobs:
           set -euo pipefail
           if grep -RniE 'github\.com/Muse-IRS|adaptive_closed_loop|adaptive-closed-loop|backtest|research_protocol|systemic_matrix|phase6[a-z]?' public; then
             echo 'Private/research implementation marker found in public artifact.' >&2
+            exit 1
+          fi
+
+      - name: Enforce autonomous RGPD site boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if test -d public/rgpd; then
+            echo 'RGPD Data Journey Audit must remain an autonomous site, not a subpage of this platform.' >&2
+            exit 1
+          fi
+          if grep -RniE 'href="\.\.?/rgpd/?"|href="\.\.?/rgpd/"|src="\.\.?/rgpd/' public; then
+            echo 'Local /rgpd/ route found. Link to the autonomous RGPD site instead.' >&2
             exit 1
           fi
 
