@@ -16,7 +16,10 @@ const euro = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR'
 const number = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 })
 
 function numericValue(id) {
-  const value = Number(document.querySelector(id).value)
+  const element = document.querySelector(id)
+  const raw = element.value.trim()
+  if (raw === '') return null
+  const value = Number(raw)
   return Number.isFinite(value) ? value : null
 }
 
