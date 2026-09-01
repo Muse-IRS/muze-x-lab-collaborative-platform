@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Retrouver les informations essentielles d’un DPE depuis les données publiques ADEME.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
+  <title>Vérifier mon DPE — Muze-X Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="subpage-header">
+    <div class="shell">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
+        <div class="nav-links">
+          <a href="../energy/">Énergie</a>
+          <a href="../privacy.html">Confidentialité</a>
+        </div>
+      </nav>
+      <p class="eyebrow">Logement · DPE</p>
+      <h1 class="subpage-title">Vérifier mon DPE</h1>
+      <p class="subpage-lead">Retrouver les informations essentielles transmises à la source publique ADEME à partir du numéro du DPE. L’interface présente les données disponibles sans produire de verdict réglementaire ou juridique.</p>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="panel" aria-labelledby="lookup-title">
+      <p class="eyebrow">Source publique ADEME</p>
+      <h2 id="lookup-title">Rechercher un DPE</h2>
+      <form id="dpe-form">
+        <div class="field full">
+          <label for="dpe-number">Numéro de DPE</label>
+          <input id="dpe-number" name="dpe-number" type="text" maxlength="13" autocomplete="off" placeholder="1234A1234567B" aria-describedby="dpe-help dpe-status">
+          <span id="dpe-help" class="help">Format postérieur à juillet 2021 : 13 caractères. La requête part directement du navigateur vers l’ADEME.</span>
+        </div>
+        <div class="actions">
+          <button type="submit">Récupérer les données</button>
+          <a class="button secondary" href="https://observatoire-dpe-audit.ademe.fr/accueil" target="_blank" rel="noopener noreferrer">Observatoire ADEME</a>
+        </div>
+      </form>
+      <p id="dpe-status" class="status" role="status" aria-live="polite">Aucune recherche effectuée.</p>
+    </section>
+
+    <section id="dpe-result" class="result-panel" hidden aria-labelledby="result-title">
+      <p class="eyebrow">Résultat ADEME</p>
+      <h2 id="result-title">DPE retrouvé</h2>
+      <dl id="dpe-summary" class="summary-grid"></dl>
+      <div class="actions">
+        <a id="xlsx-link" class="button secondary" href="#" target="_blank" rel="noopener noreferrer" hidden>Télécharger la ligne ADEME (.xlsx)</a>
+      </div>
+      <details id="address-details" hidden>
+        <summary>Afficher l’adresse complète renvoyée par la source publique</summary>
+        <p id="full-address" class="muted"></p>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2>Comment lire ce résultat ?</h2>
+      <div class="callout">
+        <p><strong>Un DPE est une donnée réglementaire déclarée et calculée.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p>
+      </div>
+      <p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement.</p>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Confidentialité</p>
+      <h2>Adresse minimisée par défaut</h2>
+      <p>Lorsque la source ADEME renvoie une adresse complète, le résumé affiche uniquement une localisation réduite lorsque cela est possible. L’adresse complète n’apparaît qu’après une action explicite.</p>
+      <a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab Collaborative Platform</span>
+      <a href="../">Retour à l’accueil</a>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

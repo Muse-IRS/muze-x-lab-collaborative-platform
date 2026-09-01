@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Comprendre consommation annuelle, puissance souscrite et estimation simple du coût de l’énergie.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
+  <title>Comprendre mon énergie — Muze-X Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="subpage-header">
+    <div class="shell">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
+        <div class="nav-links">
+          <a href="../dpe/">DPE</a>
+          <a href="../privacy.html">Confidentialité</a>
+        </div>
+      </nav>
+      <p class="eyebrow">Énergie</p>
+      <h1 class="subpage-title">Comprendre mon énergie</h1>
+      <p class="subpage-lead">Mettre en perspective la puissance souscrite et la consommation annuelle, puis estimer un coût annuel lorsque les prix du contrat sont connus. Aucun identifiant Linky n’est demandé.</p>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="panel" aria-labelledby="energy-input-title">
+      <p class="eyebrow">Valeurs du contrat ou de la facture</p>
+      <h2 id="energy-input-title">Saisir les informations utiles</h2>
+      <form id="energy-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="power">Puissance souscrite (kVA)</label>
+            <input id="power" name="power" type="number" min="1" step="0.1" inputmode="decimal" placeholder="6">
+          </div>
+          <div class="field">
+            <label for="consumption">Consommation sur 12 mois (kWh)</label>
+            <input id="consumption" name="consumption" type="number" min="0" step="1" inputmode="numeric" placeholder="4200">
+          </div>
+          <div class="field">
+            <label for="option">Option tarifaire</label>
+            <select id="option" name="option">
+              <option value="unknown">Inconnue / ne pas calculer le coût</option>
+              <option value="base">Base</option>
+              <option value="hphc">Heures pleines / heures creuses</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="subscription">Abonnement annuel (€)</label>
+            <input id="subscription" name="subscription" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Optionnel">
+          </div>
+          <div id="base-field" class="field" hidden>
+            <label for="base-price">Prix du kWh (€)</label>
+            <input id="base-price" name="base-price" type="number" min="0" step="0.0001" inputmode="decimal" placeholder="0,20">
+          </div>
+          <div id="hp-field" class="field" hidden>
+            <label for="hp-price">Prix heures pleines (€/kWh)</label>
+            <input id="hp-price" name="hp-price" type="number" min="0" step="0.0001" inputmode="decimal">
+          </div>
+          <div id="hc-field" class="field" hidden>
+            <label for="hc-price">Prix heures creuses (€/kWh)</label>
+            <input id="hc-price" name="hc-price" type="number" min="0" step="0.0001" inputmode="decimal">
+          </div>
+          <div id="hc-share-field" class="field" hidden>
+            <label for="hc-share">Part annuelle en heures creuses (%)</label>
+            <input id="hc-share" name="hc-share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="40">
+          </div>
+        </div>
+        <p class="help">Les prix sont volontairement saisis par l’utilisateur afin d’éviter d’afficher un tarif qui ne correspondrait pas au contrat ou à la période concernée.</p>
+        <div class="actions">
+          <button type="submit">Afficher le résultat</button>
+          <button id="reset-button" class="button secondary" type="button">Effacer</button>
+        </div>
+      </form>
+      <p id="energy-status" class="status" role="status" aria-live="polite">Aucun calcul effectué.</p>
+    </section>
+
+    <section id="energy-result" class="result-panel" hidden aria-labelledby="energy-result-title">
+      <p class="eyebrow">Résultat</p>
+      <h2 id="energy-result-title">Lecture simple</h2>
+      <div class="metric-grid">
+        <div class="metric"><span>Puissance souscrite</span><strong id="power-result">—</strong></div>
+        <div class="metric"><span>Consommation annuelle</span><strong id="consumption-result">—</strong></div>
+        <div class="metric"><span>Estimation annuelle</span><strong id="cost-result">Non calculée</strong></div>
+      </div>
+      <div class="callout">
+        <p><strong>Puissance et énergie ne mesurent pas la même chose.</strong> La consommation annuelle indique une quantité d’énergie sur une période. Elle ne suffit pas à démontrer qu’une puissance souscrite plus faible conviendrait aux pointes de consommation du logement.</p>
+      </div>
+      <p id="cost-note" class="muted"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Pour vérifier</h2>
+      <p>Comparer les valeurs utilisées avec une facture ou le contrat correspondant à la même période. Une estimation produite ici n’est pas une facture fournisseur et n’intègre pas automatiquement taxes, évolutions tarifaires, régularisations, remises ou autres lignes contractuelles qui n’ont pas été saisies.</p>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Confidentialité</p>
+      <h2>Calcul dans le navigateur</h2>
+      <p>Cette version n’envoie pas les valeurs saisies vers un serveur Muze-X Lab et ne demande aucun PRM/PDL.</p>
+      <a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab Collaborative Platform</span>
+      <a href="../">Retour à l’accueil</a>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

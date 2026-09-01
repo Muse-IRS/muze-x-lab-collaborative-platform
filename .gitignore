@@ -1,0 +1,15 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local/editor files
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Generated/dependency directories
+node_modules/
+dist/
+coverage/

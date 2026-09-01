@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Muze-X Lab Collaborative Platform — interfaces publiques multi-domaines, claires, vérifiables et respectueuses de la vie privée.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>Muze-X Lab Collaborative Platform</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="shell hero-inner">
+      <p class="brand-kicker">MUZE-X LAB</p>
+      <h1>Collaborative Platform</h1>
+      <p class="hero-copy">Une plateforme publique multi-domaines conçue pour transformer des informations complexes en interfaces claires, vérifiables et respectueuses de la vie privée.</p>
+      <p class="signature">Vers l’infini des possibles — et au-delà.</p>
+    </div>
+  </header>
+
+  <main class="shell main-stack">
+    <section aria-labelledby="modules-title">
+      <p class="eyebrow">Modules publics</p>
+      <h2 id="modules-title">Choisir un domaine</h2>
+      <div class="module-grid">
+        <a class="module-card" href="./dpe/">
+          <span class="module-index">01</span>
+          <div>
+            <p class="module-label">Logement</p>
+            <h3>Vérifier mon DPE</h3>
+            <p>Retrouver les informations essentielles d’un DPE depuis la source publique ADEME et les lire sans verdict automatique.</p>
+          </div>
+          <span class="module-action">Ouvrir le module →</span>
+        </a>
+
+        <a class="module-card" href="./energy/">
+          <span class="module-index">02</span>
+          <div>
+            <p class="module-label">Énergie</p>
+            <h3>Comprendre mon énergie</h3>
+            <p>Mettre en perspective consommation annuelle, puissance souscrite et estimation de coût à partir des valeurs fournies.</p>
+          </div>
+          <span class="module-action">Ouvrir le module →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="principles" aria-labelledby="principles-title">
+      <div>
+        <p class="eyebrow">Principes publics</p>
+        <h2 id="principles-title">Le résultat utile, sans bruit inutile.</h2>
+      </div>
+      <div class="principle-grid">
+        <article><strong>Clair</strong><span>Une information compréhensible avant le détail technique.</span></article>
+        <article><strong>Vérifiable</strong><span>Les sources externes et les limites restent identifiables.</span></article>
+        <article><strong>Sobre</strong><span>Pas de publicité, pas de profilage comportemental, pas de compte par défaut.</span></article>
+        <article><strong>Respectueux</strong><span>Les données personnelles sont minimisées et traitées localement dès que possible.</span></article>
+      </div>
+    </section>
+
+    <section class="notice-panel" aria-labelledby="privacy-title">
+      <div>
+        <p class="eyebrow">Confidentialité</p>
+        <h2 id="privacy-title">Comprendre où vont les données.</h2>
+        <p>La plateforme ne crée pas de profil utilisateur. Le module Énergie fonctionne localement dans le navigateur. Le module DPE interroge directement les données publiques ADEME.</p>
+      </div>
+      <a class="button secondary" href="./privacy.html">Lire la notice</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab Collaborative Platform</span>
+      <span>Apache-2.0</span>
+    </div>
+  </footer>
+</body>
+</html>
