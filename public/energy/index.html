@@ -16,6 +16,7 @@
         <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
         <div class="nav-links">
           <a href="../dpe/">DPE</a>
+          <a href="../rgpd/">RGPD</a>
           <a href="../privacy.html">Confidentialité</a>
         </div>
       </nav>
@@ -26,6 +27,17 @@
   </header>
 
   <main class="shell content-stack">
+    <section class="panel rgpd-local-header" aria-labelledby="energy-rgpd-title">
+      <p class="eyebrow">RGPD local · ce module</p>
+      <h2 id="energy-rgpd-title">Où vont les données dans le module Énergie ?</h2>
+      <div class="principle-grid rgpd-module-grid">
+        <article><strong>Données saisies</strong><span>Puissance, consommation, option tarifaire et prix éventuels. Aucun PRM/PDL demandé.</span></article>
+        <article><strong>Traitement</strong><span>Calcul dans le navigateur. Aucune requête fournisseur ou compteur Linky dans cette version.</span></article>
+        <article><strong>Sortie</strong><span>Résultat indicatif : puissance, consommation et estimation annuelle si les prix sont saisis.</span></article>
+        <article><strong>Limite</strong><span>Estimation pédagogique. Ce résultat n’est pas une facture et ne remplace pas le contrat fournisseur.</span></article>
+      </div>
+    </section>
+
     <section class="panel" aria-labelledby="energy-input-title">
       <p class="eyebrow">Valeurs du contrat ou de la facture</p>
       <h2 id="energy-input-title">Saisir les informations utiles</h2>
@@ -100,6 +112,8 @@
       <p class="eyebrow">Confidentialité</p>
       <h2>Calcul dans le navigateur</h2>
       <p>Cette version n’envoie pas les valeurs saisies vers un serveur Muze-X Lab et ne demande aucun PRM/PDL.</p>
+      <a class="inline" href="../rgpd/">Voir la couche RGPD transversale</a>
+      <span aria-hidden="true"> · </span>
       <a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
     </section>
   </main>
