@@ -17,6 +17,7 @@
         <div class="nav-links">
           <a href="./dpe/">DPE</a>
           <a href="./energy/">Énergie</a>
+          <a href="./rgpd/">RGPD</a>
         </div>
       </nav>
       <p class="eyebrow">Confidentialité</p>
@@ -52,14 +53,22 @@
     </section>
 
     <section class="panel">
+      <p class="eyebrow">Module RGPD</p>
+      <h2>Recherche société publique</h2>
+      <p>Le module RGPD construit des liens publics vers Pappers, Annuaire Entreprises, Google et l’API Recherche d’Entreprises. La recherche est déclenchée par l’utilisateur à partir d’une URL, d’un nom, d’un SIREN, d’un SIRET ou d’un texte public collé.</p>
+      <p>Les données affichées sont limitées à l’identité minimale : dénomination, forme juridique, SIREN, SIRET, adresse, activité ou code NAF, état administratif simple, source et diagnostic de requête. Aucune donnée financière détaillée n’est nécessaire dans cette couche.</p>
+      <p>Le dernier résultat RGPD peut être conservé dans le navigateur avec la clé locale <code>muze-x-platform:rgpd:last-entity-lookup</code>. Cette trace reste locale et peut être effacée par les réglages du navigateur.</p>
+    </section>
+
+    <section class="panel">
       <h2>Infrastructure et services externes</h2>
       <p>GitHub Pages héberge les fichiers publics de la plateforme. Comme tout service web, l’hébergeur peut traiter les données techniques nécessaires à la connexion, notamment l’adresse IP, selon ses propres conditions.</p>
-      <p>Lorsque le module DPE interroge l’ADEME ou lorsque l’utilisateur ouvre un lien externe, le service concerné reçoit les données techniques nécessaires à cette connexion selon sa propre politique.</p>
+      <p>Lorsque le module DPE interroge l’ADEME, lorsque le module RGPD interroge l’API Recherche d’Entreprises, ou lorsque l’utilisateur ouvre un lien externe, le service concerné reçoit les données techniques nécessaires à cette connexion selon sa propre politique.</p>
     </section>
 
     <section class="callout">
       <strong>Principe actuel</strong>
-      <p>Pas de compte par défaut, pas de profilage, pas de conservation applicative des valeurs saisies et traitement local dès que la fonction le permet.</p>
+      <p>Pas de compte par défaut, pas de profilage, pas de conservation applicative serveur des valeurs saisies, traitement local dès que la fonction le permet et affichage des sources utilisées.</p>
     </section>
   </main>
 
