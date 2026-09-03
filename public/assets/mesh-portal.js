@@ -13,6 +13,20 @@
         { href: 'https://muse-irs.github.io/muze-x-lab-collaborative-platform/', label: 'Muze-X Lab ↗' }
       ];
 
+  const primaryAnchor = isHub
+    ? {
+        href: 'https://muse-irs.github.io/muze-x-open-learning-commons/',
+        kicker: 'Apprendre',
+        title: 'Open Learning',
+        subtitle: 'Commons · apprentissage ↗'
+      }
+    : {
+        href: 'https://muse-irs.github.io/muze-x-lab-collaborative-platform/',
+        kicker: 'Explorer',
+        title: 'Muze-X Lab',
+        subtitle: 'plateforme multi-domaine ↗'
+      };
+
   if (document.querySelector('.muze-mesh-field')) return;
 
   const canvas = document.createElement('canvas');
@@ -34,16 +48,67 @@
     nav.appendChild(link);
   }
 
+  const anchorSection = document.createElement('section');
+  anchorSection.className = 'muze-mesh-anchor-section';
+  anchorSection.setAttribute('aria-label', 'Ancre de navigation du maillage Muze-X');
+
+  const anchorLink = document.createElement('a');
+  anchorLink.className = 'muze-mesh-anchor-orb';
+  anchorLink.href = primaryAnchor.href;
+  anchorLink.dataset.swarmAnchor = 'true';
+  anchorLink.setAttribute('aria-label', `${primaryAnchor.kicker} — ${primaryAnchor.title}`);
+
+  const anchorKicker = document.createElement('span');
+  anchorKicker.className = 'muze-mesh-anchor-kicker';
+  anchorKicker.textContent = primaryAnchor.kicker;
+
+  const anchorTitle = document.createElement('strong');
+  anchorTitle.className = 'muze-mesh-anchor-title';
+  anchorTitle.textContent = primaryAnchor.title;
+
+  const anchorSubtitle = document.createElement('small');
+  anchorSubtitle.className = 'muze-mesh-anchor-subtitle';
+  anchorSubtitle.textContent = primaryAnchor.subtitle;
+
+  anchorLink.append(anchorKicker, anchorTitle, anchorSubtitle);
+
+  const interfaceInfo = document.createElement('div');
+  interfaceInfo.className = 'muze-interface-technique';
+  interfaceInfo.setAttribute('aria-label', 'Technique et rendu de la logique d’interface conceptuelle Muze-X');
+
+  const interfaceHeading = document.createElement('strong');
+  interfaceHeading.className = 'muze-interface-technique-heading';
+  interfaceHeading.textContent = 'Logique d’interface conceptuelle Muze-X';
+
+  const interfaceLines = document.createElement('div');
+  interfaceLines.className = 'muze-interface-technique-lines';
+
+  const descriptions = [
+    ['Technique actuelle', 'Canvas 2D · deux essaims cyan/violet · champ plein viewport · attracteur d’ancre'],
+    ['Rendu', 'profondeur perceptive émergente · rassemblement dynamique lorsque l’ancre entre dans le viewport'],
+    ['Statut', 'R&D exploratoire — métaphore visuelle ≠ modèle scientifique']
+  ];
+
+  for (const [label, text] of descriptions) {
+    const line = document.createElement('span');
+    const labelNode = document.createElement('b');
+    labelNode.textContent = label;
+    line.append(labelNode, document.createTextNode(` · ${text}`));
+    interfaceLines.appendChild(line);
+  }
+
+  interfaceInfo.append(interfaceHeading, interfaceLines);
+  anchorSection.append(anchorLink, interfaceInfo);
+
   document.body.prepend(vignette);
   document.body.prepend(canvas);
   document.body.appendChild(nav);
 
   const footer = document.querySelector('footer');
-  if (footer && !footer.querySelector('.muze-conceptual-interface-credit')) {
-    const signature = document.createElement('div');
-    signature.className = 'muze-conceptual-interface-credit';
-    signature.textContent = 'Logique d’interface conceptuelle Muze-X · Champ d’essaim réactif & profondeur perceptive émergente · R&D exploratoire — métaphore visuelle ≠ modèle scientifique.';
-    footer.appendChild(signature);
+  if (footer?.parentNode) {
+    footer.parentNode.insertBefore(anchorSection, footer);
+  } else {
+    document.body.appendChild(anchorSection);
   }
 
   const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -58,6 +123,7 @@
     dpr: 1,
     particles: [],
     pointer: { x: 0, y: 0, active: false, pressure: 0 },
+    anchor: { element: anchorLink, active: false, x: 0, y: 0, radius: 0, strength: 0 },
     last: performance.now()
   };
 
@@ -118,13 +184,44 @@
   window.addEventListener('blur', () => { state.pointer.active = false; });
   window.addEventListener('resize', resize, { passive: true });
 
+  function updateAnchor() {
+    const anchor = state.anchor;
+    const rect = anchor.element.getBoundingClientRect();
+    const visibleWidth = Math.max(0, Math.min(rect.right, state.width) - Math.max(rect.left, 0));
+    const visibleHeight = Math.max(0, Math.min(rect.bottom, state.height) - Math.max(rect.top, 0));
+    const visibleArea = visibleWidth * visibleHeight;
+    const totalArea = Math.max(1, rect.width * rect.height);
+    const visibility = clamp(visibleArea / totalArea, 0, 1);
+    const rawStrength = clamp((visibility - .04) / .56, 0, 1);
+
+    anchor.x = rect.left + rect.width * .5;
+    anchor.y = rect.top + rect.height * .5;
+    anchor.radius = Math.max(72, Math.min(rect.width, rect.height) * .47);
+    anchor.strength = rawStrength * (reducedMotion ? .35 : 1);
+    anchor.active = anchor.strength > .01;
+    anchor.element.classList.toggle('is-field-active', anchor.strength > .18);
+  }
+
   function updateParticle(particle, dt, now) {
     const teamPhase = particle.team === 0 ? 0 : Math.PI;
-    const centerX = state.width * (.5 + Math.sin(now * .000075 + teamPhase) * .29);
-    const centerY = state.height * (.5 + Math.cos(now * .000061 + teamPhase * .73) * .25);
+    const baseCenterX = state.width * (.5 + Math.sin(now * .000075 + teamPhase) * .29);
+    const baseCenterY = state.height * (.5 + Math.cos(now * .000061 + teamPhase * .73) * .25);
+    let centerX = baseCenterX;
+    let centerY = baseCenterY;
+    let spring = .000025;
 
-    let fx = (centerX - particle.x) * .000025;
-    let fy = (centerY - particle.y) * .000025;
+    if (state.anchor.active) {
+      const blend = state.anchor.strength;
+      const teamOffset = (particle.team === 0 ? -.12 : .12) * state.anchor.radius;
+      const anchorTargetX = state.anchor.x + teamOffset;
+      const anchorTargetY = state.anchor.y + state.anchor.radius * .15;
+      centerX = baseCenterX * (1 - blend) + anchorTargetX * blend;
+      centerY = baseCenterY * (1 - blend) + anchorTargetY * blend;
+      spring += .00038 * blend;
+    }
+
+    let fx = (centerX - particle.x) * spring;
+    let fy = (centerY - particle.y) * spring;
 
     fx += Math.cos(now * .00021 * particle.drift + particle.phase) * .0055 * particle.drift;
     fy += Math.sin(now * .00018 * particle.drift + particle.phase) * .0055 * particle.drift;
@@ -135,6 +232,25 @@
     const spin = particle.team === 0 ? 1 : -1;
     fx += (-fieldDy / fieldDistance) * .0015 * spin;
     fy += (fieldDx / fieldDistance) * .0015 * spin;
+
+    if (state.anchor.active) {
+      const dx = state.anchor.x - particle.x;
+      const dy = state.anchor.y - particle.y;
+      const distance = Math.hypot(dx, dy) + .01;
+      const nx = dx / distance;
+      const ny = dy / distance;
+      const boundary = state.anchor.radius * .78;
+      const outside = clamp((distance - boundary) / Math.max(state.anchor.radius * 1.8, 1), 0, 1);
+      const gather = (.014 + outside * .052) * state.anchor.strength * (.62 + particle.z * .58);
+      fx += nx * gather;
+      fy += ny * gather;
+
+      if (distance < state.anchor.radius * 1.08) {
+        const localSpin = .0062 * state.anchor.strength * spin;
+        fx += -ny * localSpin;
+        fy += nx * localSpin;
+      }
+    }
 
     if (state.pointer.active) {
       const dx = state.pointer.x - particle.x;
@@ -156,8 +272,9 @@
     particle.y += particle.vy * travel;
     particle.z += particle.vz * travel;
 
-    particle.vx *= Math.pow(.974, dt);
-    particle.vy *= Math.pow(.974, dt);
+    const damping = Math.pow(state.anchor.active ? .966 : .974, dt);
+    particle.vx *= damping;
+    particle.vy *= damping;
     particle.vz *= Math.pow(.94, dt);
 
     const margin = 30;
@@ -187,6 +304,8 @@
     const elapsed = Math.min(34, now - state.last);
     state.last = now;
     const dt = reducedMotion ? .35 : clamp(elapsed / 16.667, .4, 2.05);
+
+    updateAnchor();
 
     ctx.shadowBlur = 0;
     ctx.globalCompositeOperation = 'source-over';
