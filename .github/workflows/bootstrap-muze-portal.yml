@@ -1,0 +1,54 @@
+name: Bootstrap Muze-X portal attractor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/portal-bootstrap-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject shared portal assets into public HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('public')
+          changed = []
+          for path in root.rglob('*.html'):
+              rel = path.relative_to(root)
+              depth = len(rel.parts) - 1
+              prefix = '../' * depth
+              css = f'<link rel="stylesheet" href="{prefix}assets/mesh-portal.css">'
+              js = f'<script src="{prefix}assets/mesh-portal.js"></script>'
+              text = path.read_text(encoding='utf-8')
+              original = text
+              if css not in text:
+                  text = text.replace('</head>', f'  {css}\n</head>')
+              if js not in text:
+                  text = text.replace('</body>', f'  {js}\n</body>')
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(str(path))
+          print('updated:', *changed, sep='\n- ')
+          PY
+
+      - name: Commit injected portal references
+        run: |
+          git config user.name "Muze-X"
+          git config user.email "258544235+Muse-IRS@users.noreply.github.com"
+          git add public
+          if git diff --cached --quiet; then
+            echo "No HTML injection needed."
+          else
+            git commit -m "feat: expose Muze-X portal attractor across public pages"
+            git push
+          fi
