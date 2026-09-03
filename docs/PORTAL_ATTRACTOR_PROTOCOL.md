@@ -24,12 +24,14 @@ The list may grow over time. A new public deployment should remain autonomous wh
 ```text
 PORTAL_ATTRACTOR
 =
+FULL_VIEWPORT_SWARM_FIELD
++
 VISIBLE_NAVIGATION_SIGNAL
 +
 EXPLICIT_USER_ACTION
 ```
 
-It is not an epistemic or cognitive signal:
+The attractor field is not an epistemic or cognitive signal:
 
 ```text
 PORTAL_ATTRACTOR
@@ -44,13 +46,13 @@ TOUCH / POINTER
 HIDDEN_INTEREST_INFERENCE
 ```
 
-The portal must not use pointer or touch trajectories to choose content, infer interests, build a behavioural profile, or change pedagogical ranking.
+The field must not use pointer or touch trajectories to choose content, infer interests, build a behavioural profile, or change pedagogical or documentary ranking.
 
 ## Topology
 
-The multi-domain platform exposes portals toward the currently active public annexes.
+The multi-domain platform exposes links toward the currently active public annexes.
 
-Each annex exposes a portal back toward the multi-domain platform.
+Each annex exposes an explicit return path toward the multi-domain platform.
 
 ```text
                  MUZE-X LAB
@@ -61,21 +63,47 @@ Each annex exposes a portal back toward the multi-domain platform.
                navigation
 ```
 
-Direct links between annexes may be added when they are useful, but they are not required for the basic topology.
+Direct links between annexes may be added when useful, but they are not required for the basic topology.
 
 ## Visual behaviour
 
-The compact portal uses a bounded local swarm with:
+The reference deployment model is now the immersive field pioneered by Muze-X Open Learning Commons.
+
+The swarm occupies the viewport as an independent visual layer rather than a content block.
+
+```text
+DOCUMENT_LAYOUT
++
+FIXED_SWARM_LAYER
+
+FIXED_SWARM_LAYER
+!=
+DOCUMENT_FLOW_BLOCK
+```
+
+The field uses:
 
 - two interleaved particle populations;
 - cyan / violet Muze-X visual language;
 - apparent depth through size, glow and motion;
-- weak ambient attraction toward the portal centre;
+- horizontal and vertical movement across the complete viewport;
+- edge wrapping so particles may leave one side and re-enter from the opposite side;
+- slowly drifting attractor centres;
 - stronger attraction toward an explicit pointer or touch location;
 - responsive sizing;
 - `prefers-reduced-motion` support.
 
-The immersive Open Learning implementation may use a full-screen field. The compact deployment portal is a navigation derivative, not a claim that every page must run the full immersive field.
+Navigation links are lightweight overlay controls. They do not reserve layout space and therefore must not alter the dimensions, order or responsive geometry of the underlying page.
+
+## Layout invariant
+
+```text
+ATTRACTOR_PRESENT
+!=
+CONTENT_REFLOW
+```
+
+A participating page should retain the same document geometry whether the visual attractor field is active or absent.
 
 ## Privacy boundary
 
@@ -88,15 +116,15 @@ LOCAL_VISUAL_STATE
 -> discarded with page lifecycle
 ```
 
-Navigation itself remains an ordinary explicit hyperlink action.
+Navigation remains an ordinary explicit hyperlink action.
 
 ## Deployment requirement
 
-Every public HTML surface of a participating annex should expose the portal unless a documented accessibility or technical reason requires an alternative visible return link.
+Every public HTML surface of a participating deployment should expose the full-screen attractor assets unless a documented accessibility or technical reason requires a reduced alternative.
 
-Muze-X Lab should expose the currently active annexes through the same visual language.
+Muze-X Lab should expose the currently active annexes through lightweight overlay navigation while preserving the common immersive field.
 
-CI should verify the presence of the portal assets and their references so that future interface changes do not silently break the public knowledge mesh.
+CI should verify the presence of the attractor assets and their references so future interface changes do not silently break the public knowledge mesh.
 
 ## Epistemic boundary
 
