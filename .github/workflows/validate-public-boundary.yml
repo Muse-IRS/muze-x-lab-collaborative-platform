@@ -27,11 +27,30 @@ jobs:
           test -f public/assets/brand-logo.svg
           test -f public/assets/favicon.svg
           test -f public/assets/brand.css
+          test -f public/assets/mesh-portal.css
+          test -f public/assets/mesh-portal.js
+          test -f docs/PORTAL_ATTRACTOR_PROTOCOL.md
 
       - name: Check JavaScript syntax
         run: |
           node --check public/dpe/app.js
           node --check public/energy/app.js
+          node --check public/assets/mesh-portal.js
+
+      - name: Require portal attractor on every public HTML page
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          missing = []
+          for path in Path('public').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              if 'mesh-portal.css' not in text or 'mesh-portal.js' not in text:
+                  missing.append(str(path))
+          if missing:
+              raise SystemExit('Portal attractor missing from: ' + ', '.join(missing))
+          PY
 
       - name: Enforce public repository boundary
         shell: bash
@@ -59,7 +78,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if find . -type f -name '.env' -o -name '.env.local' | grep -q .; then
+          if find . -type f \( -name '.env' -o -name '.env.local' \) | grep -q .; then
             echo 'Environment secret file must not be committed.' >&2
             exit 1
           fi
