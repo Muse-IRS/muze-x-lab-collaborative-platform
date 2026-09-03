@@ -37,7 +37,7 @@ jobs:
           node --check public/energy/app.js
           node --check public/assets/mesh-portal.js
 
-      - name: Require portal attractor on every public HTML page
+      - name: Require full-screen attractor on every public HTML page
         shell: bash
         run: |
           set -euo pipefail
@@ -51,6 +51,13 @@ jobs:
           if missing:
               raise SystemExit('Portal attractor missing from: ' + ', '.join(missing))
           PY
+          grep -q 'muze-mesh-field' public/assets/mesh-portal.js
+          grep -q 'position:fixed' public/assets/mesh-portal.css
+          grep -q 'ATTRACTOR_PRESENT' docs/PORTAL_ATTRACTOR_PROTOCOL.md
+          if grep -q 'muze-portal-network' public/assets/mesh-portal.js; then
+            echo 'Legacy in-flow portal block must not return.' >&2
+            exit 1
+          fi
 
       - name: Enforce public repository boundary
         shell: bash
