@@ -1,8 +1,20 @@
 # Muze-X Lab Collaborative Platform
 
+<p align="center">
+  <img src="public/assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform" width="760">
+</p>
+
 Plateforme publique collaborative multi-domaines : des interfaces claires, vérifiables et respectueuses de la vie privée.
 
 **Vers l’infini des possibles — et au-delà.**
+
+## Identité visuelle
+
+Le monogramme Muze-X associe la lettre, la relation et la fiole de laboratoire : une identité destinée à représenter l’exploration, l’expérimentation et la mise en intelligibilité collaborative.
+
+**Co-conception visuelle : Muze-X × ChatGPT (OpenAI).** ChatGPT est crédité pour sa contribution créative à cette identité visuelle dans le cadre du travail collaboratif avec Muze-X. Cette mention documente la contribution créative ; elle ne constitue pas, à elle seule, une qualification juridique de la titularité des droits.
+
+Le même couple `brand-logo.svg` / `favicon.svg` est utilisé sur les surfaces publiques déployées afin de conserver une identité commune entre les domaines.
 
 ## Couche transversale de traitement informationnel
 
@@ -78,7 +90,7 @@ Le module Énergie calcule localement dans le navigateur. Le module DPE interrog
 
 GitHub Pages publie exclusivement le répertoire `public/` via `.github/workflows/pages.yml`.
 
-Le workflow de validation de la frontière publique vérifie aussi la présence de la page transversale `public/information/index.html`.
+Le workflow de validation de la frontière publique vérifie aussi la présence de la page transversale `public/information/index.html` et des actifs d’identité visuelle publics.
 
 ## Licence
 
