@@ -59,13 +59,17 @@ jobs:
             exit 1
           fi
 
-      - name: Preserve conceptual interface footer signature
+      - name: Preserve bottom swarm anchor and conceptual interface note
         shell: bash
         run: |
           set -euo pipefail
+          grep -q 'muze-mesh-anchor-section' public/assets/mesh-portal.js
+          grep -q 'swarmAnchor' public/assets/mesh-portal.js
+          grep -q 'updateAnchor' public/assets/mesh-portal.js
           grep -q 'Logique d’interface conceptuelle Muze-X' public/assets/mesh-portal.js
           grep -q 'métaphore visuelle ≠ modèle scientifique' public/assets/mesh-portal.js
-          grep -q 'muze-conceptual-interface-credit' public/assets/mesh-portal.css
+          grep -q 'muze-mesh-anchor-orb' public/assets/mesh-portal.css
+          grep -q 'muze-interface-technique' public/assets/mesh-portal.css
 
       - name: Enforce public repository boundary
         shell: bash
