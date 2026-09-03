@@ -26,6 +26,8 @@ PORTAL_ATTRACTOR
 =
 FULL_VIEWPORT_SWARM_FIELD
 +
+BOTTOM_NAVIGATION_ANCHOR
++
 VISIBLE_NAVIGATION_SIGNAL
 +
 EXPLICIT_USER_ACTION
@@ -38,15 +40,15 @@ PORTAL_ATTRACTOR
 !=
 COGNITIVE_MODEL
 
-TOUCH / POINTER
+TOUCH / POINTER / SCROLL_VISIBILITY
 -> VISUAL_RESPONSE
 
-TOUCH / POINTER
+TOUCH / POINTER / SCROLL_VISIBILITY
 !=
 HIDDEN_INTEREST_INFERENCE
 ```
 
-The field must not use pointer or touch trajectories to choose content, infer interests, build a behavioural profile, or change pedagogical or documentary ranking.
+The field must not use pointer, touch or scroll trajectories to choose content, infer interests, build a behavioural profile, or change pedagogical or documentary ranking.
 
 ## Topology
 
@@ -67,7 +69,7 @@ Direct links between annexes may be added when useful, but they are not required
 
 ## Visual behaviour
 
-The reference deployment model is now the immersive field pioneered by Muze-X Open Learning Commons.
+The reference deployment model is the immersive field pioneered by Muze-X Open Learning Commons.
 
 The swarm occupies the viewport as an independent visual layer rather than a content block.
 
@@ -75,7 +77,13 @@ The swarm occupies the viewport as an independent visual layer rather than a con
 DOCUMENT_LAYOUT
 +
 FIXED_SWARM_LAYER
++
+BOTTOM_ANCHOR_SECTION
+```
 
+The bottom anchor section is intentionally part of the document flow. The swarm field itself is not.
+
+```text
 FIXED_SWARM_LAYER
 !=
 DOCUMENT_FLOW_BLOCK
@@ -93,7 +101,29 @@ The field uses:
 - responsive sizing;
 - `prefers-reduced-motion` support.
 
-Navigation links are lightweight overlay controls. They do not reserve layout space and therefore must not alter the dimensions, order or responsive geometry of the underlying page.
+## Bottom anchor behaviour
+
+A circular navigation anchor is placed immediately before the footer of every participating public page.
+
+When the circle enters the viewport, the existing full-screen particle populations converge locally toward it. No separate particle population is created.
+
+```text
+ANCHOR_VISIBLE
+-> LOCAL_SWARM_GATHERING
+
+ANCHOR_HIDDEN
+-> BASE_FIELD_DYNAMICS
+```
+
+The circle remains an ordinary explicit hyperlink. On annex deployments it returns to Muze-X Lab. On Muze-X Lab it opens Open Learning Commons, while the floating mesh navigation continues to expose the other active annexes.
+
+The current tablet/desktop anchor target is approximately `292 CSS px`, calibrated from interior text rather than from the page grid; the small-screen target is reduced further.
+
+Directly below the circle, the interface exposes:
+
+- current technique: Canvas 2D, two cyan/violet swarms, full-viewport field and anchor attractor;
+- rendered effect: emergent perceptual depth and dynamic gathering;
+- status: exploratory R&D, with explicit separation between visual metaphor and scientific model.
 
 ## Layout invariant
 
@@ -103,13 +133,13 @@ ATTRACTOR_PRESENT
 CONTENT_REFLOW
 ```
 
-A participating page should retain the same document geometry whether the visual attractor field is active or absent.
+This invariant refers to the fixed swarm layer: enabling or disabling the background field must not change the geometry of existing content. The bottom anchor is a deliberate shared navigation section and therefore does occupy its own documented place immediately before the footer.
 
 ## Privacy boundary
 
 The portal requires no account and no user profile.
 
-The reference implementation stores no pointer path, touch path, preference, identifier or behavioural event.
+The reference implementation stores no pointer path, touch path, scroll path, preference, identifier or behavioural event.
 
 ```text
 LOCAL_VISUAL_STATE
@@ -120,11 +150,11 @@ Navigation remains an ordinary explicit hyperlink action.
 
 ## Deployment requirement
 
-Every public HTML surface of a participating deployment should expose the full-screen attractor assets unless a documented accessibility or technical reason requires a reduced alternative.
+Every public HTML surface of a participating deployment should expose the full-screen attractor assets and the bottom anchor unless a documented accessibility or technical reason requires a reduced alternative.
 
-Muze-X Lab should expose the currently active annexes through lightweight overlay navigation while preserving the common immersive field.
+Muze-X Lab should expose the currently active annexes through lightweight overlay navigation while preserving the common immersive field and the bottom anchor.
 
-CI should verify the presence of the attractor assets and their references so future interface changes do not silently break the public knowledge mesh.
+CI should verify the presence of the attractor assets, anchor implementation and conceptual-interface qualification so future interface changes do not silently break the public knowledge mesh.
 
 ## Epistemic boundary
 
@@ -133,6 +163,7 @@ The visual attractor is design language and exploratory interface R&D.
 ```text
 VISUAL_METAPHOR != SCIENTIFIC_PROOF
 INTERACTION_EFFECT != COGNITIVE_MEASUREMENT
+PERCEIVED_DEPTH != GEOMETRIC_3D
 ```
 
 No scientific validation is claimed by its use.
