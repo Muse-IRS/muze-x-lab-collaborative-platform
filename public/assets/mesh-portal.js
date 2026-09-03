@@ -38,6 +38,14 @@
   document.body.prepend(canvas);
   document.body.appendChild(nav);
 
+  const footer = document.querySelector('footer');
+  if (footer && !footer.querySelector('.muze-conceptual-interface-credit')) {
+    const signature = document.createElement('div');
+    signature.className = 'muze-conceptual-interface-credit';
+    signature.textContent = 'Logique d’interface conceptuelle Muze-X · Champ d’essaim réactif & profondeur perceptive émergente · R&D exploratoire — métaphore visuelle ≠ modèle scientifique.';
+    footer.appendChild(signature);
+  }
+
   const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
   if (!ctx) return;
 
