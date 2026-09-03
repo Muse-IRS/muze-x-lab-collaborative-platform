@@ -24,6 +24,9 @@ jobs:
           test -f public/dpe/app.js
           test -f public/energy/index.html
           test -f public/energy/app.js
+          test -f public/assets/brand-logo.svg
+          test -f public/assets/favicon.svg
+          test -f public/assets/brand.css
 
       - name: Check JavaScript syntax
         run: |
