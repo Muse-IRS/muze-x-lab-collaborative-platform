@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Observatoire Muze-X des financements publics, dispositifs, opérateurs et résultats territoriaux.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>Observatoire politiques publiques — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/brand.css">
+  <link rel="stylesheet" href="../assets/hub-nav.css">
+</head>
+<body>
+  <header class="subpage-header rgpd-header">
+    <div class="shell">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../">← Muze-X Lab</a>
+        <div class="nav-links">
+          <a href="../information/">Information</a>
+          <a href="../dpe/">DPE</a>
+          <a href="../energy/">Énergie</a>
+          <a href="../justice/">Justice</a>
+          <a href="https://muse-irs.github.io/rgpd-data-journey-audit/">RGPD</a>
+        </div>
+      </nav>
+      <p class="eyebrow">Politiques publiques · financements · résultats</p>
+      <h1 class="subpage-title">Relier les moyens publics aux résultats observables.</h1>
+      <p class="subpage-lead">Un observatoire reproductible pour suivre les financements, dispositifs, opérateurs, territoires et indicateurs publics sans transformer un écart statistique en accusation.</p>
+      <div class="platform-formula" aria-label="Chaîne de lecture">
+        <strong>FINANCEMENT</strong><span>→</span><strong>DISPOSITIF</strong><span>→</span><strong>OPÉRATEUR</strong><span>→</span><strong>TERRITOIRE</strong><span>→</span><strong>INDICATEUR</strong><span>→</span><strong>RECALCUL</strong><span>→</span><strong>ÉCART</strong><span>→</span><strong>SOURCE</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="notice-panel" aria-labelledby="status-title">
+      <div>
+        <p class="eyebrow">État du pipeline public</p>
+        <h2 id="status-title">Sources suivies</h2>
+        <p id="pipeline-status">Chargement de l’état des sources…</p>
+      </div>
+      <span class="status-badge unknown" id="pipeline-badge">UNKNOWN</span>
+    </section>
+
+    <section class="panel" aria-labelledby="sources-title">
+      <p class="eyebrow">Couverture initiale</p>
+      <h2 id="sources-title">Premières familles de données</h2>
+      <div class="metric-grid" id="source-metrics">
+        <article class="metric"><span>France Travail / DARES</span><strong>F · G</strong><p class="muted">Séries mensuelles et trimestrielles, niveau départemental.</p></article>
+        <article class="metric"><span>Commande publique</span><strong>DECP</strong><p class="muted">Acheteurs, titulaires, montants, objets, modifications et temporalité.</p></article>
+        <article class="metric"><span>Fonds européens</span><strong>FSE+ · FEDER · FEADER</strong><p class="muted">Registre fédéré par programme et autorité de gestion.</p></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="rsa-title">
+      <p class="eyebrow">Premier terrain expérimental</p>
+      <h2 id="rsa-title">RSA / France Travail : catégories F et G</h2>
+      <p>Le premier test compare les territoires et les périodes à partir des états statistiques F et G, puis suit les révisions successives d’une même période. La formule initiale est <strong>G / (F + G)</strong>.</p>
+      <div class="callout">
+        <p><strong>Limite méthodologique :</strong> une catégorie G élevée ou durable ne démontre pas à elle seule un défaut d’orientation ou de transmission. Elle constitue un signal descriptif à confronter à la méthodologie de production, au calendrier de consolidation et aux sources institutionnelles.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="rules-title">
+      <p class="eyebrow">Discipline épistémique</p>
+      <h2 id="rules-title">Ce que l’outil ne conclut pas automatiquement</h2>
+      <div class="principle-grid">
+        <article><strong>Écart ≠ faute</strong><span>Un écart appelle un discriminant documentaire.</span></article>
+        <article><strong>Absence ≠ inexistence</strong><span>Une donnée non restituée peut exister dans un autre système.</span></article>
+        <article><strong>Marché ≠ exécution</strong><span>L’attribution ne prouve pas le service effectivement rendu.</span></article>
+        <article><strong>Financement ≠ résultat</strong><span>Les flux sont reliés aux dispositifs avant toute comparaison.</span></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="sources-live-title">
+      <p class="eyebrow">Sources publiques</p>
+      <h2 id="sources-live-title">Références actuelles</h2>
+      <div class="table-wrap">
+        <table class="entity-table">
+          <thead><tr><th>Source</th><th>Périodicité</th><th>Portée</th><th>Statut</th></tr></thead>
+          <tbody id="source-table-body"><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="notice-panel rgpd-band" aria-labelledby="privacy-title">
+      <div>
+        <p class="eyebrow">Frontière publique</p>
+        <h2 id="privacy-title">Résultats agrégés uniquement.</h2>
+        <p>La méthode de travail, les heuristiques internes et les dossiers individuels restent hors de cette interface. La page publique ne reçoit que des résultats minimisés issus de sources publiques.</p>
+      </div>
+      <a class="button secondary" href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Voir le cadre RGPD</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab · Public Policy Observatory</span>
+      <span>PRIVATE_METHOD → PUBLIC_RESULT</span>
+      <span>Sources publiques · résultats révisables</span>
+    </div>
+  </footer>
+  <script src="./app.js"></script>
+</body>
+</html>
