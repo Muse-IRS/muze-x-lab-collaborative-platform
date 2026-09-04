@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.2.0",
+  "observed_at": "2026-09-04",
+  "status": "OBS",
+  "formula": "G / (F + G)",
+  "territory": {
+    "code": "07",
+    "name": "Ardèche",
+    "level": "department"
+  },
+  "observations": [
+    {
+      "period": "2026-Q1",
+      "F": 683,
+      "G": 2158,
+      "FG": 2841,
+      "G_share": 0.7596,
+      "source_label": "DREETS Auvergne-Rhône-Alpes — 1er trimestre 2026",
+      "source_url": "https://auvergne-rhone-alpes.dreets.gouv.fr/les-inscrits-france-travail-pour-le-departement-de-lardeche",
+      "status": "OBS"
+    },
+    {
+      "period": "2026-Q2",
+      "F": 746,
+      "G": 1991,
+      "FG": 2737,
+      "G_share": 0.7274,
+      "source_label": "DREETS Auvergne-Rhône-Alpes — 2e trimestre 2026",
+      "source_url": "https://auvergne-rhone-alpes.dreets.gouv.fr/les-inscrits-france-travail-pour-le-departement-de-lardeche",
+      "status": "OBS"
+    }
+  ],
+  "interpretation_boundary": "La part G est descriptive. Elle ne démontre pas à elle seule un défaut d’orientation ou de transmission."
+}
