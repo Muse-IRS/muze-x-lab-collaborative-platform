@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Vue Justice — interface visuelle Muze-X Lab pour comprendre références, faits, divergences, convergences et points restant à qualifier, sans exposer de pièces sensibles.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
+  <title>Vue Justice — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/brand.css">
+  <link rel="stylesheet" href="../assets/mesh-portal.css">
+  <link rel="stylesheet" href="./justice.css">
+</head>
+<body>
+  <header class="subpage-header justice-header">
+    <div class="shell">
+      <img class="muze-brand-logo muze-brand-logo--compact" src="../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
+        <div class="nav-links">
+          <a href="../dpe/">DPE</a>
+          <a href="../information/">Information</a>
+          <a href="../privacy.html">Confidentialité</a>
+        </div>
+      </nav>
+      <p class="eyebrow">Justice · Lecture probatoire</p>
+      <h1 class="subpage-title">Voir le raisonnement avant de lire le dossier.</h1>
+      <p class="subpage-lead">Une carte visuelle destinée aux acteurs de la justice, du conseil et du contrôle. Les pièces sensibles restent hors interface : seules leurs références, relations, statuts et fonctions probatoires sont exposés.</p>
+      <div class="platform-formula" aria-label="Chaîne de lecture canonique">
+        <strong>Source</strong><span>→</span><strong>Fait</strong><span>→</span><strong>Comparaison</strong><span>→</span><strong>Convergence / divergence / indétermination</strong><span>→</span><strong>Qualification</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="panel justice-intro" aria-labelledby="justice-intro-title">
+      <p class="eyebrow">Principe directeur</p>
+      <h2 id="justice-intro-title">Une interface de lecture, pas un dépôt de pièces.</h2>
+      <div class="principle-grid">
+        <article><strong>Référence</strong><span>Chaque pièce est représentée par un identifiant abstrait et une fonction documentaire.</span></article>
+        <article><strong>Relation</strong><span>Les éléments sont lus par comparaison, non isolément.</span></article>
+        <article><strong>Statut</strong><span>Établi, convergence, divergence, indéterminé ou manquant.</span></article>
+        <article><strong>Limite</strong><span>Aucune divergence n’est transformée automatiquement en faute ou en responsabilité.</span></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="overview-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow">Vue synthétique</p>
+          <h2 id="overview-title">Chemin probatoire</h2>
+        </div>
+        <span class="status-badge sat">SANS PIÈCE SENSIBLE</span>
+      </div>
+      <div class="justice-flow" role="list" aria-label="Chemin probatoire synthétique">
+        <article role="listitem"><span>01</span><strong>Fait initial</strong><small>Événement, contrat ou obligation à examiner.</small></article>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <article role="listitem"><span>02</span><strong>Références</strong><small>Documents indexés mais non exposés.</small></article>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <article role="listitem"><span>03</span><strong>Comparaison</strong><small>Ce que chaque source permet réellement d’établir.</small></article>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <article role="listitem"><span>04</span><strong>Qualification</strong><small>Convergence, divergence ou indétermination.</small></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="states-title">
+      <p class="eyebrow">États probatoires</p>
+      <h2 id="states-title">Ne pas confondre différence et conclusion.</h2>
+      <div class="justice-state-grid">
+        <article class="state-card state-established"><span class="state-marker">●</span><h3>Établi</h3><p>Le point est directement soutenu par une ou plusieurs références identifiées.</p></article>
+        <article class="state-card state-convergence"><span class="state-marker">◆</span><h3>Convergence</h3><p>Plusieurs sources distinctes soutiennent une même proposition documentaire.</p></article>
+        <article class="state-card state-divergence"><span class="state-marker">◇</span><h3>Divergence</h3><p>Deux références donnent des propositions différentes sur une dimension précise.</p></article>
+        <article class="state-card state-unknown"><span class="state-marker">?</span><h3>Indéterminé</h3><p>Les éléments disponibles ne permettent pas encore de départager les hypothèses.</p></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="comparison-title">
+      <p class="eyebrow">Comparaison visuelle</p>
+      <h2 id="comparison-title">Une divergence doit pouvoir se lire en un regard.</h2>
+      <div class="comparison-board">
+        <article class="reference-card">
+          <p class="reference-id">REF-A</p>
+          <h3>Référence documentaire A</h3>
+          <p>Proposition documentaire observée dans la première source.</p>
+          <span class="reference-meta">Détenue · non publiée</span>
+        </article>
+        <div class="comparison-center">
+          <span class="status-badge unsat">DIVERGENCE</span>
+          <strong>Dimension comparée</strong>
+          <small>Le point de désaccord est nommé, borné et daté.</small>
+        </div>
+        <article class="reference-card">
+          <p class="reference-id">REF-B</p>
+          <h3>Référence documentaire B</h3>
+          <p>Proposition documentaire différente sur la même dimension.</p>
+          <span class="reference-meta">Détenue · non publiée</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="timeline-title">
+      <p class="eyebrow">Chronologie</p>
+      <h2 id="timeline-title">Le temps comme relation, pas comme récit.</h2>
+      <ol class="justice-timeline">
+        <li><span class="timeline-date">T0</span><div><strong>Événement initial</strong><p>Point de départ documenté.</p></div></li>
+        <li><span class="timeline-date">T1</span><div><strong>Production ou réception d’une référence</strong><p>L’événement enrichit la chronologie sans réécrire les états précédents.</p></div></li>
+        <li><span class="timeline-date">T2</span><div><strong>Constat d’une divergence</strong><p>La divergence est enregistrée avec son périmètre exact.</p></div></li>
+        <li><span class="timeline-date">T3</span><div><strong>Demande de clarification ou de production</strong><p>Le chemin contradictoire est conservé comme trace datée.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="panel justice-audience" aria-labelledby="audience-title">
+      <p class="eyebrow">Mode audience</p>
+      <h2 id="audience-title">Réduire le dossier à ce qui aide à décider.</h2>
+      <div class="audience-grid">
+        <article><span>1</span><strong>Fait décisif</strong><small>Ce qui doit être compris immédiatement.</small></article>
+        <article><span>2</span><strong>Référence</strong><small>L’identifiant de la pièce ou source correspondante.</small></article>
+        <article><span>3</span><strong>Divergence / manque</strong><small>Le point exact qui nécessite une qualification.</small></article>
+        <article><span>4</span><strong>Question au juge</strong><small>Ce qui reste à décider ou à ordonner.</small></article>
+      </div>
+    </section>
+
+    <section class="notice-panel" aria-labelledby="counsel-title">
+      <div>
+        <p class="eyebrow">Mode conseil · avocat</p>
+        <h2 id="counsel-title">Du cas documenté à la récurrence à tester.</h2>
+        <p>Un dossier individuel peut faire apparaître des mécanismes intéressants. La plateforme ne les déclare pas systémiques : elle fournit une architecture pour les comparer, les reproduire et tester leur éventuelle récurrence.</p>
+      </div>
+      <div class="counsel-sequence" aria-label="Séquence de changement d’échelle">
+        <span>Cas concret</span><span>→</span><span>Méthode</span><span>→</span><span>Récurrence ?</span><span>→</span><span>Qualification juridique</span>
+      </div>
+    </section>
+
+    <section class="panel rgpd-local-header" aria-labelledby="privacy-title">
+      <p class="eyebrow">Confidentialité structurelle</p>
+      <h2 id="privacy-title">PUBLIC_REFERENCE ≠ PRIVATE_EVIDENCE</h2>
+      <p class="muted">Aucune correspondance brute, signature, adresse personnelle, donnée financière détaillée, identifiant administratif, donnée sociale ou pièce primaire n’est nécessaire au fonctionnement de cette vue.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab Collaborative Platform</span>
+      <span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span>
+      <a href="../">Retour à l’accueil</a>
+    </div>
+  </footer>
+
+  <script src="../assets/mesh-portal.js"></script>
+</body>
+</html>
