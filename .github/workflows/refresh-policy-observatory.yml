@@ -1,0 +1,60 @@
+name: Refresh public policy observatory F/G data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '47 6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh_policy_observatory_fg.py'
+      - '.github/workflows/refresh-policy-observatory.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Refresh minimized F/G dataset
+        run: python scripts/refresh_policy_observatory_fg.py
+
+      - name: Validate public payload
+        run: |
+          python -m json.tool public/policy-observatory/data/france_travail_fg_public_min.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('public/policy-observatory/data/france_travail_fg_public_min.json')
+          payload = json.loads(p.read_text(encoding='utf-8'))
+          assert payload['row_count'] == 8
+          assert payload['status'] == 'OBS'
+          assert {r['territory_code'] for r in payload['observations']} == {'FR', '84', '07', '26'}
+          print(f"latest_period={payload['latest_period']} rows={payload['row_count']}")
+          PY
+
+      - name: Commit refresh only when upstream values changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          target='public/policy-observatory/data/france_travail_fg_public_min.json'
+          if [ -z "$(git status --porcelain -- "$target")" ]; then
+            echo 'No upstream change detected.'
+            exit 0
+          fi
+          git config user.name 'Muze-X Observatory Bot'
+          git config user.email '258544235+Muse-IRS@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'data: refresh public F/G comparison [skip ci]'
+          git push
