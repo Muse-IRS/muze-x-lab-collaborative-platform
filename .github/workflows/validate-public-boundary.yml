@@ -24,9 +24,12 @@ jobs:
           test -f public/dpe/app.js
           test -f public/energy/index.html
           test -f public/energy/app.js
+          test -f public/justice/index.html
+          test -f public/justice/justice.css
           test -f public/assets/brand-logo.svg
           test -f public/assets/favicon.svg
           test -f public/assets/brand.css
+          test -f public/assets/hub-nav.css
           test -f public/assets/mesh-portal.css
           test -f public/assets/mesh-portal.js
           test -f docs/PORTAL_ATTRACTOR_PROTOCOL.md
@@ -36,6 +39,20 @@ jobs:
           node --check public/dpe/app.js
           node --check public/energy/app.js
           node --check public/assets/mesh-portal.js
+
+      - name: Preserve central public hub navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'class="hub-nav"' public/index.html
+          grep -q 'href="./information/"' public/index.html
+          grep -q 'href="./dpe/"' public/index.html
+          grep -q 'href="./energy/"' public/index.html
+          grep -q 'href="./justice/"' public/index.html
+          grep -q 'https://muse-irs.github.io/muze-x-open-learning-commons/' public/index.html
+          grep -q 'https://muse-irs.github.io/muze-x-open-learning-commons/swarm/' public/index.html
+          grep -q 'https://muse-irs.github.io/rgpd-data-journey-audit/' public/index.html
+          grep -q 'hub-nav.css' public/index.html
 
       - name: Require full-screen attractor on every public HTML page
         shell: bash
