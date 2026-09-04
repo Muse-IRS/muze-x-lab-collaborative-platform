@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Retrouver les informations essentielles d’un DPE depuis les données publiques ADEME.">
+  <meta name="description" content="Retrouver les informations essentielles et les caractéristiques détaillées d’un DPE depuis les données publiques ADEME.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
   <title>Vérifier mon DPE — Muze-X Lab</title>
@@ -26,7 +26,7 @@
       </nav>
       <p class="eyebrow">Logement · DPE</p>
       <h1 class="subpage-title">Vérifier mon DPE</h1>
-      <p class="subpage-lead">Retrouver les informations essentielles transmises à la source publique ADEME à partir du numéro du DPE. L’interface présente les données disponibles sans produire de verdict réglementaire ou juridique.</p>
+      <p class="subpage-lead">Retrouver les informations transmises à la source publique ADEME à partir du numéro du DPE, puis explorer les caractéristiques du logement disponibles dans la ligne source. Aucun verdict réglementaire ou juridique n’est produit.</p>
     </div>
   </header>
 
@@ -37,7 +37,7 @@
       <div class="principle-grid rgpd-module-grid">
         <article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans la source publique ADEME.</span></article>
         <article><strong>Source externe</strong><span>Requête directe du navigateur vers data.ademe.fr. Pas de serveur Muze-X Lab intermédiaire.</span></article>
-        <article><strong>Affichage</strong><span>Résumé minimisé. Adresse complète seulement après action explicite de l’utilisateur.</span></article>
+        <article><strong>Affichage</strong><span>Résumé principal puis caractéristiques détaillées disponibles. Adresse complète seulement après action explicite.</span></article>
         <article><strong>Limite</strong><span>Lecture documentaire. Aucun verdict juridique ou réglementaire automatique.</span></article>
       </div>
     </section>
@@ -70,6 +70,34 @@
         <summary>Afficher l’adresse complète renvoyée par la source publique</summary>
         <p id="full-address" class="muted"></p>
       </details>
+
+      <div id="dpe-detail-groups" class="content-stack" hidden>
+        <details class="panel" open>
+          <summary><strong>Bâtiment et surfaces</strong></summary>
+          <dl id="dpe-building" class="summary-grid"></dl>
+        </details>
+        <details class="panel">
+          <summary><strong>Enveloppe et isolation</strong></summary>
+          <dl id="dpe-envelope" class="summary-grid"></dl>
+        </details>
+        <details class="panel">
+          <summary><strong>Menuiseries et vitrages</strong></summary>
+          <dl id="dpe-windows" class="summary-grid"></dl>
+        </details>
+        <details class="panel">
+          <summary><strong>Chauffage, eau chaude et ventilation</strong></summary>
+          <dl id="dpe-systems" class="summary-grid"></dl>
+        </details>
+        <details class="panel">
+          <summary><strong>Consommations, émissions et coûts</strong></summary>
+          <dl id="dpe-energy" class="summary-grid"></dl>
+        </details>
+        <details class="panel">
+          <summary><strong>Données ADEME complémentaires</strong></summary>
+          <p class="muted">Cette vue affiche les autres champs renseignés dans la ligne publique, en excluant les doublons du résumé et les champs d’adresse déjà minimisés.</p>
+          <dl id="dpe-other" class="summary-grid"></dl>
+        </details>
+      </div>
     </section>
 
     <section class="panel">
@@ -77,7 +105,7 @@
       <div class="callout">
         <p><strong>Un DPE est une donnée réglementaire déclarée et calculée.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p>
       </div>
-      <p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement.</p>
+      <p class="muted">Les champs détaillés dépendent du jeu ADEME et de la ligne retrouvée. Une rubrique vide signifie uniquement qu’aucune valeur exploitable n’a été renvoyée pour les champs recherchés.</p>
     </section>
 
     <section class="panel">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Comprendre consommation annuelle, puissance souscrite et estimation simple du coût de l’énergie.">
+  <meta name="description" content="Comprendre consommation annuelle, puissance souscrite et estimer le coût de l’énergie à partir des prix du contrat.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
   <title>Comprendre mon énergie — Muze-X Lab</title>
@@ -24,9 +24,9 @@
           <a href="../privacy.html">Confidentialité</a>
         </div>
       </nav>
-      <p class="eyebrow">Énergie</p>
+      <p class="eyebrow">Énergie · Linky</p>
       <h1 class="subpage-title">Comprendre mon énergie</h1>
-      <p class="subpage-lead">Mettre en perspective la puissance souscrite et la consommation annuelle, puis estimer un coût annuel lorsque les prix du contrat sont connus. Aucun identifiant Linky n’est demandé.</p>
+      <p class="subpage-lead">Mettre en perspective la puissance souscrite et la consommation annuelle, puis utiliser le simulateur tarifaire avec les prix réels du contrat. Aucun identifiant Linky n’est demandé.</p>
     </div>
   </header>
 
@@ -43,8 +43,9 @@
     </section>
 
     <section class="panel" aria-labelledby="energy-input-title">
-      <p class="eyebrow">Valeurs du contrat ou de la facture</p>
-      <h2 id="energy-input-title">Saisir les informations utiles</h2>
+      <p class="eyebrow">Simulateur tarifaire</p>
+      <h2 id="energy-input-title">Estimer le coût annuel à partir du contrat</h2>
+      <p class="muted">Les champs tarifaires restent volontairement saisis manuellement : l’interface ne suppose aucun prix national unique et ne remplace pas les conditions du fournisseur.</p>
       <form id="energy-form">
         <div class="form-grid">
           <div class="field">
@@ -84,9 +85,11 @@
             <input id="hc-share" name="hc-share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="40">
           </div>
         </div>
-        <p class="help">Les prix sont volontairement saisis par l’utilisateur afin d’éviter d’afficher un tarif qui ne correspondrait pas au contrat ou à la période concernée.</p>
+        <div class="callout">
+          <p><strong>Prix utilisés :</strong> abonnement annuel et prix du kWh saisis ci-dessus. En HP/HC, l’estimation utilise la part annuelle d’heures creuses indiquée.</p>
+        </div>
         <div class="actions">
-          <button type="submit">Afficher le résultat</button>
+          <button type="submit">Calculer l’estimation annuelle</button>
           <button id="reset-button" class="button secondary" type="button">Effacer</button>
         </div>
       </form>
@@ -94,7 +97,7 @@
     </section>
 
     <section id="energy-result" class="result-panel" hidden aria-labelledby="energy-result-title">
-      <p class="eyebrow">Résultat</p>
+      <p class="eyebrow">Résultat du simulateur</p>
       <h2 id="energy-result-title">Lecture simple</h2>
       <div class="metric-grid">
         <div class="metric"><span>Puissance souscrite</span><strong id="power-result">—</strong></div>
