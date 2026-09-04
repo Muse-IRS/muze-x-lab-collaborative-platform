@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "observed_at": "2026-09-04",
+  "status": "OBS",
+  "sources": [
+    {
+      "id": "dares-ft-monthly",
+      "label": "DARES / France Travail — inscrits mensuels",
+      "frequency": "Mensuelle",
+      "scope": "France, régions, départements",
+      "status": "OBS",
+      "latest_period": "juillet 2026",
+      "url": "https://dares.travail-emploi.gouv.fr/donnees/demandeurs-emploi-inscrits-france-travail-donnees-mensuelles"
+    },
+    {
+      "id": "dares-ft-quarterly",
+      "label": "DARES / France Travail — inscrits trimestriels",
+      "frequency": "Trimestrielle",
+      "scope": "France, régions, départements",
+      "status": "OBS",
+      "latest_period": "2e trimestre 2026",
+      "url": "https://dares.travail-emploi.gouv.fr/donnees/demandeurs-emploi-inscrits-france-travail-donnees-trimestrielles"
+    },
+    {
+      "id": "decp",
+      "label": "Données essentielles de la commande publique",
+      "frequency": "Fréquente / quasi quotidienne selon source",
+      "scope": "France",
+      "status": "OBS",
+      "latest_period": "mise à jour continue",
+      "url": "https://www.data.gouv.fr/datasets/donnees-essentielles-de-la-commande-publique-consolidees-format-tabulaire"
+    },
+    {
+      "id": "eu-funds",
+      "label": "Fonds européens — listes d’opérations",
+      "frequency": "Selon autorité de gestion",
+      "scope": "Programmes et territoires",
+      "status": "HYP",
+      "latest_period": "2021-2027",
+      "url": "https://www.data.gouv.fr/"
+    }
+  ]
+}
