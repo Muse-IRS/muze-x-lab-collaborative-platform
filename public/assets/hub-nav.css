@@ -1,0 +1,52 @@
+.hub-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin: 1.2rem 0 2.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hub-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: .48rem .72rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.035);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 760;
+  line-height: 1;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hub-nav a:hover,
+.hub-nav a:focus-visible {
+  color: var(--text);
+  border-color: rgba(185,243,223,.42);
+  background: rgba(185,243,223,.075);
+}
+
+@media (max-width: 760px) {
+  .hub-nav {
+    gap: .45rem;
+    margin: 1rem 0 1.8rem;
+  }
+
+  .hub-nav a {
+    min-height: 36px;
+    padding: .44rem .62rem;
+    font-size: .76rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-nav a {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
