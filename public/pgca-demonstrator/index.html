@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Démonstrateur institutionnel PGC-A : voir un écart, comprendre sa provenance, tester une correction locale.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>PGC-A — Démonstrateur institutionnel</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/brand.css">
+  <link rel="stylesheet" href="../assets/hub-nav.css">
+  <link rel="stylesheet" href="../assets/mesh-portal.css">
+</head>
+<body>
+  <header class="subpage-header rgpd-header">
+    <div class="shell">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../">← Muze-X Lab</a>
+        <div class="nav-links"><a href="../policy-observatory/">Observatoire</a><a href="../information/">Information</a><a href="../justice/">Justice</a></div>
+      </nav>
+      <p class="eyebrow">PGC-A · démonstrateur synthétique</p>
+      <h1 class="subpage-title">Voir l’écart. Localiser sa source. Tester la correction.</h1>
+      <p class="subpage-lead">Trois cas synthétiques montrent le résultat attendu sans exposer les dossiers réels ni imposer une nouvelle infrastructure aux systèmes existants.</p>
+      <div class="platform-formula" aria-label="Boucle de démonstration"><strong>LOCAL</strong><span>→</span><strong>GLOBAL</strong><span>→</span><strong>LOCAL</strong></div>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="notice-panel">
+      <div><p class="eyebrow">Principe</p><h2>Une couche de cohérence, pas un système de remplacement</h2><p>Les systèmes existants restent en place. Le démonstrateur relie uniquement les états nécessaires pour rendre visibles provenance, date, version et écart.</p></div>
+      <span class="status-badge">TESTABLE</span>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Cas A · référentiel</p><h2>Une même fonction, plusieurs états</h2>
+      <div class="metric-grid">
+        <article class="metric"><span>Source A · 08:15</span><strong>Référent X</strong><p class="muted">Version 3 · source métier</p></article>
+        <article class="metric"><span>Source B · 08:17</span><strong>Non renseigné</strong><p class="muted">Version reçue inconnue</p></article>
+        <article class="metric"><span>Document C · 08:02</span><strong>Référent X</strong><p class="muted">Document validé</p></article>
+      </div>
+      <div class="callout"><p><strong>Résultat visible :</strong> l’écart est localisé sur la restitution B. Aucune cause n’est déduite. <strong>Test :</strong> transmettre la version 3 à B et vérifier si l’état devient convergent.</p></div>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Cas B · document distribué</p><h2>Le document existe ; sa version doit rester identifiable</h2>
+      <div class="platform-formula" aria-label="Chemin documentaire"><strong>DOCUMENT v1</strong><span>→</span><strong>TRANSMISSION</strong><span>→</span><strong>DESTINATION</strong><span>→</span><strong>DOCUMENT v2</strong></div>
+      <div class="metric-grid">
+        <article class="metric"><span>Avant</span><strong>2 versions</strong><p class="muted">Même objet, états concurrents.</p></article>
+        <article class="metric"><span>PGC-A</span><strong>Écart visible</strong><p class="muted">Source · version · date · destination.</p></article>
+        <article class="metric"><span>Test</span><strong>Sans écrasement</strong><p class="muted">v1 reste historisée lorsque v2 arrive.</p></article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Cas C · propagation d’une règle</p><h2>Une règle change ; les strates ne changent pas nécessairement au même instant</h2>
+      <div class="table-wrap"><table class="entity-table"><thead><tr><th>Strate</th><th>Version observée</th><th>État</th><th>Action de test</th></tr></thead><tbody>
+        <tr><td>Référentiel national</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
+        <tr><td>Référentiel territorial</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
+        <tr><td>Outil métier</td><td>v1</td><td>À VÉRIFIER</td><td>Propager v2</td></tr>
+        <tr><td>Interface de restitution</td><td>v1</td><td>INFORMATION MANQUANTE</td><td>Rejouer après mise à jour</td></tr>
+      </tbody></table></div>
+      <div class="callout"><p><strong>Correction locale :</strong> mettre à jour la première strate non convergente, puis rejouer le chemin. L’historique v1 reste conservé.</p></div>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Lecture en 30 secondes</p><h2>Voir → Comprendre → Tester</h2>
+      <div class="metric-grid">
+        <article class="metric"><span>1 · Voir</span><strong>Quel écart ?</strong><p class="muted">Une différence clairement localisée.</p></article>
+        <article class="metric"><span>2 · Comprendre</span><strong>Où et quand ?</strong><p class="muted">Source, version et temporalité.</p></article>
+        <article class="metric"><span>3 · Tester</span><strong>La correction converge-t-elle ?</strong><p class="muted">Un scénario reproductible, sans causalité présumée.</p></article>
+      </div>
+      <p class="muted">Données entièrement synthétiques. Aucun dossier réel, aucune donnée personnelle et aucune accusation institutionnelle.</p>
+    </section>
+  </main>
+</body>
+</html>
