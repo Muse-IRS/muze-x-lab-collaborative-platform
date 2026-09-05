@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Comprendre consommation annuelle, puissance souscrite et estimation simple du coût de l’énergie.">
+  <meta name="description" content="Comprendre consommation annuelle, puissance souscrite et différence entre addition statique et simultanéité d’usage des appareils.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
   <title>Comprendre mon énergie — Muze-X Lab</title>
@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="../assets/brand.css">
   <link rel="stylesheet" href="../assets/mesh-portal.css">
+  <style>
+    .appliance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.appliance-row{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.035)}.appliance-row input[type="checkbox"]{width:1.1rem;height:1.1rem}.appliance-row strong{display:block}.appliance-row span{font-size:.82rem;opacity:.7}.power-compare-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}.power-compare-grid .metric{min-height:120px}.power-track{position:relative;height:170px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));overflow:hidden}.power-line{position:absolute;left:0;right:0;height:2px;background:rgba(112,214,255,.75)}.power-line-label{position:absolute;right:.75rem;transform:translateY(-50%);font-size:.78rem;padding:.2rem .45rem;border-radius:999px;background:rgba(6,17,34,.88);border:1px solid rgba(112,214,255,.32)}.power-bars{display:flex;align-items:flex-end;gap:8px;height:100%;padding:1rem}.power-bar{flex:1;min-width:8px;border-radius:6px 6px 0 0;background:rgba(84,230,188,.52)}.power-bar.is-over{background:rgba(255,191,90,.72)}.energy-warning{margin-top:.8rem}.comparison-note{margin-top:.4rem}.appliance-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}@media(max-width:800px){.appliance-grid{grid-template-columns:1fr}.power-compare-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.power-compare-grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
   <header class="subpage-header">
@@ -18,15 +21,11 @@
       <img class="muze-brand-logo muze-brand-logo--compact" src="../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
       <nav class="topnav" aria-label="Navigation principale">
         <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
-        <div class="nav-links">
-          <a href="../dpe/">DPE</a>
-          <a href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Site RGPD</a>
-          <a href="../privacy.html">Confidentialité</a>
-        </div>
+        <div class="nav-links"><a href="../dpe/">DPE</a><a href="../pgca-demonstrator/">PGC-A</a><a href="../privacy.html">Confidentialité</a></div>
       </nav>
       <p class="eyebrow">Énergie</p>
       <h1 class="subpage-title">Comprendre mon énergie</h1>
-      <p class="subpage-lead">Mettre en perspective la puissance souscrite et la consommation annuelle, puis estimer un coût annuel lorsque les prix du contrat sont connus. Aucun identifiant Linky n’est demandé.</p>
+      <p class="subpage-lead">Mettre en perspective le contrat, la consommation annuelle et le besoin de puissance. Le module distingue désormais une addition statique des appareils d’un scénario temporel de simultanéité plausible.</p>
     </div>
   </header>
 
@@ -35,102 +34,75 @@
       <p class="eyebrow">RGPD local · ce module</p>
       <h2 id="energy-rgpd-title">Où vont les données dans le module Énergie ?</h2>
       <div class="principle-grid rgpd-module-grid">
-        <article><strong>Données saisies</strong><span>Puissance, consommation, option tarifaire et prix éventuels. Aucun PRM/PDL demandé.</span></article>
+        <article><strong>Données saisies</strong><span>Puissance, consommation, option tarifaire, prix éventuels et appareils sélectionnés. Aucun PRM/PDL demandé.</span></article>
         <article><strong>Traitement</strong><span>Calcul dans le navigateur. Aucune requête fournisseur ou compteur Linky dans cette version.</span></article>
-        <article><strong>Sortie</strong><span>Résultat indicatif : puissance, consommation et estimation annuelle si les prix sont saisis.</span></article>
-        <article><strong>Limite</strong><span>Estimation pédagogique. Ce résultat n’est pas une facture et ne remplace pas le contrat fournisseur.</span></article>
+        <article><strong>Sortie</strong><span>Résultat indicatif : contrat, addition statique, scénario temporel et comparaison.</span></article>
+        <article><strong>Limite</strong><span>Simulation pédagogique. Elle ne constitue ni une mesure réelle du compteur ni un conseil contractuel automatisé.</span></article>
       </div>
     </section>
 
     <section class="panel" aria-labelledby="energy-input-title">
-      <p class="eyebrow">Valeurs du contrat ou de la facture</p>
-      <h2 id="energy-input-title">Saisir les informations utiles</h2>
+      <p class="eyebrow">Valeurs du contrat ou de la facture</p><h2 id="energy-input-title">Saisir les informations utiles</h2>
       <form id="energy-form">
         <div class="form-grid">
-          <div class="field">
-            <label for="power">Puissance souscrite (kVA)</label>
-            <input id="power" name="power" type="number" min="1" step="0.1" inputmode="decimal" placeholder="6">
-          </div>
-          <div class="field">
-            <label for="consumption">Consommation sur 12 mois (kWh)</label>
-            <input id="consumption" name="consumption" type="number" min="0" step="1" inputmode="numeric" placeholder="4200">
-          </div>
-          <div class="field">
-            <label for="option">Option tarifaire</label>
-            <select id="option" name="option">
-              <option value="unknown">Inconnue / ne pas calculer le coût</option>
-              <option value="base">Base</option>
-              <option value="hphc">Heures pleines / heures creuses</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="subscription">Abonnement annuel (€)</label>
-            <input id="subscription" name="subscription" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Optionnel">
-          </div>
-          <div id="base-field" class="field" hidden>
-            <label for="base-price">Prix du kWh (€)</label>
-            <input id="base-price" name="base-price" type="number" min="0" step="0.0001" inputmode="decimal" placeholder="0,20">
-          </div>
-          <div id="hp-field" class="field" hidden>
-            <label for="hp-price">Prix heures pleines (€/kWh)</label>
-            <input id="hp-price" name="hp-price" type="number" min="0" step="0.0001" inputmode="decimal">
-          </div>
-          <div id="hc-field" class="field" hidden>
-            <label for="hc-price">Prix heures creuses (€/kWh)</label>
-            <input id="hc-price" name="hc-price" type="number" min="0" step="0.0001" inputmode="decimal">
-          </div>
-          <div id="hc-share-field" class="field" hidden>
-            <label for="hc-share">Part annuelle en heures creuses (%)</label>
-            <input id="hc-share" name="hc-share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="40">
-          </div>
+          <div class="field"><label for="power">Puissance souscrite (kVA)</label><input id="power" name="power" type="number" min="1" step="0.1" inputmode="decimal" placeholder="6"></div>
+          <div class="field"><label for="consumption">Consommation sur 12 mois (kWh)</label><input id="consumption" name="consumption" type="number" min="0" step="1" inputmode="numeric" placeholder="4200"></div>
+          <div class="field"><label for="option">Option tarifaire</label><select id="option" name="option"><option value="unknown">Inconnue / ne pas calculer le coût</option><option value="base">Base</option><option value="hphc">Heures pleines / heures creuses</option></select></div>
+          <div class="field"><label for="subscription">Abonnement annuel (€)</label><input id="subscription" name="subscription" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Optionnel"></div>
+          <div id="base-field" class="field" hidden><label for="base-price">Prix du kWh (€)</label><input id="base-price" name="base-price" type="number" min="0" step="0.0001" inputmode="decimal" placeholder="0,20"></div>
+          <div id="hp-field" class="field" hidden><label for="hp-price">Prix heures pleines (€/kWh)</label><input id="hp-price" name="hp-price" type="number" min="0" step="0.0001" inputmode="decimal"></div>
+          <div id="hc-field" class="field" hidden><label for="hc-price">Prix heures creuses (€/kWh)</label><input id="hc-price" name="hc-price" type="number" min="0" step="0.0001" inputmode="decimal"></div>
+          <div id="hc-share-field" class="field" hidden><label for="hc-share">Part annuelle en heures creuses (%)</label><input id="hc-share" name="hc-share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="40"></div>
         </div>
-        <p class="help">Les prix sont volontairement saisis par l’utilisateur afin d’éviter d’afficher un tarif qui ne correspondrait pas au contrat ou à la période concernée.</p>
-        <div class="actions">
-          <button type="submit">Afficher le résultat</button>
-          <button id="reset-button" class="button secondary" type="button">Effacer</button>
-        </div>
+        <p class="help">Les prix sont saisis manuellement afin d’éviter d’afficher un tarif qui ne correspondrait pas au contrat ou à la période concernée.</p>
+        <div class="actions"><button type="submit">Afficher le résultat</button><button id="reset-button" class="button secondary" type="button">Effacer</button></div>
       </form>
       <p id="energy-status" class="status" role="status" aria-live="polite">Aucun calcul effectué.</p>
     </section>
 
     <section id="energy-result" class="result-panel" hidden aria-labelledby="energy-result-title">
-      <p class="eyebrow">Résultat</p>
-      <h2 id="energy-result-title">Lecture simple</h2>
-      <div class="metric-grid">
-        <div class="metric"><span>Puissance souscrite</span><strong id="power-result">—</strong></div>
-        <div class="metric"><span>Consommation annuelle</span><strong id="consumption-result">—</strong></div>
-        <div class="metric"><span>Estimation annuelle</span><strong id="cost-result">Non calculée</strong></div>
-      </div>
-      <div class="callout">
-        <p><strong>Puissance et énergie ne mesurent pas la même chose.</strong> La consommation annuelle indique une quantité d’énergie sur une période. Elle ne suffit pas à démontrer qu’une puissance souscrite plus faible conviendrait aux pointes de consommation du logement.</p>
-      </div>
-      <p id="cost-note" class="muted"></p>
+      <p class="eyebrow">Résultat</p><h2 id="energy-result-title">Lecture simple</h2>
+      <div class="metric-grid"><div class="metric"><span>Puissance souscrite</span><strong id="power-result">—</strong></div><div class="metric"><span>Consommation annuelle</span><strong id="consumption-result">—</strong></div><div class="metric"><span>Estimation annuelle</span><strong id="cost-result">Non calculée</strong></div></div>
+      <div class="callout"><p><strong>Puissance et énergie ne mesurent pas la même chose.</strong> La consommation annuelle ne décrit pas, à elle seule, les pointes instantanées du logement.</p></div><p id="cost-note" class="muted"></p>
     </section>
 
-    <section class="panel">
-      <h2>Pour vérifier</h2>
-      <p>Comparer les valeurs utilisées avec une facture ou le contrat correspondant à la même période. Une estimation produite ici n’est pas une facture fournisseur et n’intègre pas automatiquement taxes, évolutions tarifaires, régularisations, remises ou autres lignes contractuelles qui n’ont pas été saisies.</p>
+    <section class="panel" aria-labelledby="power-compare-title">
+      <p class="eyebrow">Comparateur de puissance</p>
+      <h2 id="power-compare-title">Comparer addition statique et usage temporel</h2>
+      <p>Une addition statique suppose que tous les appareils sélectionnés tirent simultanément leur puissance nominale. Le scénario temporel applique des profils d’usage simplifiés pour montrer que cette hypothèse peut surestimer le besoin de puissance.</p>
+      <div class="appliance-grid" id="appliance-grid">
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Four" data-power="2500" data-duty="0.58" checked><span><strong>Four</strong><span>2 500 W · fonctionnement cyclé</span></span><span>thermostat</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Plaques" data-power="3000" data-duty="0.48"><span><strong>Plaques de cuisson</strong><span>3 000 W · puissance variable</span></span><span>cuisson</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Bouilloire" data-power="2000" data-duty="0.12" checked><span><strong>Bouilloire</strong><span>2 000 W · usage bref</span></span><span>quelques min.</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Lave-linge" data-power="2000" data-duty="0.22" checked><span><strong>Lave-linge</strong><span>2 000 W · chauffe intermittente</span></span><span>cycle</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Lave-vaisselle" data-power="1800" data-duty="0.20"><span><strong>Lave-vaisselle</strong><span>1 800 W · chauffe intermittente</span></span><span>cycle</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Micro-ondes" data-power="1400" data-duty="0.15"><span><strong>Micro-ondes</strong><span>1 400 W · usage bref</span></span><span>quelques min.</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Réfrigérateur" data-power="300" data-duty="0.35" checked><span><strong>Réfrigérateur</strong><span>300 W · compresseur intermittent</span></span><span>cyclé</span></label>
+        <label class="appliance-row"><input type="checkbox" data-appliance data-name="Éclairage" data-power="300" data-duty="0.65" checked><span><strong>Éclairage</strong><span>300 W · usage diffus</span></span><span>continu partiel</span></label>
+      </div>
+      <div class="appliance-actions"><button id="compare-power" type="button">Comparer les deux approches</button><button id="select-demo" class="button secondary" type="button">Charger l’exemple</button></div>
+      <p id="compare-status" class="status" role="status" aria-live="polite">Sélectionner des appareils puis lancer la comparaison.</p>
     </section>
 
-    <section class="panel">
-      <p class="eyebrow">Confidentialité</p>
-      <h2>Calcul dans le navigateur</h2>
-      <p>Cette version n’envoie pas les valeurs saisies vers un serveur Muze-X Lab et ne demande aucun PRM/PDL.</p>
-      <a class="inline" href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Ouvrir le site RGPD autonome</a>
-      <span aria-hidden="true"> · </span>
-      <a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
+    <section id="power-comparison-result" class="result-panel" hidden aria-labelledby="power-comparison-result-title">
+      <p class="eyebrow">Comparaison</p><h2 id="power-comparison-result-title">Statique ≠ simultanéité plausible</h2>
+      <div class="power-compare-grid">
+        <div class="metric"><span>Somme statique</span><strong id="static-power-result">—</strong></div>
+        <div class="metric"><span>Pic temporel simulé</span><strong id="dynamic-power-result">—</strong></div>
+        <div class="metric"><span>Puissance souscrite</span><strong id="subscribed-power-result">—</strong></div>
+        <div class="metric"><span>Écart statique → temporel</span><strong id="power-gap-result">—</strong></div>
+      </div>
+      <div class="power-track" id="power-track" aria-label="Profil de puissance simulé"><div class="power-bars" id="power-bars"></div><div class="power-line" id="subscribed-line" hidden></div><span class="power-line-label" id="subscribed-line-label" hidden></span></div>
+      <div class="callout energy-warning"><p id="comparison-explanation"><strong>Lecture :</strong> —</p></div>
+      <p class="muted comparison-note">Le scénario temporel est pédagogique : il applique des profils simplifiés et ne remplace pas une mesure de puissance issue d’un compteur ou d’un enregistreur. Aucune recommandation automatique de changement d’abonnement n’est produite.</p>
     </section>
+
+    <section class="panel"><h2>Pour vérifier</h2><p>Comparer le scénario avec des mesures réelles de puissance ou avec les pointes observées dans l’espace de suivi du compteur lorsqu’elles sont disponibles. Une simulation qui reste sous la puissance souscrite ne garantit pas à elle seule l’absence de dépassement.</p></section>
+
+    <section class="panel"><p class="eyebrow">Confidentialité</p><h2>Calcul dans le navigateur</h2><p>Les valeurs saisies et les appareils sélectionnés restent traités localement dans le navigateur.</p><a class="inline" href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Ouvrir le site RGPD autonome</a><span aria-hidden="true"> · </span><a class="inline" href="../privacy.html">Lire la notice de confidentialité</a></section>
   </main>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <span>Muze-X Lab Collaborative Platform</span>
-      <span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span>
-      <a href="../">Retour à l’accueil</a>
-    </div>
-  </footer>
-
-  <script src="./app.js"></script>
-  <script src="../assets/mesh-portal.js"></script>
+  <footer class="site-footer"><div class="shell footer-inner"><span>Muze-X Lab Collaborative Platform</span><span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span><a href="../">Retour à l’accueil</a></div></footer>
+  <script src="./app.js"></script><script src="../assets/mesh-portal.js"></script>
 </body>
 </html>
