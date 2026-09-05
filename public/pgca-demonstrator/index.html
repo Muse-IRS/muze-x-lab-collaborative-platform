@@ -40,6 +40,8 @@
       <p>Le scénario est entièrement synthétique. Au départ, les trois strates utilisent <strong>Référent X · v1</strong>. Créer une nouvelle version à la source permet de voir immédiatement la première frontière non convergente.</p>
 
       <div class="pgca-demo" data-pgca-demo>
+        <div class="pgca-progress" aria-live="polite"><span>Progression</span><strong data-progress>0/3 · état initial</strong></div>
+
         <div class="pgca-demo-toolbar" aria-label="Actions du démonstrateur">
           <button class="button" type="button" data-action="new-version">Créer la version Y · v2</button>
           <button class="button secondary" type="button" data-action="propagate">Propager vers la strate suivante</button>
@@ -79,11 +81,16 @@
 
         <div class="callout pgca-demo-note">
           <p class="pgca-live" data-live aria-live="polite">État initial restauré.</p>
+          <p class="pgca-outcome" data-outcome>La chaîne est cohérente. Créer une nouvelle version permet de tester sa propagation.</p>
         </div>
 
         <div>
           <p class="eyebrow">Historique conservé</p>
           <ol class="pgca-history" data-history><li>t0 · X · v1 · chaîne convergente</li></ol>
+        </div>
+
+        <div class="pgca-replay">
+          <button class="button secondary" type="button" data-action="replay">Rejouer le scénario</button>
         </div>
       </div>
     </section>
@@ -127,6 +134,7 @@
         <article class="metric"><span>3 · Tester</span><strong>La correction converge-t-elle ?</strong><p class="muted">Un scénario reproductible, sans causalité présumée.</p></article>
       </div>
       <p class="muted">Données entièrement synthétiques. Aucun dossier réel, aucune donnée personnelle et aucune accusation institutionnelle.</p>
+      <p><a class="button secondary" href="../">Retour à la plateforme Muze-X</a></p>
     </section>
   </main>
 
