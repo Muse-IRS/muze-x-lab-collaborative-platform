@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/brand.css">
   <link rel="stylesheet" href="../assets/hub-nav.css">
   <link rel="stylesheet" href="../assets/mesh-portal.css">
+  <link rel="stylesheet" href="./demo.css">
 </head>
 <body>
   <header class="subpage-header rgpd-header">
@@ -31,6 +32,60 @@
     <section class="notice-panel">
       <div><p class="eyebrow">Principe</p><h2>Une couche de cohérence, pas un système de remplacement</h2><p>Les systèmes existants restent en place. Le démonstrateur relie uniquement les états nécessaires pour rendre visibles provenance, date, version et écart.</p></div>
       <span class="status-badge">TESTABLE</span>
+    </section>
+
+    <section class="panel" aria-labelledby="interactive-title">
+      <p class="eyebrow">Expérience testable · changement de référent</p>
+      <h2 id="interactive-title">Modifier une information, puis observer où sa propagation s’arrête.</h2>
+      <p>Le scénario est entièrement synthétique. Au départ, les trois strates utilisent <strong>Référent X · v1</strong>. Créer une nouvelle version à la source permet de voir immédiatement la première frontière non convergente.</p>
+
+      <div class="pgca-demo" data-pgca-demo>
+        <div class="pgca-demo-toolbar" aria-label="Actions du démonstrateur">
+          <button class="button" type="button" data-action="new-version">Créer la version Y · v2</button>
+          <button class="button secondary" type="button" data-action="propagate">Propager vers la strate suivante</button>
+          <button class="button secondary" type="button" data-action="alternate">Tester une rupture intermédiaire</button>
+          <button class="button secondary" type="button" data-action="reset">Réinitialiser</button>
+        </div>
+
+        <div class="pgca-chain" aria-label="Chaîne de propagation">
+          <article class="pgca-node" data-node>
+            <span class="node-label">Référentiel source</span>
+            <strong class="node-value" data-value>Référent X</strong>
+            <span class="node-meta" data-version>Version v1</span>
+            <span class="node-meta" data-status>CONVERGENT</span>
+          </article>
+          <div class="pgca-arrow" aria-hidden="true">→</div>
+          <article class="pgca-node" data-node>
+            <span class="node-label">Système territorial</span>
+            <strong class="node-value" data-value>Référent X</strong>
+            <span class="node-meta" data-version>Version v1</span>
+            <span class="node-meta" data-status>CONVERGENT</span>
+          </article>
+          <div class="pgca-arrow" aria-hidden="true">→</div>
+          <article class="pgca-node" data-node>
+            <span class="node-label">Interface utilisateur</span>
+            <strong class="node-value" data-value>Référent X</strong>
+            <span class="node-meta" data-version>Version v1</span>
+            <span class="node-meta" data-status>CONVERGENT</span>
+          </article>
+        </div>
+
+        <div class="pgca-state-grid">
+          <div class="pgca-state"><span>État actuel</span><strong data-global-state>CONVERGENT</strong></div>
+          <div class="pgca-state"><span>Première divergence</span><strong data-first-divergence>Aucune</strong></div>
+          <div class="pgca-state"><span>Version attendue</span><strong data-expected>Référent X · v1</strong></div>
+          <div class="pgca-state"><span>Version observée</span><strong data-observed>Référent X · v1</strong></div>
+        </div>
+
+        <div class="callout pgca-demo-note">
+          <p class="pgca-live" data-live aria-live="polite">État initial restauré.</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">Historique conservé</p>
+          <ol class="pgca-history" data-history><li>t0 · X · v1 · chaîne convergente</li></ol>
+        </div>
+      </div>
     </section>
 
     <section class="panel">
@@ -82,6 +137,7 @@
       <span>PRIVATE_METHOD → PUBLIC_RESULT</span>
     </div>
   </footer>
+  <script src="./demo.js"></script>
   <script src="../assets/mesh-portal.js"></script>
 </body>
 </html>
