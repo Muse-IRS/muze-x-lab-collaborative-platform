@@ -44,7 +44,7 @@
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));const rand=(min,max)=>min+Math.random()*(max-min);
   const state={width:1,height:1,dpr:1,particles:[],localParticles:[],pointer:{x:0,y:0,active:false,pressure:0},anchor:{element:anchorLink,active:false,x:0,y:0,radius:0,strength:0},boundaries:[],localZone:null,last:performance.now()};
 
-  function particleCount(){const cores=navigator.hardwareConcurrency||4;if(reducedMotion)return clamp(Math.round((state.width*state.height)/17000),44,88);const density=cores>=8?3600:cores>=4?4500:5900;return clamp(Math.round((state.width*state.height)/density),150,cores>=8?440:320)}
+  function particleCount(){const cores=navigator.hardwareConcurrency||4;if(reducedMotion)return clamp(Math.round((state.width*state.height)/8500),88,176);const density=cores>=8?1800:cores>=4?2250:2950;return clamp(Math.round((state.width*state.height)/density),300,cores>=8?880:640)}
   function localParticleCount(){const cores=navigator.hardwareConcurrency||4;if(reducedMotion)return 72;return cores>=8?288:cores>=4?216:162}
   function makeParticle(index){return{team:index%2,x:rand(0,state.width),y:rand(0,state.height),z:rand(.16,1),vx:rand(-.38,.38),vy:rand(-.38,.38),vz:rand(-.0018,.0018),mass:rand(.72,1.5),phase:rand(0,Math.PI*2),drift:rand(.52,1.36)}}
   function rebuild(){state.particles=Array.from({length:particleCount()},(_,i)=>makeParticle(i));state.localParticles=[]}
