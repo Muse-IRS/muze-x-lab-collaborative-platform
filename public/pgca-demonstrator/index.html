@@ -23,33 +23,37 @@
       </nav>
       <p class="eyebrow">PGC-A · démonstrateur synthétique</p>
       <h1 class="subpage-title">Voir l’écart. Localiser sa source. Tester la correction.</h1>
-      <p class="subpage-lead">Trois cas synthétiques montrent le résultat attendu sans exposer les dossiers réels ni imposer une nouvelle infrastructure aux systèmes existants.</p>
+      <p class="subpage-lead">Une expérience interactive et trois cas synthétiques montrent le résultat attendu sans exposer les dossiers réels ni imposer une nouvelle infrastructure aux systèmes existants.</p>
       <div class="platform-formula" aria-label="Boucle de démonstration"><strong>LOCAL</strong><span>→</span><strong>GLOBAL</strong><span>→</span><strong>LOCAL</strong></div>
     </div>
   </header>
 
   <main class="shell content-stack">
     <section class="notice-panel">
-      <div><p class="eyebrow">Principe</p><h2>Une couche de cohérence, pas un système de remplacement</h2><p>Les systèmes existants restent en place. Le démonstrateur relie uniquement les états nécessaires pour rendre visibles provenance, date, version et écart.</p></div>
+      <div>
+        <p class="eyebrow">Posture</p>
+        <h2>Observer sans provoquer. Tester sans surinterpréter.</h2>
+        <p>PGC-A ne remplace pas le système observé. Il conserve juste assez d’état pour comparer provenance, date, version et relation. Chaque interaction produit un nouvel état vérifiable : convergence, divergence ou indétermination. Une branche peut se stabiliser sans effacer l’historique.</p>
+      </div>
       <span class="status-badge">TESTABLE</span>
     </section>
 
     <section class="panel" aria-labelledby="interactive-title">
       <p class="eyebrow">Expérience testable · changement de référent</p>
       <h2 id="interactive-title">Modifier une information, puis observer où sa propagation s’arrête.</h2>
-      <p>Le scénario est entièrement synthétique. Au départ, les trois strates utilisent <strong>Référent X · v1</strong>. Créer une nouvelle version à la source permet de voir immédiatement la première frontière non convergente.</p>
+      <p>Le scénario est entièrement synthétique. Au départ, les cinq strates utilisent <strong>Référent X · v1</strong>. Créer une nouvelle version à la source rend visible la première frontière non convergente. Aucune propagation n’est automatique : chaque étape reste observable.</p>
 
       <div class="pgca-demo" data-pgca-demo>
-        <div class="pgca-progress" aria-live="polite"><span>Progression</span><strong data-progress>0/3 · état initial</strong></div>
+        <div class="pgca-progress" aria-live="polite"><span>Progression</span><strong data-progress>0/5 · état initial</strong></div>
 
         <div class="pgca-demo-toolbar" aria-label="Actions du démonstrateur">
           <button class="button" type="button" data-action="new-version">Créer la version Y · v2</button>
           <button class="button secondary" type="button" data-action="propagate">Propager vers la strate suivante</button>
-          <button class="button secondary" type="button" data-action="alternate">Tester une rupture intermédiaire</button>
+          <button class="button secondary" type="button" data-action="alternate">Tester une rupture cachée</button>
           <button class="button secondary" type="button" data-action="reset">Réinitialiser</button>
         </div>
 
-        <div class="pgca-chain" aria-label="Chaîne de propagation">
+        <div class="pgca-chain" aria-label="Chaîne de propagation à cinq strates">
           <article class="pgca-node" data-node>
             <span class="node-label">Référentiel source</span>
             <strong class="node-value" data-value>Référent X</strong>
@@ -58,7 +62,21 @@
           </article>
           <div class="pgca-arrow" aria-hidden="true">→</div>
           <article class="pgca-node" data-node>
+            <span class="node-label">Transmission</span>
+            <strong class="node-value" data-value>Référent X</strong>
+            <span class="node-meta" data-version>Version v1</span>
+            <span class="node-meta" data-status>CONVERGENT</span>
+          </article>
+          <div class="pgca-arrow" aria-hidden="true">→</div>
+          <article class="pgca-node" data-node>
             <span class="node-label">Système territorial</span>
+            <strong class="node-value" data-value>Référent X</strong>
+            <span class="node-meta" data-version>Version v1</span>
+            <span class="node-meta" data-status>CONVERGENT</span>
+          </article>
+          <div class="pgca-arrow" aria-hidden="true">→</div>
+          <article class="pgca-node" data-node>
+            <span class="node-label">Outil métier</span>
             <strong class="node-value" data-value>Référent X</strong>
             <span class="node-meta" data-version>Version v1</span>
             <span class="node-meta" data-status>CONVERGENT</span>
@@ -119,6 +137,7 @@
       <p class="eyebrow">Cas C · propagation d’une règle</p><h2>Une règle change ; les strates ne changent pas nécessairement au même instant</h2>
       <div class="table-wrap"><table class="entity-table"><thead><tr><th>Strate</th><th>Version observée</th><th>État</th><th>Action de test</th></tr></thead><tbody>
         <tr><td>Référentiel national</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
+        <tr><td>Transmission</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
         <tr><td>Référentiel territorial</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
         <tr><td>Outil métier</td><td>v1</td><td>À VÉRIFIER</td><td>Propager v2</td></tr>
         <tr><td>Interface de restitution</td><td>v1</td><td>INFORMATION MANQUANTE</td><td>Rejouer après mise à jour</td></tr>
@@ -127,12 +146,10 @@
     </section>
 
     <section class="panel">
-      <p class="eyebrow">Lecture en 30 secondes</p><h2>Voir → Comprendre → Tester</h2>
-      <div class="metric-grid">
-        <article class="metric"><span>1 · Voir</span><strong>Quel écart ?</strong><p class="muted">Une différence clairement localisée.</p></article>
-        <article class="metric"><span>2 · Comprendre</span><strong>Où et quand ?</strong><p class="muted">Source, version et temporalité.</p></article>
-        <article class="metric"><span>3 · Tester</span><strong>La correction converge-t-elle ?</strong><p class="muted">Un scénario reproductible, sans causalité présumée.</p></article>
-      </div>
+      <p class="eyebrow">Lecture minimale</p>
+      <h2>Observer → Tracer → Qualifier → Tester → Stabiliser</h2>
+      <div class="platform-formula" aria-label="Lecture publique minimale PGC-A"><strong>OBSERVATION</strong><span>→</span><strong>TRACE</strong><span>→</span><strong>QUALIFICATION</strong><span>→</span><strong>TEST</strong><span>→</span><strong>STABILISATION</strong></div>
+      <p>Une réponse n’est ni une victoire ni une défaite : c’est un nouvel état à comparer. Si l’état converge, la branche peut se stabiliser ; sinon l’écart reste visible et borné.</p>
       <p class="muted">Données entièrement synthétiques. Aucun dossier réel, aucune donnée personnelle et aucune accusation institutionnelle.</p>
       <p><a class="button secondary" href="../">Retour à la plateforme Muze-X</a></p>
     </section>

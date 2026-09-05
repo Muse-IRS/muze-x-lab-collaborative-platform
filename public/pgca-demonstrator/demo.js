@@ -19,13 +19,20 @@
   const resetButton = root.querySelector('[data-action="reset"]');
   const replayButton = root.querySelector('[data-action="replay"]');
 
-  const labels = ['Référentiel source', 'Système territorial', 'Interface utilisateur'];
+  const labels = [
+    'Référentiel source',
+    'Transmission',
+    'Système territorial',
+    'Outil métier',
+    'Interface utilisateur'
+  ];
+  const totalStrata = nodes.length;
   let state;
 
   function resetState(message = 'État initial restauré.') {
     state = {
-      values: ['X', 'X', 'X'],
-      versions: [1, 1, 1],
+      values: Array(totalStrata).fill('X'),
+      versions: Array(totalStrata).fill(1),
       alternate: false,
       history: ['t0 · X · v1 · chaîne convergente']
     };
@@ -44,10 +51,10 @@
   function currentStep() {
     if (state.values[0] === 'X' && state.versions[0] === 1) return 0;
     let aligned = 0;
-    for (const index of [0, 1, 2]) {
+    for (let index = 0; index < state.values.length; index += 1) {
       if (state.values[index] === state.values[0] && state.versions[index] === state.versions[0]) aligned += 1;
     }
-    return Math.min(3, aligned);
+    return Math.min(totalStrata, aligned);
   }
 
   function render(message) {
@@ -77,12 +84,16 @@
     }
 
     const step = currentStep();
-    progress.textContent = step === 0 ? '0/3 · état initial' : step === 3 ? '3/3 · convergence restaurée' : `${step}/3 · propagation en cours`;
+    progress.textContent = step === 0
+      ? `0/${totalStrata} · état initial`
+      : step === totalStrata
+        ? `${totalStrata}/${totalStrata} · convergence restaurée`
+        : `${step}/${totalStrata} · propagation en cours`;
 
-    if (step === 3 && targetValue === 'Y' && targetVersion === 2) {
+    if (step === totalStrata && targetValue === 'Y' && targetVersion === 2) {
       outcome.textContent = 'La correction locale a restauré la cohérence globale sans effacer l’historique.';
-    } else if (state.alternate) {
-      outcome.textContent = 'L’interface finale peut sembler correcte alors qu’une strate intermédiaire reste obsolète.';
+    } else if (state.alternate && divergent !== -1) {
+      outcome.textContent = 'La restitution finale peut sembler correcte alors qu’une strate intermédiaire reste obsolète.';
     } else if (divergent !== -1) {
       outcome.textContent = 'La divergence est localisée sans déduire automatiquement sa cause.';
     } else {
@@ -90,7 +101,7 @@
     }
 
     historyList.innerHTML = '';
-    state.history.slice(-6).forEach(item => {
+    state.history.slice(-7).forEach(item => {
       const li = document.createElement('li');
       li.textContent = item;
       historyList.appendChild(li);
@@ -121,15 +132,17 @@
     state.values[divergent] = state.values[0];
     state.versions[divergent] = state.versions[0];
     state.history.push(`t${state.history.length} · ${labels[divergent]} · ${state.values[0]} · v${state.versions[0]}`);
-    render(divergenceIndex() === -1 ? 'Propagation terminée : la chaîne est convergente.' : 'Propagation effectuée : la frontière suivante devient observable.');
+    render(divergenceIndex() === -1
+      ? 'Propagation terminée : la chaîne est convergente.'
+      : 'Propagation effectuée : la frontière suivante devient observable.');
   }
 
   function alternateBreak() {
-    state.values = ['Y', 'X', 'Y'];
-    state.versions = [2, 1, 2];
+    state.values = ['Y', 'Y', 'X', 'Y', 'Y'];
+    state.versions = [2, 2, 1, 2, 2];
     state.alternate = true;
-    state.history.push(`t${state.history.length} · scénario alternatif · interface à jour, strate intermédiaire obsolète`);
-    render('Scénario alternatif chargé : l’interface finale paraît correcte, mais la strate intermédiaire reste obsolète.');
+    state.history.push(`t${state.history.length} · rupture cachée · interface à jour, strate intermédiaire obsolète`);
+    render('Rupture cachée chargée : la sortie paraît à jour, mais une strate intermédiaire reste obsolète.');
   }
 
   function replay() {
