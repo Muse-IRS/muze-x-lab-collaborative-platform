@@ -7,6 +7,8 @@
   const nodes = [...root.querySelectorAll('[data-node]')];
   const historyList = root.querySelector('[data-history]');
   const live = root.querySelector('[data-live]');
+  const outcome = root.querySelector('[data-outcome]');
+  const progress = root.querySelector('[data-progress]');
   const firstDivergence = root.querySelector('[data-first-divergence]');
   const expected = root.querySelector('[data-expected]');
   const observed = root.querySelector('[data-observed]');
@@ -15,18 +17,19 @@
   const propagateButton = root.querySelector('[data-action="propagate"]');
   const alternateButton = root.querySelector('[data-action="alternate"]');
   const resetButton = root.querySelector('[data-action="reset"]');
+  const replayButton = root.querySelector('[data-action="replay"]');
 
   const labels = ['Référentiel source', 'Système territorial', 'Interface utilisateur'];
   let state;
 
-  function resetState() {
+  function resetState(message = 'État initial restauré.') {
     state = {
       values: ['X', 'X', 'X'],
       versions: [1, 1, 1],
       alternate: false,
       history: ['t0 · X · v1 · chaîne convergente']
     };
-    render('État initial restauré.');
+    render(message);
   }
 
   function divergenceIndex() {
@@ -36,6 +39,15 @@
       if (state.values[i] !== targetValue || state.versions[i] !== targetVersion) return i;
     }
     return -1;
+  }
+
+  function currentStep() {
+    if (state.values[0] === 'X' && state.versions[0] === 1) return 0;
+    let aligned = 0;
+    for (const index of [0, 1, 2]) {
+      if (state.values[index] === state.values[0] && state.versions[index] === state.versions[0]) aligned += 1;
+    }
+    return Math.min(3, aligned);
   }
 
   function render(message) {
@@ -64,6 +76,19 @@
       observed.textContent = `Référent ${state.values[divergent]} · v${state.versions[divergent]}`;
     }
 
+    const step = currentStep();
+    progress.textContent = step === 0 ? '0/3 · état initial' : step === 3 ? '3/3 · convergence restaurée' : `${step}/3 · propagation en cours`;
+
+    if (step === 3 && targetValue === 'Y' && targetVersion === 2) {
+      outcome.textContent = 'La correction locale a restauré la cohérence globale sans effacer l’historique.';
+    } else if (state.alternate) {
+      outcome.textContent = 'L’interface finale peut sembler correcte alors qu’une strate intermédiaire reste obsolète.';
+    } else if (divergent !== -1) {
+      outcome.textContent = 'La divergence est localisée sans déduire automatiquement sa cause.';
+    } else {
+      outcome.textContent = 'La chaîne est cohérente. Créer une nouvelle version permet de tester sa propagation.';
+    }
+
     historyList.innerHTML = '';
     state.history.slice(-6).forEach(item => {
       const li = document.createElement('li');
@@ -82,6 +107,7 @@
     }
     state.values[0] = 'Y';
     state.versions[0] = 2;
+    state.alternate = false;
     state.history.push('t1 · source · Y · v2 créée');
     render('Nouvelle version créée à la source. La première divergence est maintenant visible.');
   }
@@ -106,10 +132,16 @@
     render('Scénario alternatif chargé : l’interface finale paraît correcte, mais la strate intermédiaire reste obsolète.');
   }
 
+  function replay() {
+    resetState('Scénario prêt à être rejoué depuis l’état initial.');
+    root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   newVersionButton.addEventListener('click', createNewVersion);
   propagateButton.addEventListener('click', propagate);
   alternateButton.addEventListener('click', alternateBreak);
-  resetButton.addEventListener('click', resetState);
+  resetButton.addEventListener('click', () => resetState());
+  replayButton.addEventListener('click', replay);
 
   resetState();
 })();
