@@ -1,8 +1,26 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "observed_at": "2026-09-06",
   "status": "OBS",
   "sources": [
+    {
+      "id": "insee-population",
+      "label": "INSEE — estimation de population",
+      "frequency": "Annuelle",
+      "scope": "France, régions, départements · population au 1er janvier",
+      "status": "OBS",
+      "latest_period": "1er janvier 2026",
+      "url": "https://www.insee.fr/fr/statistiques/serie/001760077"
+    },
+    {
+      "id": "caf-cafdata",
+      "label": "CAF / Cnaf — Cafdata",
+      "frequency": "Selon jeu de données / publication",
+      "scope": "France et territoires · allocataires et personnes couvertes",
+      "status": "OBS",
+      "latest_period": "publication de référence 31 mars 2025",
+      "url": "https://www.caf.fr/professionnels/presse/publications/cafdata-le-site-open-data-de-la-cnaf-et-des-caf"
+    },
     {
       "id": "dares-ft-monthly",
       "label": "DARES / France Travail — inscrits mensuels",
