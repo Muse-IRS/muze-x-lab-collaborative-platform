@@ -8,7 +8,8 @@ Public-facing assets for the bounded Muze-X Number & Information page.
 - `series-2007-2026.csv` — bounded annual State-financing series used by the public page;
 - `maturity-ladder-2026-2032.csv` — bounded OAT/OAT€i/OATi face-value maturity ladder;
 - `maturity-ladder-scope.md` — publication perimeter and settlement-date boundary for the maturity ladder;
-- `oat-fr0014016g71-history.csv` — event-by-event history of OAT 2.40% 24 September 2029 through settlement on 24 August 2026.
+- `oat-fr0014016g71-history.csv` — event-by-event history of OAT 2.40% 24 September 2029 through settlement on 24 August 2026;
+- `fr0014016g71/index.html` — bounded public explanation following one OAT from creation through repeated reopenings to its current state and contractual maturity.
 
 ## Publication boundary
 
