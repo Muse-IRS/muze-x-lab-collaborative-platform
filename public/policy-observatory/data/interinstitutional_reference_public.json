@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "status": "OBS",
+  "observed_at": "2026-09-06",
+  "population": {
+    "france": {
+      "value": 69081996,
+      "unit": "persons",
+      "reference_date": "2026-01-01",
+      "provisional": true,
+      "source": "INSEE — Estimations de population",
+      "source_url": "https://www.insee.fr/fr/statistiques/serie/001760077"
+    },
+    "mayotte": {
+      "value": 338208,
+      "unit": "persons",
+      "reference_date": "2026-01-01",
+      "provisional": true,
+      "source": "INSEE — Estimations de population par sexe et âge au 1er janvier 2026",
+      "source_url": "https://www.insee.fr/fr/statistiques/2012692"
+    },
+    "france_hors_mayotte": {
+      "value": 68743788,
+      "unit": "persons",
+      "reference_date": "2026-01-01",
+      "derived": true,
+      "formula": "France - Mayotte",
+      "source": "Muze-X derivation from INSEE values"
+    }
+  },
+  "caf": {
+    "allocataires_approx": 13500000,
+    "persons_covered_approx": 32000000,
+    "unit_allocataires": "households/files",
+    "unit_persons_covered": "persons",
+    "precision": "approximate",
+    "published_at": "2025-03-31",
+    "source": "CAF / Cnaf — Cafdata presentation",
+    "source_url": "https://www.caf.fr/professionnels/presse/publications/cafdata-le-site-open-data-de-la-cnaf-et-des-caf",
+    "note": "La source indique près de 13,5 millions d’allocataires et 32 millions de personnes couvertes."
+  },
+  "comparison_rules": {
+    "states": ["CONVERGENCE", "DIVERGENCE", "INDETERMINATION", "NON COMPARABLE", "DESCRIPTIF"],
+    "invariant": "CALCULABLE != COMPARABLE",
+    "note": "Les ratios interinstitutionnels ne sont affichés que si l’unité et le champ rendent l’ordre de grandeur interprétable. DESCRIPTIF ne signifie pas indicateur institutionnel."
+  }
+}
