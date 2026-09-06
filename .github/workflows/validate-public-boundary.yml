@@ -31,8 +31,10 @@ jobs:
           test -f public/number-information-lab/argent/portefeuille/index.html
           test -f public/number-information-lab/argent/trajectoire/index.html
           test -f public/number-information-lab/argent/extinction/index.html
+          test -f public/number-information-lab/argent/roulement/index.html
           test -f public/number-information-lab/argent/oat-temporal-subgraph-2026.csv
           test -f public/number-information-lab/argent/oat-extinction-2026.csv
+          test -f public/number-information-lab/argent/oat-turnover-april-2026.csv
           test -f public/assets/brand-logo.svg
           test -f public/assets/favicon.svg
           test -f public/assets/brand.css
@@ -66,6 +68,9 @@ jobs:
           grep -q 'FR0010916924' public/number-information-lab/argent/extinction/index.html
           grep -q '125,7005' public/number-information-lab/argent/extinction/index.html
           grep -q '93,915' public/number-information-lab/argent/extinction/index.html
+          grep -q 'ΔQ = E − B − R + J' public/number-information-lab/argent/roulement/index.html
+          grep -q '74,0855' public/number-information-lab/argent/roulement/index.html
+          grep -q '2,0855' public/number-information-lab/argent/roulement/index.html
 
       - name: Require full-screen attractor on every public HTML page
         shell: bash
