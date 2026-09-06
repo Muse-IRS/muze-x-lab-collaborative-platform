@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Muze-X Lab — comprendre un portefeuille borné d’OAT comme un graphe de titres, d’échéances et de quantités en euros.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Graphe de portefeuille OAT — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+  <link rel="stylesheet" href="../../../assets/brand.css">
+  <link rel="stylesheet" href="../../../assets/hub-nav.css">
+  <link rel="stylesheet" href="../../../assets/mesh-portal.css">
+  <link rel="stylesheet" href="../../lab.css">
+</head>
+<body>
+<header class="subpage-header">
+  <div class="shell">
+    <img class="muze-brand-logo muze-brand-logo--compact" src="../../../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+    <nav class="topnav" aria-label="Navigation principale">
+      <a class="home-link" href="../">← Argent · temps · dette</a>
+      <div class="nav-links">
+        <a href="#graphe">Graphe</a>
+        <a href="#vecteur">Vecteur</a>
+        <a href="#projection">Projection</a>
+        <a href="#transition">24 août</a>
+        <a href="#composition">Composition</a>
+        <a href="#limites">Limites</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </nav>
+    <p class="eyebrow">Portefeuille borné · OAT 2026 → 2032</p>
+    <h1 class="subpage-title">34 titres. 7 années d’échéance. Une même dénomination en euros.</h1>
+    <p class="subpage-lead">Un graphe simple pour voir comment des lignes de dette différentes se projettent vers des échéances futures, sans confondre identité du titre, quantité, type d’instrument et paiement final.</p>
+    <div class="platform-formula" aria-label="Définition du graphe de portefeuille">
+      <strong>G<sub>t</sub> = (V,E,w)</strong><span>·</span><strong>L(t) = M<sup>T</sup>q(t)</strong>
+    </div>
+  </div>
+</header>
+
+<main class="shell content-stack">
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Lecture publique</p>
+      <h2>Le portefeuille est ici un objet mathématique borné.</h2>
+      <p>La fenêtre retient uniquement les OAT, OAT€i et OATi dont l’échéance se situe entre 2026 et 2032. Les encours sont les montants nominaux publiés par l’Agence France Trésor dans l’état réconcilié jusqu’aux règlements du 24 août 2026.</p>
+    </div>
+    <span class="status-badge">PUBLIC_RESULT</span>
+  </section>
+
+  <section class="panel lab-panel" id="graphe">
+    <p class="eyebrow">01 · GRAPHE</p>
+    <h2>Un titre peut être relié à plusieurs propriétés sans devenir plusieurs objets.</h2>
+    <p>Chaque ISIN constitue un nœud de titre. Il est relié à son année d’échéance, à son type d’instrument et à la dénomination EUR.</p>
+    <div class="lab-readouts">
+      <div><span>Titres / ISIN</span><strong>34</strong></div>
+      <div><span>Années d’échéance</span><strong>7</strong></div>
+      <div><span>Types</span><strong>3</strong></div>
+      <div><span>Dénomination</span><strong>EUR</strong></div>
+      <div><span>Nœuds du graphe borné</span><strong>45</strong></div>
+      <div><span>Relations de classification</span><strong>102</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Partition des nœuds">
+      <strong>V = V<sub>S</sub> ∪ V<sub>Y</sub> ∪ V<sub>K</sub> ∪ {EUR}</strong>
+    </div>
+    <p class="muted">Les 102 relations correspondent ici à trois liens par titre : vers son année d’échéance, son type et EUR. Cette structure décrit le jeu de données ; elle ne constitue pas une preuve causale.</p>
+  </section>
+
+  <section class="panel lab-panel" id="vecteur">
+    <p class="eyebrow">02 · VECTEUR D’ÉTAT</p>
+    <h2>Le portefeuille est un vecteur de 34 encours.</h2>
+    <p>Pour chaque titre <strong>i</strong>, on note <strong>q<sub>i</sub>(t)</strong> son encours nominal à la date considérée. Les 34 nombres forment un vecteur :</p>
+    <div class="platform-formula" aria-label="Vecteur des encours">
+      <strong>q(t) = [q<sub>1</sub>(t), …, q<sub>34</sub>(t)]<sup>T</sup></strong>
+    </div>
+    <p>Une réouverture d’un titre augmente une coordonnée ; un rachat peut la diminuer. La relation générale est :</p>
+    <div class="platform-formula" aria-label="Transition du portefeuille">
+      <strong>q(t<sup>+</sup>) = q(t<sup>−</sup>) + e(t) − b(t)</strong>
+    </div>
+    <p>Le total nominal de la fenêtre est :</p>
+    <div class="lab-readouts">
+      <div><span>Encours nominal · fenêtre 2026–2032</span><strong>1 403,917 Md€</strong></div>
+      <div><span>Périmètre</span><strong>34 lignes seulement</strong></div>
+    </div>
+  </section>
+
+  <section class="panel lab-panel" id="projection">
+    <p class="eyebrow">03 · PROJECTION VERS LE FUTUR</p>
+    <h2>L’échéancier annuel est une projection du portefeuille.</h2>
+    <p>La matrice <strong>M</strong> indique simplement l’année d’échéance de chaque titre. En multipliant le vecteur des encours par cette matrice d’appartenance, on retrouve les montants par année :</p>
+    <div class="platform-formula" aria-label="Projection matricielle vers les échéances">
+      <strong>L(t) = M<sup>T</sup>q(t)</strong>
+    </div>
+    <div class="lab-readouts">
+      <div><span>2026</span><strong>60,738 Md€ · 4,326 %</strong></div>
+      <div><span>2027</span><strong>202,928 Md€ · 14,454 %</strong></div>
+      <div><span>2028</span><strong>246,229 Md€ · 17,539 %</strong></div>
+      <div><span>2029</span><strong>281,319 Md€ · 20,038 %</strong></div>
+      <div><span>2030</span><strong>210,259 Md€ · 14,977 %</strong></div>
+      <div><span>2031</span><strong>205,054 Md€ · 14,606 %</strong></div>
+      <div><span>2032</span><strong>197,389 Md€ · 14,060 %</strong></div>
+    </div>
+    <p>Dans cette fenêtre seulement, 2029 est le plus grand nœud d’échéance avec environ <strong>20,038 %</strong> du nominal observé.</p>
+  </section>
+
+  <section class="panel lab-panel" id="transition">
+    <p class="eyebrow">04 · TRANSITION OBSERVÉE AU 24 AOÛT 2026</p>
+    <h2>Quatre coordonnées changent ; l’échéancier change aux mêmes endroits.</h2>
+    <p>Les adjudications du 20 août réglées le 24 août ajoutent, dans cette fenêtre, quatre volumes publiés : 3,478 Md€ sur l’OAT 2029, 4,280 Md€ sur l’OAT 2031, 5,830 Md€ sur l’OAT 2032 et 0,425 Md€ sur l’OAT€i 2032.</p>
+    <div class="platform-formula" aria-label="Variation totale observée">
+      <strong>3,478 + 4,280 + 5,830 + 0,425</strong><span>=</span><strong>14,013 Md€</strong>
+    </div>
+    <div class="lab-readouts">
+      <div><span>2029</span><strong>+3,478 Md€</strong></div>
+      <div><span>2031</span><strong>+4,280 Md€</strong></div>
+      <div><span>2032</span><strong>+6,255 Md€</strong></div>
+      <div><span>Total projeté</span><strong>+14,013 Md€</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Projection de la variation">
+      <strong>ΔL = M<sup>T</sup>Δq</strong>
+    </div>
+    <p>Le passage du niveau « titre » au niveau « année » devient ainsi vérifiable : les variations observées sur quatre ISIN produisent exactement les variations des trois nœuds d’échéance concernés.</p>
+  </section>
+
+  <section class="panel lab-panel" id="composition">
+    <p class="eyebrow">05 · COMPOSITION PAR TYPE</p>
+    <h2>Même euro, règles contractuelles différentes.</h2>
+    <div class="lab-readouts">
+      <div><span>OAT nominales</span><strong>1 272,842 Md€ · 90,664 %</strong></div>
+      <div><span>OAT€i</span><strong>93,222 Md€ · 6,640 %</strong></div>
+      <div><span>OATi</span><strong>37,852 Md€ · 2,696 %</strong></div>
+    </div>
+    <p>Les trois familles sont libellées en euros, mais les OAT€i et OATi comportent une indexation. Leur encours nominal publié ne doit donc pas être présenté comme le montant exact qui sera versé au remboursement après indexation.</p>
+    <div class="platform-formula" aria-label="Séparation dénomination et structure contractuelle">
+      <strong>MÊME EUR</strong><span>≠</span><strong>MÊME CONTRAT</strong><span>≠</span><strong>MÊME ÉCHÉANCE</strong>
+    </div>
+  </section>
+
+  <section class="panel lab-panel" id="limites">
+    <p class="eyebrow">06 · NE PAS CONFONDRE</p>
+    <h2>Le graphe devient utile si son périmètre reste explicite.</h2>
+    <div class="lab-readouts">
+      <div><span>34 titres 2026–2032</span><strong>≠ dette publique totale</strong></div>
+      <div><span>34 titres 2026–2032</span><strong>≠ dette négociable totale de l’État</strong></div>
+      <div><span>Encours nominal indexé</span><strong>≠ remboursement exact après indexation</strong></div>
+      <div><span>Nœud d’échéance</span><strong>≠ refinancement automatique</strong></div>
+      <div><span>Même EUR</span><strong>≠ même état économique</strong></div>
+      <div><span>Relation dans le graphe</span><strong>≠ causalité démontrée</strong></div>
+      <div><span>Part par année</span><strong>≠ score de risque</strong></div>
+      <div><span>A^[A] = A</span><strong>≠ exponentiation ordinaire</strong></div>
+    </div>
+  </section>
+
+  <section class="panel" id="sources">
+    <p class="eyebrow">Sources primaires · consultées le 06/09/2026</p>
+    <h2>Le graphe est reconstruit à partir des lignes publiées.</h2>
+    <ul>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OAT</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oatei" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OAT€i</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oati" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OATi</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20-aout-2026-emission-oat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Émission OAT du 20 août 2026, règlement 24 août</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20-aout-2026-emission-oat-indexees" target="_blank" rel="noopener noreferrer">Agence France Trésor — Émission OAT indexées du 20 août 2026, règlement 24 août</a></li>
+    </ul>
+    <p><a class="button secondary" href="../oat-portfolio-2026-2032.csv">Ouvrir les 34 lignes du portefeuille (CSV)</a></p>
+  </section>
+
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Point de stabilisation</p>
+      <h2>Du titre au portefeuille, puis pause avant la couche temporelle complète.</h2>
+      <p>Le modèle relie désormais une ligne individuelle à un vecteur de portefeuille et à son échéancier par une projection matricielle. Une étape ultérieure pourrait suivre une suite de graphes G(t), mais elle peut rester différée jusqu’à la correction de mise en page.</p>
+    </div>
+    <a class="button secondary" href="../fr0014016g71/">Revoir l’OAT individuelle</a>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <span>Muze-X Lab — Graphe de portefeuille OAT</span>
+    <span>Titre · vecteur · projection · limite</span>
+    <a href="../../../">Retour à l’accueil</a>
+  </div>
+</footer>
+<script src="../../../assets/mesh-portal.js"></script>
+</body>
+</html>
