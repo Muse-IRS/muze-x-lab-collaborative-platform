@@ -25,6 +25,7 @@
         <a href="#temps">Temps</a>
         <a href="#reel">Chiffres réels</a>
         <a href="#recomposition">305,7</a>
+        <a href="#serie">2007–2026</a>
         <a href="#dette">Dette</a>
         <a href="#limites">Limites</a>
         <a href="#sources">Sources</a>
@@ -122,8 +123,36 @@
     <p class="muted">Le chiffre de <strong>124,4 Md€</strong> appartient au tableau de financement du PLF 2026. Il ne doit pas être confondu avec le solde budgétaire de l’État de <strong>−134,627 Md€</strong> publié pour la LFI 2026 : source, date et périmètre comptable diffèrent.</p>
   </section>
 
+  <section class="panel lab-panel" id="serie">
+    <p class="eyebrow">05 · 2007 → 2026</p>
+    <h2>Une même structure comptable, une composition qui change.</h2>
+    <p>Le même test a été reconstruit année par année à partir des tableaux officiels de financement de l’État. De 2007 à 2025, les chiffres sont des exécutions ; 2026 est un plan de financement.</p>
+    <div class="platform-formula" aria-label="Ratios descriptifs de la série temporelle">
+      <strong>ρ<sub>t</sub> = amortissements / besoin total</strong><span>·</span><strong>β<sub>t</sub> = déficit à financer / besoin total</strong>
+    </div>
+    <div class="lab-readouts">
+      <div><span>2007 · amortissements</span><strong>67,90 %</strong></div>
+      <div><span>2007 · déficit à financer</span><strong>41,07 %</strong></div>
+      <div><span>2021 · amortissements</span><strong>41,94 %</strong></div>
+      <div><span>2021 · déficit à financer</span><strong>59,85 %</strong></div>
+      <div><span>2025 · amortissements</span><strong>58,21 %</strong></div>
+      <div><span>2025 · déficit à financer</span><strong>42,75 %</strong></div>
+      <div><span>2026 · amortissements · plan</span><strong>58,33 %</strong></div>
+      <div><span>2026 · déficit à financer · plan</span><strong>40,69 %</strong></div>
+    </div>
+    <p>Sur toute la série, les échéances héritées et le déficit de l’année coexistent dans le besoin de financement. Leur poids relatif varie fortement : la part des amortissements atteint son minimum de la série en 2021, tandis que la part du déficit à financer y atteint son maximum.</p>
+    <p class="muted">Les pourcentages ne s’additionnent pas toujours exactement à 100 %, car la troisième composante — les autres besoins de trésorerie — peut être positive ou négative. Les écarts de 0,1 Md€ dans certaines années proviennent des valeurs officielles publiées au dixième.</p>
+    <div class="lab-readouts">
+      <div><span>2007 → 2025</span><strong>19 années d’exécution</strong></div>
+      <div><span>2026</span><strong>plan, pas exécution</strong></div>
+      <div><span>Écart arithmétique maximal</span><strong>0,1 Md€</strong></div>
+      <div><span>Lecture</span><strong>structure persistante ≠ composition fixe</strong></div>
+    </div>
+    <p><a class="button secondary" href="series-2007-2026.csv">Ouvrir la série 2007–2026 (CSV)</a></p>
+  </section>
+
   <section class="panel lab-panel" id="dette">
-    <p class="eyebrow">05 · PASSÉ → PRÉSENT → FUTUR</p>
+    <p class="eyebrow">06 · PASSÉ → PRÉSENT → FUTUR</p>
     <h2>Le présent contient des échéances héritées et de nouvelles obligations.</h2>
     <div class="platform-formula" aria-label="Chaîne temporelle de la dette">
       <strong>ANCIENNE DETTE</strong><span>→</span><strong>ÉCHÉANCE</strong><span>→</span><strong>PAIEMENT / REFINANCEMENT</strong><span>→</span><strong>NOUVELLE ÉCHÉANCE</strong>
@@ -133,7 +162,7 @@
       <div><span>Objet présent</span><strong>C<sub>t</sub>(A<sub>t+n</sub>)</strong></div>
       <div><span>Objet futur</span><strong>paiement en A<sub>t+n</sub></strong></div>
     </div>
-    <p>Le tableau 2026 rend cette temporalité concrète : des titres émis antérieurement arrivent à échéance pendant qu’un nouveau programme d’émission finance le besoin présent et crée à son tour des échéances futures.</p>
+    <p>La série rend cette temporalité concrète : des titres émis antérieurement arrivent à échéance pendant qu’un nouveau programme d’émission finance le besoin présent et crée à son tour des échéances futures.</p>
     <p>Pour lire l’évolution d’un stock de dette, une écriture simplifiée peut être utilisée :</p>
     <div class="platform-formula" aria-label="Transition simplifiée du stock de dette">
       <strong>D<sub>t+1</sub> = D<sub>t</sub> + I<sub>t</sub> − P<sub>t</sub> + S<sub>t</sub></strong>
@@ -142,10 +171,11 @@
   </section>
 
   <section class="panel lab-panel" id="limites">
-    <p class="eyebrow">06 · NE PAS CONFONDRE</p>
+    <p class="eyebrow">07 · NE PAS CONFONDRE</p>
     <h2>La formule devient utile quand ses limites restent visibles.</h2>
     <div class="lab-readouts">
       <div><span>Même dénomination</span><strong>≠ même pouvoir d’achat</strong></div>
+      <div><span>Structure répétée</span><strong>≠ composition fixe</strong></div>
       <div><span>Dette publique</span><strong>≠ dette négociable de l’État</strong></div>
       <div><span>Variation de dette</span><strong>≠ déficit public</strong></div>
       <div><span>Nouvelle dette publique</span><strong>≠ création monétaire automatique</strong></div>
@@ -164,6 +194,9 @@
       <li><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/comment-est-creee-la-monnaie" target="_blank" rel="noopener noreferrer">Banque de France — Comment est créée la monnaie ?</a></li>
       <li><a href="https://www.insee.fr/fr/statistiques/9010340" target="_blank" rel="noopener noreferrer">Insee — Dette publique au premier trimestre 2026</a></li>
       <li><a href="https://www.aft.gouv.fr/fr/node/452" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours de la dette négociable au 31 juillet 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.3_RA/RA_2021/RA_AFT_2021_FR.pdf" target="_blank" rel="noopener noreferrer">Agence France Trésor — Rapport d’activité 2021, tableau historique 2006–2021</a></li>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.3_RA/RA%202025/Rapport%20activit%C3%A9%20AFT%202024.pdf" target="_blank" rel="noopener noreferrer">Agence France Trésor — Rapport d’activité 2024, tableau historique 2013–2024</a></li>
+      <li><a href="https://www.budget.gouv.fr/documentation/file-download/33241" target="_blank" rel="noopener noreferrer">Direction du Budget — PLRG 2025, tableau de financement exécuté</a></li>
       <li><a href="https://www.aft.gouv.fr/fr/budget-etat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Budget de l’État et besoin de financement 2026</a></li>
       <li><a href="https://www.budget.gouv.fr/documentation/file-download/30589" target="_blank" rel="noopener noreferrer">Projet de loi de finances 2026 — tableau détaillé des besoins et ressources de financement</a></li>
       <li><a href="https://www.aft.gouv.fr/fr/programme-indicatif-financement-letat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Programme indicatif de financement 2026</a></li>
@@ -174,8 +207,8 @@
   <section class="notice-panel">
     <div>
       <p class="eyebrow">Prochaine expérience</p>
-      <h2>Passer d’une année à une série temporelle.</h2>
-      <p>Le prochain test consistera à recomposer le même tableau sur plusieurs années : échéances, déficit à financer, besoin total, émissions et autres ressources. Une boucle apparente ne devient intéressante que si elle résiste au temps.</p>
+      <h2>Passer du flux annuel au calendrier réel des échéances.</h2>
+      <p>La série confirme que la composition du besoin change dans le temps. Le prochain test est donc de relier ces flux annuels à la distribution réelle des maturités : échéances, rachats anticipés, durée moyenne et nouvelles émissions, sans supposer un refinancement un-pour-un.</p>
     </div>
     <a class="button secondary" href="../">Nombres & information</a>
   </section>
