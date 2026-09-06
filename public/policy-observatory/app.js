@@ -2,18 +2,28 @@
   const statusEl = document.getElementById('pipeline-status');
   const badgeEl = document.getElementById('pipeline-badge');
   const bodyEl = document.getElementById('source-table-body');
+  const allCategoryGridEl = document.getElementById('all-category-grid');
+  const allCategoryMetaEl = document.getElementById('all-category-meta');
+  const auditSummaryEl = document.getElementById('audit-summary');
+  const auditBodyEl = document.getElementById('calculation-audit-body');
+  const auditNoteEl = document.getElementById('calculation-audit-note');
   const fgBodyEl = document.getElementById('fg-observation-body');
   const fgBoundaryEl = document.getElementById('fg-boundary');
   const comparisonBodyEl = document.getElementById('fg-comparison-body');
   const comparisonNoteEl = document.getElementById('fg-comparison-note');
 
   const badgeClass = (status) => {
-    if (status === 'SAT' || status === 'OBS') return 'sat';
-    if (status === 'REFUTED') return 'unsat';
+    if (status === 'SAT' || status === 'OBS' || status === 'CONVERGENCE') return 'sat';
+    if (status === 'REFUTED' || status === 'DIVERGENCE') return 'unsat';
     return 'unknown';
   };
 
   const formatInteger = (value) => Number(value).toLocaleString('fr-FR');
+  const formatSignedInteger = (value) => {
+    if (!Number.isFinite(value)) return '—';
+    if (value === 0) return '0';
+    return `${value > 0 ? '+' : '−'}${formatInteger(Math.abs(value))}`;
+  };
   const formatShare = (value, digits = 1) => Number.isFinite(value) ? `${(value * 100).toFixed(digits)} %` : '—';
   const formatDelta = (value) => {
     if (!Number.isFinite(value)) return '—';
@@ -39,6 +49,97 @@
         : source.label;
       return `<tr><td>${label}</td><td>${source.frequency}</td><td>${source.scope}</td><td><span class="status-badge ${badgeClass(source.status)}">${source.status}</span></td></tr>`;
     }).join('');
+  };
+
+  const renderAllCategories = (payload) => {
+    if (!allCategoryGridEl) return;
+    const periods = Array.isArray(payload.periods) ? payload.periods : [];
+    const definitions = Array.isArray(payload.category_definitions) ? payload.category_definitions : [];
+    const latest = periods[periods.length - 1];
+
+    if (!latest || !latest.categories || !definitions.length) {
+      allCategoryGridEl.innerHTML = '<article class="metric"><span>Catégories</span><strong>—</strong><p class="muted">Données indisponibles.</p></article>';
+      return;
+    }
+
+    allCategoryGridEl.innerHTML = definitions.map((definition) => {
+      const value = latest.categories[definition.id];
+      return `<article class="metric">` +
+        `<span>Catégorie ${definition.id}</span>` +
+        `<strong>${Number.isFinite(value) ? formatInteger(value) : '—'}</strong>` +
+        `<p class="muted">${definition.label}</p>` +
+      `</article>`;
+    }).join('');
+
+    if (allCategoryMetaEl) {
+      const sourceLink = payload.source_url
+        ? `<a class="inline" href="${payload.source_url}" target="_blank" rel="noopener noreferrer">DARES / France Travail</a>`
+        : 'DARES / France Travail';
+      allCategoryMetaEl.innerHTML = `${payload.territory?.name || 'Territoire'} · ${latest.period} · source : ${sourceLink}. F et G restent identifiées comme données brutes non CVS-CJO.`;
+    }
+  };
+
+  const renderCalculationAudit = (payload) => {
+    if (!auditBodyEl) return;
+    const periods = Array.isArray(payload.periods) ? payload.periods : [];
+    const calculations = Array.isArray(payload.calculations) ? payload.calculations : [];
+    const rows = [];
+
+    [...periods].reverse().forEach((period) => {
+      calculations.forEach((calculation) => {
+        const components = calculation.components || [];
+        const values = components.map((id) => Number(period.categories?.[id]));
+        const comparable = values.every(Number.isFinite) && Number.isFinite(Number(period.institutional?.[calculation.institutional_key]));
+
+        if (!comparable) {
+          rows.push({ period, calculation, recalculated: NaN, institutional: NaN, delta: NaN, qualification: 'INDETERMINATION', values });
+          return;
+        }
+
+        const recalculated = values.reduce((sum, value) => sum + value, 0);
+        const institutional = Number(period.institutional[calculation.institutional_key]);
+        const delta = recalculated - institutional;
+        const qualification = delta === 0 ? 'CONVERGENCE' : 'DIVERGENCE';
+        rows.push({ period, calculation, recalculated, institutional, delta, qualification, values });
+      });
+    });
+
+    if (!rows.length) {
+      auditBodyEl.innerHTML = '<tr><td colspan="6" class="muted">Aucun contrôle recalculable.</td></tr>';
+      return;
+    }
+
+    auditBodyEl.innerHTML = rows.map((row) => {
+      const componentValues = row.values.every(Number.isFinite)
+        ? row.values.map(formatInteger).join(' + ')
+        : 'base non comparable';
+      return `<tr>` +
+        `<td><strong>${row.period.period}</strong></td>` +
+        `<td><strong>${row.calculation.label}</strong><br><span class="muted">${componentValues}</span></td>` +
+        `<td>${Number.isFinite(row.institutional) ? formatInteger(row.institutional) : '—'}</td>` +
+        `<td>${Number.isFinite(row.recalculated) ? formatInteger(row.recalculated) : '—'}</td>` +
+        `<td>${formatSignedInteger(row.delta)}</td>` +
+        `<td><span class="status-badge ${badgeClass(row.qualification)}">${row.qualification}</span></td>` +
+      `</tr>`;
+    }).join('');
+
+    if (auditSummaryEl) {
+      const convergence = rows.filter((row) => row.qualification === 'CONVERGENCE').length;
+      const divergence = rows.filter((row) => row.qualification === 'DIVERGENCE').length;
+      const indetermination = rows.filter((row) => row.qualification === 'INDETERMINATION').length;
+      auditSummaryEl.innerHTML =
+        `<article class="metric"><span>Contrôles</span><strong>${rows.length}</strong><p class="muted">Agrégats institutionnels recomposés.</p></article>` +
+        `<article class="metric"><span>Convergences exactes</span><strong>${convergence}</strong><p class="muted">Δ = 0 sur les valeurs affichées.</p></article>` +
+        `<article class="metric"><span>Divergences</span><strong>${divergence}</strong><p class="muted">Δ numérique non nul ; cause ouverte.</p></article>` +
+        (indetermination ? `<article class="metric"><span>Indéterminations</span><strong>${indetermination}</strong><p class="muted">Comparabilité non établie.</p></article>` : '');
+    }
+
+    if (auditNoteEl) {
+      const sourceLink = payload.source_url
+        ? ` <a class="inline" href="${payload.source_url}" target="_blank" rel="noopener noreferrer">Source DARES / France Travail</a>.`
+        : '';
+      auditNoteEl.innerHTML = `${payload.interpretation_boundary || 'La qualification reste descriptive.'}${sourceLink}`;
+    }
   };
 
   const renderComparison = (payload) => {
@@ -121,10 +222,16 @@
     fetch('./data/france_travail_fg_public_min.json', { cache: 'no-store' }).then((response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
+    }),
+    fetch('./data/france_travail_categories_public.json', { cache: 'no-store' }).then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
     })
   ])
-    .then(([statusPayload, fgPayload, comparisonPayload]) => {
+    .then(([statusPayload, fgPayload, comparisonPayload, categoryPayload]) => {
       renderSources(statusPayload);
+      renderAllCategories(categoryPayload);
+      renderCalculationAudit(categoryPayload);
       renderFG(fgPayload);
       renderComparison(comparisonPayload);
     })
@@ -133,6 +240,8 @@
       badgeEl.textContent = 'UNKNOWN';
       badgeEl.className = 'status-badge unknown';
       bodyEl.innerHTML = '<tr><td colspan="4" class="muted">Impossible de charger le registre public.</td></tr>';
+      if (allCategoryGridEl) allCategoryGridEl.innerHTML = '<article class="metric"><span>Catégories</span><strong>—</strong><p class="muted">Données indisponibles.</p></article>';
+      if (auditBodyEl) auditBodyEl.innerHTML = '<tr><td colspan="6" class="muted">Contrôle indisponible.</td></tr>';
       if (fgBodyEl) fgBodyEl.innerHTML = '<tr><td colspan="7" class="muted">Observations indisponibles.</td></tr>';
       if (comparisonBodyEl) comparisonBodyEl.innerHTML = '<tr><td colspan="8" class="muted">Comparaison indisponible.</td></tr>';
     });
