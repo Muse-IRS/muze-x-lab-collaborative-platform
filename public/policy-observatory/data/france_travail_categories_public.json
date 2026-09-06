@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0.0",
+  "status": "OBS",
+  "observed_at": "2026-09-06",
+  "source": "DARES / France Travail — données trimestrielles",
+  "source_url": "https://dares.travail-emploi.gouv.fr/donnees/les-inscrits-france-travail-consultez-la-datavisualisation",
+  "territory": {
+    "level": "country",
+    "code": "FR",
+    "name": "France hors Mayotte"
+  },
+  "category_definitions": [
+    {
+      "id": "A",
+      "label": "Sans emploi, tenues de rechercher un emploi"
+    },
+    {
+      "id": "B",
+      "label": "Activité réduite courte, tenues de rechercher un emploi"
+    },
+    {
+      "id": "C",
+      "label": "Activité réduite longue, tenues de rechercher un emploi"
+    },
+    {
+      "id": "D",
+      "label": "Sans emploi, non immédiatement disponibles, à la recherche d’un emploi"
+    },
+    {
+      "id": "E",
+      "label": "Pourvues d’un emploi, à la recherche d’un autre emploi"
+    },
+    {
+      "id": "F",
+      "label": "Parcours social"
+    },
+    {
+      "id": "G",
+      "label": "Attente d’orientation"
+    }
+  ],
+  "periods": [
+    {
+      "period": "2025-Q2",
+      "categories": {
+        "A": 3222500,
+        "B": 840200,
+        "C": 1558500,
+        "D": 350900,
+        "E": 393100,
+        "F": 111800,
+        "G": 887800
+      },
+      "institutional": {
+        "BC": 2398700,
+        "ABC": 5621100,
+        "ABCDE": 6365200
+      }
+    },
+    {
+      "period": "2026-Q1",
+      "categories": {
+        "A": 3295100,
+        "B": 858300,
+        "C": 1574700,
+        "D": 344500,
+        "E": 387900,
+        "F": 395700,
+        "G": 630400
+      },
+      "institutional": {
+        "BC": 2433000,
+        "ABC": 5728000,
+        "ABCDE": 6460400
+      }
+    },
+    {
+      "period": "2026-Q2",
+      "categories": {
+        "A": 3323000,
+        "B": 877800,
+        "C": 1600700,
+        "D": 343800,
+        "E": 387200,
+        "F": 540600,
+        "G": 447700
+      },
+      "institutional": {
+        "BC": 2478500,
+        "ABC": 5801500,
+        "ABCDE": 6532400
+      }
+    }
+  ],
+  "calculations": [
+    {
+      "id": "BC",
+      "label": "B + C",
+      "components": ["B", "C"],
+      "institutional_key": "BC"
+    },
+    {
+      "id": "ABC",
+      "label": "A + B + C",
+      "components": ["A", "B", "C"],
+      "institutional_key": "ABC"
+    },
+    {
+      "id": "ABCDE",
+      "label": "A + B + C + D + E",
+      "components": ["A", "B", "C", "D", "E"],
+      "institutional_key": "ABCDE"
+    }
+  ],
+  "fg_method": {
+    "sum_formula": "F + G",
+    "share_formula": "G / (F + G)",
+    "note": "F et G sont publiées comme données brutes non CVS-CJO. Elles restent une lentille distincte des agrégats A-E."
+  },
+  "interpretation_boundary": "CONVERGENCE signifie uniquement que le recalcul reproduit exactement la valeur institutionnelle affichée à partir des valeurs affichées. DIVERGENCE signifie uniquement qu’un delta numérique non nul est observé ; sa cause reste ouverte. Aucun total officiel A-G n’est inféré en mélangeant silencieusement des bases statistiques dont l’homogénéité n’est pas établie."
+}
