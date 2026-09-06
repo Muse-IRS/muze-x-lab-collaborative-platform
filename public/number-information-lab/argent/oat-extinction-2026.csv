@@ -1,0 +1,4 @@
+observation_date,event_boundary,isin,label,maturity_date,security_outstanding_eur,security_active,maturity_bucket_2026_eur,remaining_days_to_contractual_maturity,state_qualification
+2026-03-31,pre_maturity_snapshot,FR0010916924,"OAT 3,50 % 25 avril 2026",2026-04-25,31785500000,1,125700500000,25,DIRECT_PUBLISHED_SNAPSHOT
+2026-04-25,contractual_maturity,FR0010916924,"OAT 3,50 % 25 avril 2026",2026-04-25,31785500000,1,,0,CONTRACTUAL_BOUNDARY_NOT_INTRADAY_SETTLEMENT_SNAPSHOT
+2026-04-30,post_maturity_snapshot,FR0010916924,"OAT 3,50 % 25 avril 2026",2026-04-25,0,0,93915000000,0,INFERRED_ZERO_CONFIRMED_BY_ABSENCE_AND_BUCKET_DELTA
