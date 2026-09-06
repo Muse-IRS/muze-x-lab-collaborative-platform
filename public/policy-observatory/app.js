@@ -2,6 +2,9 @@
   const statusEl = document.getElementById('pipeline-status');
   const badgeEl = document.getElementById('pipeline-badge');
   const bodyEl = document.getElementById('source-table-body');
+  const referenceMetricsEl = document.getElementById('reference-metrics');
+  const relationAuditBodyEl = document.getElementById('relation-audit-body');
+  const relationAuditNoteEl = document.getElementById('relation-audit-note');
   const allCategoryGridEl = document.getElementById('all-category-grid');
   const allCategoryMetaEl = document.getElementById('all-category-meta');
   const auditSummaryEl = document.getElementById('audit-summary');
@@ -19,6 +22,7 @@
   };
 
   const formatInteger = (value) => Number(value).toLocaleString('fr-FR');
+  const formatApproxInteger = (value) => Number.isFinite(Number(value)) ? `≈ ${formatInteger(Number(value))}` : '—';
   const formatSignedInteger = (value) => {
     if (!Number.isFinite(value)) return '—';
     if (value === 0) return '0';
@@ -49,6 +53,94 @@
         : source.label;
       return `<tr><td>${label}</td><td>${source.frequency}</td><td>${source.scope}</td><td><span class="status-badge ${badgeClass(source.status)}">${source.status}</span></td></tr>`;
     }).join('');
+  };
+
+  const renderInterinstitutional = (referencePayload, categoryPayload) => {
+    if (!referenceMetricsEl || !relationAuditBodyEl) return;
+
+    const populationFrance = Number(referencePayload.population?.france?.value);
+    const populationHorsMayotte = Number(referencePayload.population?.france_hors_mayotte?.value);
+    const cafAllocataires = Number(referencePayload.caf?.allocataires_approx);
+    const cafCovered = Number(referencePayload.caf?.persons_covered_approx);
+    const periods = Array.isArray(categoryPayload.periods) ? categoryPayload.periods : [];
+    const latest = periods[periods.length - 1];
+    const ftABCDE = Number(latest?.institutional?.ABCDE);
+    const ftF = Number(latest?.categories?.F);
+    const ftG = Number(latest?.categories?.G);
+    const ftFG = Number.isFinite(ftF) && Number.isFinite(ftG) ? ftF + ftG : NaN;
+
+    referenceMetricsEl.innerHTML =
+      `<article class="metric"><span>Population France · INSEE</span><strong>${Number.isFinite(populationFrance) ? formatInteger(populationFrance) : '—'}</strong><p class="muted">1er janvier 2026 · donnée provisoire.</p></article>` +
+      `<article class="metric"><span>CAF · allocataires</span><strong>${formatApproxInteger(cafAllocataires)}</strong><p class="muted">Foyers / dossiers · publication de référence 31/03/2025.</p></article>` +
+      `<article class="metric"><span>CAF · personnes couvertes</span><strong>${formatApproxInteger(cafCovered)}</strong><p class="muted">Personnes · valeur institutionnelle approximative.</p></article>` +
+      `<article class="metric"><span>France Travail · A à E</span><strong>${Number.isFinite(ftABCDE) ? formatInteger(ftABCDE) : '—'}</strong><p class="muted">${latest?.period || 'période non renseignée'} · France hors Mayotte.</p></article>` +
+      `<article class="metric"><span>France Travail · F + G</span><strong>${Number.isFinite(ftFG) ? formatInteger(ftFG) : '—'}</strong><p class="muted">${latest?.period || 'période non renseignée'} · lentille distincte.</p></article>`;
+
+    const rows = [
+      {
+        relation: 'CAF personnes couvertes / population France',
+        numerator: Number.isFinite(cafCovered) ? formatApproxInteger(cafCovered) : '—',
+        denominator: Number.isFinite(populationFrance) ? formatInteger(populationFrance) : '—',
+        result: Number.isFinite(cafCovered) && Number.isFinite(populationFrance) ? `≈ ${formatShare(cafCovered / populationFrance)}` : '—',
+        qualification: 'DESCRIPTIF',
+        reading: 'Même unité (personnes), mais valeur CAF approximative et temporalité différente.'
+      },
+      {
+        relation: 'CAF allocataires / population France',
+        numerator: Number.isFinite(cafAllocataires) ? formatApproxInteger(cafAllocataires) : '—',
+        denominator: Number.isFinite(populationFrance) ? formatInteger(populationFrance) : '—',
+        result: '—',
+        qualification: 'NON COMPARABLE',
+        reading: 'Allocataire = foyer / dossier ; population INSEE = personnes.'
+      },
+      {
+        relation: 'France Travail A-E / population France hors Mayotte',
+        numerator: Number.isFinite(ftABCDE) ? formatInteger(ftABCDE) : '—',
+        denominator: Number.isFinite(populationHorsMayotte) ? formatInteger(populationHorsMayotte) : '—',
+        result: Number.isFinite(ftABCDE) && Number.isFinite(populationHorsMayotte) ? formatShare(ftABCDE / populationHorsMayotte) : '—',
+        qualification: 'DESCRIPTIF',
+        reading: 'Part de population de référence uniquement ; ce n’est pas un taux de chômage.'
+      },
+      {
+        relation: 'France Travail F+G / population France hors Mayotte',
+        numerator: Number.isFinite(ftFG) ? formatInteger(ftFG) : '—',
+        denominator: Number.isFinite(populationHorsMayotte) ? formatInteger(populationHorsMayotte) : '—',
+        result: Number.isFinite(ftFG) && Number.isFinite(populationHorsMayotte) ? formatShare(ftFG / populationHorsMayotte) : '—',
+        qualification: 'DESCRIPTIF',
+        reading: 'Ordre de grandeur descriptif ; aucune équivalence automatique avec RSA ou orientation globale.'
+      },
+      {
+        relation: 'CAF personnes couvertes ↔ France Travail A-E',
+        numerator: Number.isFinite(cafCovered) ? formatApproxInteger(cafCovered) : '—',
+        denominator: Number.isFinite(ftABCDE) ? formatInteger(ftABCDE) : '—',
+        result: '—',
+        qualification: 'NON COMPARABLE',
+        reading: 'Univers statistiques différents et potentiellement recouvrants ; pas de taux de passage déduit.'
+      }
+    ];
+
+    relationAuditBodyEl.innerHTML = rows.map((row) =>
+      `<tr>` +
+        `<td><strong>${row.relation}</strong></td>` +
+        `<td>${row.numerator}</td>` +
+        `<td>${row.denominator}</td>` +
+        `<td>${row.result}</td>` +
+        `<td><span class="status-badge ${badgeClass(row.qualification)}">${row.qualification}</span></td>` +
+        `<td>${row.reading}</td>` +
+      `</tr>`
+    ).join('');
+
+    if (relationAuditNoteEl) {
+      const inseeUrl = referencePayload.population?.france?.source_url;
+      const cafUrl = referencePayload.caf?.source_url;
+      const ftUrl = categoryPayload.source_url;
+      relationAuditNoteEl.innerHTML =
+        `CALCULABLE ≠ COMPARABLE. ` +
+        `${inseeUrl ? `<a class="inline" href="${inseeUrl}" target="_blank" rel="noopener noreferrer">INSEE</a>` : 'INSEE'} · ` +
+        `${cafUrl ? `<a class="inline" href="${cafUrl}" target="_blank" rel="noopener noreferrer">CAF / Cafdata</a>` : 'CAF / Cafdata'} · ` +
+        `${ftUrl ? `<a class="inline" href="${ftUrl}" target="_blank" rel="noopener noreferrer">DARES / France Travail</a>` : 'DARES / France Travail'}. ` +
+        `Les ratios DESCRIPTIF servent à situer un ordre de grandeur ; ils ne remplacent pas les indicateurs institutionnels.`;
+    }
   };
 
   const renderAllCategories = (payload) => {
@@ -226,10 +318,15 @@
     fetch('./data/france_travail_categories_public.json', { cache: 'no-store' }).then((response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
+    }),
+    fetch('./data/interinstitutional_reference_public.json', { cache: 'no-store' }).then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
     })
   ])
-    .then(([statusPayload, fgPayload, comparisonPayload, categoryPayload]) => {
+    .then(([statusPayload, fgPayload, comparisonPayload, categoryPayload, referencePayload]) => {
       renderSources(statusPayload);
+      renderInterinstitutional(referencePayload, categoryPayload);
       renderAllCategories(categoryPayload);
       renderCalculationAudit(categoryPayload);
       renderFG(fgPayload);
@@ -240,6 +337,8 @@
       badgeEl.textContent = 'UNKNOWN';
       badgeEl.className = 'status-badge unknown';
       bodyEl.innerHTML = '<tr><td colspan="4" class="muted">Impossible de charger le registre public.</td></tr>';
+      if (referenceMetricsEl) referenceMetricsEl.innerHTML = '<article class="metric"><span>Référentiels</span><strong>—</strong><p class="muted">Données indisponibles.</p></article>';
+      if (relationAuditBodyEl) relationAuditBodyEl.innerHTML = '<tr><td colspan="6" class="muted">Relations indisponibles.</td></tr>';
       if (allCategoryGridEl) allCategoryGridEl.innerHTML = '<article class="metric"><span>Catégories</span><strong>—</strong><p class="muted">Données indisponibles.</p></article>';
       if (auditBodyEl) auditBodyEl.innerHTML = '<tr><td colspan="6" class="muted">Contrôle indisponible.</td></tr>';
       if (fgBodyEl) fgBodyEl.innerHTML = '<tr><td colspan="7" class="muted">Observations indisponibles.</td></tr>';
