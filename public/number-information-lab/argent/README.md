@@ -9,7 +9,9 @@ Public-facing assets for the bounded Muze-X Number & Information page.
 - `maturity-ladder-2026-2032.csv` — bounded OAT/OAT€i/OATi face-value maturity ladder;
 - `maturity-ladder-scope.md` — publication perimeter and settlement-date boundary for the maturity ladder;
 - `oat-fr0014016g71-history.csv` — event-by-event history of OAT 2.40% 24 September 2029 through settlement on 24 August 2026;
-- `fr0014016g71/index.html` — bounded public explanation following one OAT from creation through repeated reopenings to its current state and contractual maturity.
+- `fr0014016g71/index.html` — bounded public explanation following one OAT from creation through repeated reopenings to its current state and contractual maturity;
+- `oat-portfolio-2026-2032.csv` — security-level nominal outstanding dataset for the bounded 2026–2032 portfolio graph;
+- `portefeuille/index.html` — public graph explanation linking 34 security nodes to seven maturity-year nodes, three instrument classes and EUR through a bounded matrix projection.
 
 ## Publication boundary
 
@@ -18,3 +20,5 @@ The adapter exposes dated official figures, explicit formulas, scope labels, des
 For the maturity ladder, published `encours` values are face / nominal outstanding amounts. Inflation-linked OAT values are not presented as exact future redemption cash amounts. Auction date and settlement date remain distinct.
 
 For `FR0014016G71`, the public adapter separates the stable security identity (ISIN, EUR denomination, fixed coupon, maturity rule) from changing state variables (outstanding amount, auction price and auction yield). Current outstanding must not be presented as the immutable final principal at maturity because later reopenings or buybacks can change the line before 24 September 2029.
+
+For the portfolio graph, the public adapter uses a bounded 34-security snapshot and the relation `L(t) = M^T q(t)` to show how security-level nominal amounts aggregate into maturity-year buckets. Graph connectivity is descriptive only; it is not causal proof, a sovereign-risk score or a representation of total public debt.
