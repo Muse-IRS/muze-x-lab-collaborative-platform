@@ -47,6 +47,7 @@ Des conférences d’Idriss Aberkane ont nourri l’intuition ayant conduit à e
 
 - **DPE / Logement** — retrouver un DPE à partir de son numéro ADEME et lire ses informations essentielles sans transformer la donnée source en verdict.
 - **Énergie** — comprendre une consommation annuelle, une puissance souscrite et, lorsque les prix sont fournis, obtenir une estimation simple du coût annuel.
+- **Argent · temps · dette** — distinguer identité nominale, quantité future et périmètre statistique à partir de formules explicites et de chiffres institutionnels français datés, sans conseil financier ni prévision.
 
 Le traitement informationnel reste transversal : il n’est pas présenté comme un domaine métier supplémentaire.
 
@@ -84,13 +85,13 @@ Il ne contient aucune donnée personnelle, aucun PRM/PDL, aucune pièce de dossi
 
 Aucun compte utilisateur, aucune publicité, aucun profilage comportemental et aucun outil d’analytics n’est intégré à la plateforme.
 
-Le module Énergie calcule localement dans le navigateur. Le module DPE interroge directement les jeux de données publics ADEME depuis le navigateur. L’infrastructure d’hébergement et les services externes consultés peuvent traiter les données techniques nécessaires à la connexion, notamment l’adresse IP.
+Le module Énergie calcule localement dans le navigateur. Le module DPE interroge directement les jeux de données publics ADEME depuis le navigateur. La page Argent · temps · dette est statique et renvoie uniquement vers des sources institutionnelles publiques. L’infrastructure d’hébergement et les services externes consultés peuvent traiter les données techniques nécessaires à la connexion, notamment l’adresse IP.
 
 ## Déploiement
 
 GitHub Pages publie exclusivement le répertoire `public/` via `.github/workflows/pages.yml`.
 
-Le workflow de validation de la frontière publique vérifie aussi la présence de la page transversale `public/information/index.html` et des actifs d’identité visuelle publics.
+Le workflow de validation de la frontière publique vérifie aussi la présence de la page transversale `public/information/index.html`, du laboratoire `public/number-information-lab/`, de la page `public/number-information-lab/argent/` et des actifs d’identité visuelle publics.
 
 ## Licence
 
