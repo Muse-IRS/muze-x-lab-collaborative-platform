@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Muze-X Lab — suivre trois OAT comme une suite de graphes datés et reconstruire leurs encours à partir d’événements de règlement publiés.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Suite temporelle d’OAT — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+  <link rel="stylesheet" href="../../../assets/brand.css">
+  <link rel="stylesheet" href="../../../assets/hub-nav.css">
+  <link rel="stylesheet" href="../../../assets/mesh-portal.css">
+  <link rel="stylesheet" href="../../lab.css">
+</head>
+<body>
+<header class="subpage-header">
+  <div class="shell">
+    <img class="muze-brand-logo muze-brand-logo--compact" src="../../../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+    <nav class="topnav" aria-label="Navigation principale">
+      <a class="home-link" href="../portefeuille/">← Graphe de portefeuille</a>
+      <div class="nav-links">
+        <a href="#suite">Suite</a>
+        <a href="#titres">Titres</a>
+        <a href="#etats">États</a>
+        <a href="#activation">Activation</a>
+        <a href="#evenements">Événements</a>
+        <a href="#ecarts">Écarts de source</a>
+        <a href="#limites">Limites</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </nav>
+    <p class="eyebrow">Graphe temporel · sous-portefeuille 2026</p>
+    <h1 class="subpage-title">Un portefeuille n’est pas une photo : son état change à chaque événement réglé.</h1>
+    <p class="subpage-lead">Trois OAT suffisent pour montrer comment une suite d’états datés peut être reconstruite sans confondre identité du titre, quantité en circulation, date d’adjudication et date de règlement.</p>
+    <div class="platform-formula" aria-label="Suite de graphes et équation d’état">
+      <strong>G<sub>T0</sub> → G<sub>T1</sub> → … → G<sub>T8</sub></strong><span>·</span><strong>q<sub>k+1</sub> = q<sub>k</sub> + u<sub>k+1</sub></strong>
+    </div>
+  </div>
+</header>
+
+<main class="shell content-stack">
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Lecture publique</p>
+      <h2>Une trajectoire bornée, pas un modèle de toute la dette.</h2>
+      <p>La reconstruction porte uniquement sur trois lignes d’OAT nominales en euros. Elle suit leurs encours réglés jusqu’au 24 août 2026 et sert à expliquer la logique d’un système dynamique observable.</p>
+    </div>
+    <span class="status-badge">PUBLIC_RESULT</span>
+  </section>
+
+  <section class="panel lab-panel" id="suite">
+    <p class="eyebrow">01 · SUITE DE GRAPHES</p>
+    <h2>Le temps devient un axe du modèle.</h2>
+    <p>Au lieu d’un seul graphe <strong>G(t)</strong>, on observe une suite d’états. Chaque flèche correspond ici à un changement d’encours associé à une date de règlement.</p>
+    <div class="platform-formula" aria-label="Suite temporelle">
+      <strong>G<sub>T0</sub></strong><span>→</span><strong>G<sub>T1</sub></strong><span>→</span><strong>G<sub>T2</sub></strong><span>→</span><strong>…</strong><span>→</span><strong>G<sub>T8</sub></strong>
+    </div>
+    <p>La dénomination reste l’euro ; les quantités et même l’ensemble des titres actifs changent au fil des états.</p>
+  </section>
+
+  <section class="panel lab-panel" id="titres">
+    <p class="eyebrow">02 · TROIS TITRES</p>
+    <h2>Trois identités contractuelles, trois échéances.</h2>
+    <div class="lab-readouts">
+      <div><span>FR0014016G71</span><strong>OAT 2,40 % · 24/09/2029</strong></div>
+      <div><span>FR001400Z2L7</span><strong>OAT 2,70 % · 25/02/2031</strong></div>
+      <div><span>FR0014018OI0</span><strong>OAT 3,25 % · 25/02/2032</strong></div>
+      <div><span>Dénomination</span><strong>EUR pour les trois</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Vecteur des trois encours">
+      <strong>q<sub>k</sub> = [q<sub>2029</sub>, q<sub>2031</sub>, q<sub>2032</sub>]<sup>T</sup></strong>
+    </div>
+  </section>
+
+  <section class="panel lab-panel" id="etats">
+    <p class="eyebrow">03 · 9 ÉTATS SUCCESSIFS</p>
+    <h2>Le même sous-portefeuille passe de 38,875 à 114,643 Md€ nominaux.</h2>
+    <div class="lab-readouts">
+      <div><span>T0 · 31/12/2025</span><strong>38,875 Md€</strong></div>
+      <div><span>T1 · 26/01/2026</span><strong>41,345 Md€</strong></div>
+      <div><span>T2 · 23/02/2026</span><strong>51,812 Md€</strong></div>
+      <div><span>T3 · 23/03/2026</span><strong>59,914 Md€</strong></div>
+      <div><span>T4 · 20/04/2026</span><strong>71,201 Md€</strong></div>
+      <div><span>T5 · 25/05/2026</span><strong>81,938 Md€</strong></div>
+      <div><span>T6 · 22/06/2026</span><strong>91,238 Md€</strong></div>
+      <div><span>T7 · 20/07/2026</span><strong>101,055 Md€</strong></div>
+      <div><span>T8 · 24/08/2026</span><strong>114,643 Md€</strong></div>
+    </div>
+    <p class="muted">T0 est un état reconstruit à partir des volumes publiés de l’OAT 2031 ; il ne s’agit pas d’un instantané AFT explicitement publié au 31 décembre 2025.</p>
+  </section>
+
+  <section class="panel lab-panel" id="activation">
+    <p class="eyebrow">04 · ACTIVATION DES NŒUDS</p>
+    <h2>Zéro n’est pas la même chose que « titre actif avec encours nul ».</h2>
+    <p>Le modèle sépare la quantité <strong>q</strong> de l’état d’activation <strong>a</strong>. Au début, seule l’OAT 2031 est active dans ce sous-portefeuille réglé ; l’OAT 2029 apparaît au premier règlement de février, puis l’OAT 2032 au premier règlement retenu en mai.</p>
+    <div class="lab-readouts">
+      <div><span>T0 → T1</span><strong>a = [0,1,0]</strong></div>
+      <div><span>T2 → T4</span><strong>a = [1,1,0]</strong></div>
+      <div><span>T5 → T8</span><strong>a = [1,1,1]</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Séparation quantité et activation">
+      <strong>q<sub>i</sub> = 0</strong><span>≠</span><strong>a<sub>i</sub> = 1</strong>
+    </div>
+  </section>
+
+  <section class="panel lab-panel" id="evenements">
+    <p class="eyebrow">05 · ÉVÉNEMENTS → NOUVEAUX ÉTATS</p>
+    <h2>Chaque règlement ajoute un vecteur d’événement.</h2>
+    <div class="platform-formula" aria-label="Équation de transition bornée">
+      <strong>q<sub>k+1</sub> = q<sub>k</sub> + u<sub>k+1</sub></strong>
+    </div>
+    <p>Sur la fenêtre sélectionnée, les additions cumulées de 2026 sont de <strong>30,313 Md€</strong> sur l’OAT 2029, <strong>21,195 Md€</strong> sur l’OAT 2031 et <strong>24,260 Md€</strong> sur l’OAT 2032.</p>
+    <div class="platform-formula" aria-label="Recomposition du dernier état">
+      <strong>38,875</strong><span>+</span><strong>75,768</strong><span>=</span><strong>114,643 Md€</strong>
+    </div>
+    <p>Cette convergence est une vérification d’état du sous-portefeuille sélectionné. Elle ne décrit pas tout le portefeuille OAT.</p>
+  </section>
+
+  <section class="panel lab-panel">
+    <p class="eyebrow">06 · ADJUGÉ ≠ TOUJOURS ÉMIS AU FINAL</p>
+    <h2>Pour reconstruire l’encours, il faut utiliser le bon nombre.</h2>
+    <p>Lors de la première opération retenue pour l’OAT 3,25 % 25 février 2032, le résultat d’adjudication affiche <strong>5,600 Md€ adjugés</strong>, tandis que la fiche titre enregistre ensuite <strong>7,290 Md€ de volume total émis</strong>.</p>
+    <div class="platform-formula" aria-label="Différence entre adjudication et état final">
+      <strong>Volume adjugé</strong><span>≠</span><strong>nécessairement Δq final</strong>
+    </div>
+    <p class="muted">Les offres non compétitives peuvent augmenter le volume total finalement émis après l’adjudication compétitive. La trajectoire utilise donc les volumes totaux émis des fiches titres lorsqu’ils sont disponibles.</p>
+  </section>
+
+  <section class="panel lab-panel" id="ecarts">
+    <p class="eyebrow">07 · ÉCART DE DATE CONSERVÉ</p>
+    <h2>Deux publications AFT donnent deux dates de règlement pour la première OAT 2032.</h2>
+    <p>L’avis de création du 15 mai 2026 annonçait un règlement au <strong>28 mai 2026</strong>. Le résultat publié après l’adjudication du 21 mai indique un règlement au <strong>25 mai 2026</strong>.</p>
+    <div class="lab-readouts">
+      <div><span>Avis de création</span><strong>28/05/2026</strong></div>
+      <div><span>Résultat post-adjudication</span><strong>25/05/2026</strong></div>
+      <div><span>Date utilisée dans la trajectoire</span><strong>25/05/2026</strong></div>
+      <div><span>Traitement</span><strong>divergence conservée</strong></div>
+    </div>
+    <p class="muted">La date du résultat post-adjudication est utilisée pour la séquence opérationnelle ; la date antérieure contradictoire reste visible au lieu d’être effacée.</p>
+  </section>
+
+  <section class="panel lab-panel" id="limites">
+    <p class="eyebrow">08 · NE PAS CONFONDRE</p>
+    <h2>Le système dynamique reste volontairement borné.</h2>
+    <div class="lab-readouts">
+      <div><span>3 titres</span><strong>≠ portefeuille OAT complet</strong></div>
+      <div><span>T0 reconstruit</span><strong>≠ instantané publié</strong></div>
+      <div><span>Date d’adjudication</span><strong>≠ date de règlement</strong></div>
+      <div><span>Volume adjugé</span><strong>≠ toujours volume total émis</strong></div>
+      <div><span>Suite d’états</span><strong>≠ modèle prédictif</strong></div>
+      <div><span>Même EUR</span><strong>≠ même état économique</strong></div>
+      <div><span>A^[A] = A</span><strong>≠ exponentiation ordinaire</strong></div>
+    </div>
+  </section>
+
+  <section class="panel" id="sources">
+    <p class="eyebrow">Sources primaires · consultées le 06/09/2026</p>
+    <h2>Les états sont reconstruits depuis les fiches titres et résultats d’émission AFT.</h2>
+    <ul>
+      <li><a href="https://www.aft.gouv.fr/fr/titre/fr0014016g71" target="_blank" rel="noopener noreferrer">AFT — FR0014016G71 · OAT 2,40 % 24 septembre 2029</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/titre/fr001400z2l7" target="_blank" rel="noopener noreferrer">AFT — FR001400Z2L7 · OAT 2,70 % 25 février 2031</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/titre/fr0014018oi0" target="_blank" rel="noopener noreferrer">AFT — FR0014018OI0 · OAT 3,25 % 25 février 2032</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20260219-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 19 février 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20260319-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 19 mars 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20260416-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 16 avril 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20260521-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 21 mai 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/18-juin-2026-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 18 juin 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/16-juillet-2026-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 16 juillet 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20-aout-2026-emission-oat" target="_blank" rel="noopener noreferrer">AFT — émission du 20 août 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/15052026-creation-loat-325-25-fevrier-2032" target="_blank" rel="noopener noreferrer">AFT — avis de création du 15 mai 2026</a></li>
+    </ul>
+    <p><a class="button secondary" href="../oat-temporal-subgraph-2026.csv">Ouvrir les 9 états (CSV)</a></p>
+  </section>
+
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Frontière suivante</p>
+      <h2>Faire entrer les sorties : rachats, échéances et disparition d’un nœud.</h2>
+      <p>La trajectoire actuelle est un système de naissance et de croissance. L’étape suivante consiste à introduire un opérateur d’état capable de diminuer un encours, de faire courir le temps restant jusqu’à maturité et de désactiver un titre lorsqu’il est remboursé.</p>
+    </div>
+    <a class="button secondary" href="../portefeuille/">Revenir au portefeuille</a>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <span>Muze-X Lab — Suite temporelle d’OAT</span>
+    <span>État · événement · règlement · transition</span>
+    <a href="../../../">Retour à l’accueil</a>
+  </div>
+</footer>
+<script src="../../../assets/mesh-portal.js"></script>
+</body>
+</html>
