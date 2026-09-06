@@ -26,6 +26,7 @@
         <a href="#reel">Chiffres réels</a>
         <a href="#recomposition">305,7</a>
         <a href="#serie">2007–2026</a>
+        <a href="#echeancier">2026–2032</a>
         <a href="#dette">Dette</a>
         <a href="#limites">Limites</a>
         <a href="#sources">Sources</a>
@@ -103,7 +104,6 @@
       <strong>178,3</strong><span>+</span><strong>124,4</strong><span>+</span><strong>3,0</strong><span>=</span><strong>305,7 Md€</strong>
     </div>
     <p>Les <strong>178,3 Md€</strong> regroupent ici les 175,8 Md€ d’amortissement de dette à moyen et long terme et les 2,5 Md€ d’amortissement de dette reprise de SNCF Réseau. Sur le total publié de 305,7 Md€, cela représente environ <strong>58,33 %</strong> ; le déficit à financer représente environ <strong>40,69 %</strong> ; les autres besoins environ <strong>0,98 %</strong>.</p>
-
     <p>Le même tableau publie les ressources de financement :</p>
     <div class="lab-readouts">
       <div><span>Émissions moyen / long terme nettes des rachats</span><strong>310,0</strong></div>
@@ -151,8 +151,37 @@
     <p><a class="button secondary" href="series-2007-2026.csv">Ouvrir la série 2007–2026 (CSV)</a></p>
   </section>
 
+  <section class="panel lab-panel" id="echeancier">
+    <p class="eyebrow">06 · ÉCHÉANCIER RÉEL 2026 → 2032</p>
+    <h2>Le futur n’est plus abstrait : chaque ligne possède une date.</h2>
+    <p>Les pages détaillées de l’Agence France Trésor permettent de regrouper les encours d’OAT, OAT€i et OATi par année d’échéance. Le tableau ci-dessous utilise les montants nominaux publiés et un état réconcilié jusqu’aux règlements du <strong>24 août 2026</strong>.</p>
+    <div class="lab-readouts">
+      <div><span>2026 · restant</span><strong>60,738 Md€</strong></div>
+      <div><span>2027</span><strong>202,928 Md€</strong></div>
+      <div><span>2028</span><strong>246,229 Md€</strong></div>
+      <div><span>2029</span><strong>281,319 Md€</strong></div>
+      <div><span>2030</span><strong>210,259 Md€</strong></div>
+      <div><span>2031</span><strong>205,054 Md€</strong></div>
+      <div><span>2032</span><strong>197,389 Md€</strong></div>
+      <div><span>Total fenêtre 2026–2032</span><strong>1 403,917 Md€</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Échéancier temporel borné">
+      <strong>ÉMISSION PASSÉE</strong><span>→</span><strong>ENCOURS PRÉSENT</strong><span>→</span><strong>DATE D’ÉCHÉANCE FUTURE</strong>
+    </div>
+    <p>Les deux prochaines échéances nominales encore visibles en 2026 rendent le mécanisme concret : <strong>24,030 Md€ le 24 septembre</strong> puis <strong>36,708 Md€ le 25 novembre</strong>.</p>
+    <p class="muted">Pour les OAT indexées, « encours » désigne ici le volume nominal publié — émissions cumulées moins rachats. Il ne s’agit pas du montant exact de trésorerie qui sera versé au remboursement : l’indexation peut modifier le flux final.</p>
+    <p class="muted">Autre frontière temporelle vérifiable : l’adjudication d’OAT long terme du <strong>3 septembre 2026</strong> a une date de règlement au <strong>7 septembre 2026</strong>. Au 6 septembre, l’adjudication existe déjà, mais son règlement n’a pas encore eu lieu. <strong>Date d’adjudication ≠ date de règlement.</strong></p>
+    <div class="lab-readouts">
+      <div><span>20/08/2026</span><strong>adjudication</strong></div>
+      <div><span>24/08/2026</span><strong>règlement intégré à l’encours</strong></div>
+      <div><span>03/09/2026</span><strong>nouvelle adjudication</strong></div>
+      <div><span>07/09/2026</span><strong>règlement futur au 06/09</strong></div>
+    </div>
+    <p><a class="button secondary" href="maturity-ladder-2026-2032.csv">Ouvrir l’échéancier 2026–2032 (CSV)</a></p>
+  </section>
+
   <section class="panel lab-panel" id="dette">
-    <p class="eyebrow">06 · PASSÉ → PRÉSENT → FUTUR</p>
+    <p class="eyebrow">07 · PASSÉ → PRÉSENT → FUTUR</p>
     <h2>Le présent contient des échéances héritées et de nouvelles obligations.</h2>
     <div class="platform-formula" aria-label="Chaîne temporelle de la dette">
       <strong>ANCIENNE DETTE</strong><span>→</span><strong>ÉCHÉANCE</strong><span>→</span><strong>PAIEMENT / REFINANCEMENT</strong><span>→</span><strong>NOUVELLE ÉCHÉANCE</strong>
@@ -162,7 +191,7 @@
       <div><span>Objet présent</span><strong>C<sub>t</sub>(A<sub>t+n</sub>)</strong></div>
       <div><span>Objet futur</span><strong>paiement en A<sub>t+n</sub></strong></div>
     </div>
-    <p>La série rend cette temporalité concrète : des titres émis antérieurement arrivent à échéance pendant qu’un nouveau programme d’émission finance le besoin présent et crée à son tour des échéances futures.</p>
+    <p>L’échéancier rend cette temporalité littérale : des titres émis antérieurement sont encore présents aujourd’hui comme créances datées, puis arrivent à maturité à des dates futures définies.</p>
     <p>Pour lire l’évolution d’un stock de dette, une écriture simplifiée peut être utilisée :</p>
     <div class="platform-formula" aria-label="Transition simplifiée du stock de dette">
       <strong>D<sub>t+1</sub> = D<sub>t</sub> + I<sub>t</sub> − P<sub>t</sub> + S<sub>t</sub></strong>
@@ -171,12 +200,16 @@
   </section>
 
   <section class="panel lab-panel" id="limites">
-    <p class="eyebrow">07 · NE PAS CONFONDRE</p>
+    <p class="eyebrow">08 · NE PAS CONFONDRE</p>
     <h2>La formule devient utile quand ses limites restent visibles.</h2>
     <div class="lab-readouts">
       <div><span>Même dénomination</span><strong>≠ même pouvoir d’achat</strong></div>
       <div><span>Structure répétée</span><strong>≠ composition fixe</strong></div>
       <div><span>Dette publique</span><strong>≠ dette négociable de l’État</strong></div>
+      <div><span>Échéancier OAT</span><strong>≠ dette publique totale</strong></div>
+      <div><span>Échéance</span><strong>≠ refinancement automatique</strong></div>
+      <div><span>Adjudication</span><strong>≠ règlement</strong></div>
+      <div><span>Encours OAT indexée</span><strong>≠ flux exact au remboursement</strong></div>
       <div><span>Variation de dette</span><strong>≠ déficit public</strong></div>
       <div><span>Nouvelle dette publique</span><strong>≠ création monétaire automatique</strong></div>
       <div><span>Créance future</span><strong>≠ argent futur déjà présent</strong></div>
@@ -194,6 +227,12 @@
       <li><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/comment-est-creee-la-monnaie" target="_blank" rel="noopener noreferrer">Banque de France — Comment est créée la monnaie ?</a></li>
       <li><a href="https://www.insee.fr/fr/statistiques/9010340" target="_blank" rel="noopener noreferrer">Insee — Dette publique au premier trimestre 2026</a></li>
       <li><a href="https://www.aft.gouv.fr/fr/node/452" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours de la dette négociable au 31 juillet 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OAT</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oatei" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OAT€i</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/encours-detaille-oati" target="_blank" rel="noopener noreferrer">Agence France Trésor — Encours détaillé des OATi</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20-aout-2026-emission-oat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Émission OAT du 20 août 2026, règlement le 24 août</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/20-aout-2026-emission-oat-indexees" target="_blank" rel="noopener noreferrer">Agence France Trésor — Émission OAT indexées du 20 août 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/publications/communiques-presse/03-septembre-2026-emission-oat" target="_blank" rel="noopener noreferrer">Agence France Trésor — Émission OAT du 3 septembre 2026, règlement le 7 septembre</a></li>
       <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.3_RA/RA_2021/RA_AFT_2021_FR.pdf" target="_blank" rel="noopener noreferrer">Agence France Trésor — Rapport d’activité 2021, tableau historique 2006–2021</a></li>
       <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.3_RA/RA%202025/Rapport%20activit%C3%A9%20AFT%202024.pdf" target="_blank" rel="noopener noreferrer">Agence France Trésor — Rapport d’activité 2024, tableau historique 2013–2024</a></li>
       <li><a href="https://www.budget.gouv.fr/documentation/file-download/33241" target="_blank" rel="noopener noreferrer">Direction du Budget — PLRG 2025, tableau de financement exécuté</a></li>
@@ -207,8 +246,8 @@
   <section class="notice-panel">
     <div>
       <p class="eyebrow">Prochaine expérience</p>
-      <h2>Passer du flux annuel au calendrier réel des échéances.</h2>
-      <p>La série confirme que la composition du besoin change dans le temps. Le prochain test est donc de relier ces flux annuels à la distribution réelle des maturités : échéances, rachats anticipés, durée moyenne et nouvelles émissions, sans supposer un refinancement un-pour-un.</p>
+      <h2>Passer de l’échéancier annuel au graphe d’une ligne de dette.</h2>
+      <p>Le prochain test suivra une OAT précise depuis ses émissions successives jusqu’à son encours actuel, ses éventuels rachats et sa date de maturité. On pourra alors observer un trajet réel « émission → état présent → échéance » au niveau du titre, sans déduire un refinancement automatique.</p>
     </div>
     <a class="button secondary" href="../">Nombres & information</a>
   </section>
