@@ -26,6 +26,8 @@ jobs:
           test -f public/energy/app.js
           test -f public/justice/index.html
           test -f public/justice/justice.css
+          test -f public/number-information-lab/index.html
+          test -f public/number-information-lab/argent/index.html
           test -f public/assets/brand-logo.svg
           test -f public/assets/favicon.svg
           test -f public/assets/brand.css
@@ -49,6 +51,8 @@ jobs:
           grep -q 'href="./dpe/"' public/index.html
           grep -q 'href="./energy/"' public/index.html
           grep -q 'href="./justice/"' public/index.html
+          grep -q 'href="./number-information-lab/"' public/index.html
+          grep -q 'href="./number-information-lab/argent/"' public/index.html
           grep -q 'https://muse-irs.github.io/muze-x-open-learning-commons/' public/index.html
           grep -q 'https://muse-irs.github.io/muze-x-open-learning-commons/swarm/' public/index.html
           grep -q 'https://muse-irs.github.io/rgpd-data-journey-audit/' public/index.html
