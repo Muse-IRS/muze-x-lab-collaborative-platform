@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Muze-X Lab — observer la disparition d’une OAT à l’échéance et distinguer unité monétaire stable, encours actif et cycle de vie du titre.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Extinction d’une OAT — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+  <link rel="stylesheet" href="../../../assets/brand.css">
+  <link rel="stylesheet" href="../../../assets/hub-nav.css">
+  <link rel="stylesheet" href="../../../assets/mesh-portal.css">
+  <link rel="stylesheet" href="../../lab.css">
+</head>
+<body>
+<header class="subpage-header">
+  <div class="shell">
+    <img class="muze-brand-logo muze-brand-logo--compact" src="../../../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+    <nav class="topnav" aria-label="Navigation principale">
+      <a class="home-link" href="../trajectoire/">← Suite temporelle d’OAT</a>
+      <div class="nav-links">
+        <a href="#avant">Avant</a>
+        <a href="#echeance">Échéance</a>
+        <a href="#apres">Après</a>
+        <a href="#operateur">Opérateur</a>
+        <a href="#limites">Limites</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </nav>
+    <p class="eyebrow">Cycle de vie · OAT 2026</p>
+    <h1 class="subpage-title">Une dette peut disparaître du portefeuille sans que l’euro disparaisse.</h1>
+    <p class="subpage-lead">Une seule OAT permet d’observer la troisième transformation du graphe temporel : après la naissance et les variations d’encours vient la sortie à l’échéance.</p>
+    <div class="platform-formula" aria-label="Cycle de vie d’un titre">
+      <strong>naissance</strong><span>→</span><strong>encours actif</strong><span>→</span><strong>échéance</strong><span>→</span><strong>désactivation</strong>
+    </div>
+  </div>
+</header>
+
+<main class="shell content-stack">
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Lecture publique</p>
+      <h2>Un test borné sur une seule OAT nominale.</h2>
+      <p>Le titre suivi est l’OAT 3,50 % 25 avril 2026, code ISIN FR0010916924. L’objectif est uniquement de vérifier comment son encours disparaît entre deux états publiés par l’Agence France Trésor.</p>
+    </div>
+    <span class="status-badge">PUBLIC_RESULT</span>
+  </section>
+
+  <section class="panel lab-panel" id="avant">
+    <p class="eyebrow">01 · AVANT L’ÉCHÉANCE</p>
+    <h2>Au 31 mars 2026, le titre est encore actif.</h2>
+    <div class="lab-readouts">
+      <div><span>OAT FR0010916924</span><strong>31,7855 Md€</strong></div>
+      <div><span>Échéance contractuelle</span><strong>25/04/2026</strong></div>
+      <div><span>Temps restant au 31/03</span><strong>25 jours</strong></div>
+      <div><span>Encours total des lignes 2026 affichées</span><strong>125,7005 Md€</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Recomposition du compartiment 2026 avant échéance">
+      <strong>31,7855</strong><span>+</span><strong>32,927</strong><span>+</span><strong>24,280</strong><span>+</span><strong>36,708</strong><span>=</span><strong>125,7005 Md€</strong>
+    </div>
+  </section>
+
+  <section class="panel lab-panel" id="echeance">
+    <p class="eyebrow">02 · ÉCHÉANCE CONTRACTUELLE</p>
+    <h2>Le titre est remboursable in fine et au pair.</h2>
+    <p>La fiche AFT fixe la maturité au <strong>25 avril 2026</strong> et indique un amortissement <strong>in fine et au pair à la date de maturité</strong>.</p>
+    <div class="platform-formula" aria-label="Temps restant à maturité">
+      <strong>ℓ(t) = max(τ − t, 0)</strong>
+    </div>
+    <p class="muted">La date contractuelle ne constitue pas, à elle seule, une trace du moment exact où chaque flux bancaire est exécuté. Le test utilise donc les états mensuels avant et après l’échéance.</p>
+  </section>
+
+  <section class="panel lab-panel" id="apres">
+    <p class="eyebrow">03 · APRÈS L’ÉCHÉANCE</p>
+    <h2>Au 30 avril, la ligne a disparu du tableau et le total baisse du même montant.</h2>
+    <div class="lab-readouts">
+      <div><span>Compartiment 2026 · 31/03</span><strong>125,7005 Md€</strong></div>
+      <div><span>Compartiment 2026 · 30/04</span><strong>93,915 Md€</strong></div>
+      <div><span>Variation observée</span><strong>−31,7855 Md€</strong></div>
+      <div><span>Encours du titre avant maturité</span><strong>31,7855 Md€</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Convergence entre sortie du titre et baisse du compartiment">
+      <strong>125,7005</strong><span>−</span><strong>93,915</strong><span>=</span><strong>31,7855 Md€</strong>
+    </div>
+    <p>Le montant qui disparaît du compartiment correspond exactement à l’encours publié de l’OAT avant son échéance.</p>
+  </section>
+
+  <section class="panel lab-panel" id="operateur">
+    <p class="eyebrow">04 · OPÉRATEUR DE SORTIE</p>
+    <h2>Le graphe possède maintenant une naissance, des variations et une extinction.</h2>
+    <div class="platform-formula" aria-label="Équation générale d'encours">
+      <strong>q<sub>k+1</sub> = q<sub>k</sub> + e<sub>k+1</sub> − b<sub>k+1</sub> − r<sub>k+1</sub></strong>
+    </div>
+    <p>Ici, pour le titre arrivé à maturité :</p>
+    <div class="platform-formula" aria-label="Extinction de la ligne">
+      <strong>31,7855 − 31,7855 = 0</strong><span>·</span><strong>a : 1 → 0</strong>
+    </div>
+    <p><strong>q</strong> représente l’encours actif ; <strong>a</strong> indique si le titre est encore actif dans le portefeuille. L’identité historique du titre reste traçable même lorsque son encours actif devient nul.</p>
+  </section>
+
+  <section class="panel lab-panel">
+    <p class="eyebrow">05 · CE QUI RESTE INVARIANT</p>
+    <h2>La disparition du titre n’est pas la disparition de l’unité monétaire.</h2>
+    <div class="platform-formula" aria-label="Séparation type monétaire et état du titre">
+      <strong>q : 31,7855 → 0</strong><span>·</span><strong>a : 1 → 0</strong><span>·</span><strong>A : EUR → EUR</strong>
+    </div>
+    <p>Dans la notation de cette recherche, <code>A^[A] = A</code> reste uniquement une fermeture de type monétaire. Le titre change d’état puis s’éteint ; la dénomination utilisée pour l’obligation reste l’euro.</p>
+  </section>
+
+  <section class="panel lab-panel" id="limites">
+    <p class="eyebrow">06 · NE PAS CONFONDRE</p>
+    <h2>L’égalité arithmétique ne dit pas comment le remboursement a été financé.</h2>
+    <div class="lab-readouts">
+      <div><span>25/04/2026</span><strong>date contractuelle ≠ horodatage bancaire complet</strong></div>
+      <div><span>Ligne absente au 30/04</span><strong>≠ zéro directement imprimé</strong></div>
+      <div><span>Baisse de 31,7855 Md€</span><strong>≠ preuve du mode de financement du remboursement</strong></div>
+      <div><span>Échéance</span><strong>≠ rachat anticipé</strong></div>
+      <div><span>Titre désactivé</span><strong>≠ identité historique supprimée</strong></div>
+      <div><span>Même EUR</span><strong>≠ même état économique</strong></div>
+    </div>
+  </section>
+
+  <section class="panel" id="sources">
+    <p class="eyebrow">Sources primaires · consultées le 06/09/2026</p>
+    <h2>Le test repose sur la fiche titre et deux bulletins mensuels AFT.</h2>
+    <ul>
+      <li><a href="https://www.aft.gouv.fr/fr/titre/fr0010916924" target="_blank" rel="noopener noreferrer">AFT — FR0010916924 · OAT 3,50 % 25 avril 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.2_BM/431_Bulletin%20mensuel%20avril%202026.pdf" target="_blank" rel="noopener noreferrer">AFT — bulletin n°431 · état au 31 mars 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.2_BM/432_Bulletin%20mensuel%20mai%202026.pdf" target="_blank" rel="noopener noreferrer">AFT — bulletin n°432 · état au 30 avril 2026</a></li>
+    </ul>
+    <p><a class="button secondary" href="../oat-extinction-2026.csv">Ouvrir les états de l’extinction (CSV)</a></p>
+  </section>
+
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Frontière suivante</p>
+      <h2>Ajouter et retirer des titres dans le même intervalle.</h2>
+      <p>Le cycle de vie d’une ligne est maintenant observable. La prochaine étape consiste à mesurer simultanément les entrées et les sorties du portefeuille avec ΔQ = E − B − R, puis à distinguer ce qui est renouvelé, remplacé ou simplement transformé dans le temps.</p>
+    </div>
+    <a class="button secondary" href="../">Revenir à Argent · temps · dette</a>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <span>Muze-X Lab — Extinction d’une OAT</span>
+    <span>Encours · échéance · désactivation</span>
+    <a href="../../../">Retour à l’accueil</a>
+  </div>
+</footer>
+<script src="../../../assets/mesh-portal.js"></script>
+</body>
+</html>
