@@ -1,14 +1,12 @@
 # Argent · temps · dette — public adapter
 
-Public-only adapter for the bounded Muze-X Number & Information page.
+Public-facing assets for the bounded Muze-X Number & Information page.
 
 ## Published assets
 
 - `index.html` — public explanation and official figures;
 - `series-2007-2026.csv` — bounded annual State-financing series used by the public page.
 
-## Boundary
+## Publication boundary
 
-The public adapter may expose official dated figures, explicit formulas, scope labels, descriptive ratios, rounding notes and primary-source links.
-
-It must not expose private research heuristics or promote the internal `A^[A] = A` shorthand as an established economic law.
+The adapter exposes dated official figures, explicit formulas, scope labels, descriptive ratios, rounding notes and primary-source links. The Muze-X shorthand `A^[A] = A` is presented only as a defined conceptual notation, not as an established economic law.
