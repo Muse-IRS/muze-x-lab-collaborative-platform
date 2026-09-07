@@ -3,16 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Démonstrateur institutionnel PGC-A : voir un écart, comprendre sa provenance, tester une correction locale.">
+  <meta name="description" content="Démonstrateur synthétique de cohérence : comparer deux états et rendre un écart visible sans exposer de méthode privée.">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
-  <title>PGC-A — Démonstrateur institutionnel</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>Muze-X Lab — Démonstrateur de cohérence</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="../assets/brand.css">
   <link rel="stylesheet" href="../assets/hub-nav.css">
   <link rel="stylesheet" href="../assets/mesh-portal.css">
-  <link rel="stylesheet" href="./demo.css">
 </head>
 <body>
   <header class="subpage-header rgpd-header">
@@ -21,136 +20,37 @@
         <a class="home-link" href="../">← Muze-X Lab</a>
         <div class="nav-links"><a href="../policy-observatory/">Observatoire</a><a href="../information/">Information</a><a href="../justice/">Justice</a></div>
       </nav>
-      <p class="eyebrow">PGC-A · démonstrateur synthétique</p>
-      <h1 class="subpage-title">Voir l’écart. Localiser sa source. Tester la correction.</h1>
-      <p class="subpage-lead">Une expérience interactive et trois cas synthétiques montrent le résultat attendu sans exposer les dossiers réels ni imposer une nouvelle infrastructure aux systèmes existants.</p>
-      <div class="platform-formula" aria-label="Boucle de démonstration"><strong>LOCAL</strong><span>→</span><strong>GLOBAL</strong><span>→</span><strong>LOCAL</strong></div>
+      <p class="eyebrow">Démonstrateur synthétique</p>
+      <h1 class="subpage-title">Rendre un écart visible, sans surinterpréter.</h1>
+      <p class="subpage-lead">Cette page montre uniquement un résultat public minimal : deux états peuvent être comparés, et un écart peut être signalé sans conclure automatiquement à une erreur, une faute ou une cause.</p>
     </div>
   </header>
 
   <main class="shell content-stack">
     <section class="notice-panel">
       <div>
-        <p class="eyebrow">Posture</p>
-        <h2>Observer sans provoquer. Tester sans surinterpréter.</h2>
-        <p>PGC-A ne remplace pas le système observé. Il conserve juste assez d’état pour comparer provenance, date, version et relation. Chaque interaction produit un nouvel état vérifiable : convergence, divergence ou indétermination. Une branche peut se stabiliser sans effacer l’historique.</p>
+        <p class="eyebrow">Exemple fictif</p>
+        <h2>Deux sources, deux états observés</h2>
+        <p>Les valeurs ci-dessous sont entièrement synthétiques. Elles servent seulement à montrer une restitution bornée.</p>
       </div>
-      <span class="status-badge">TESTABLE</span>
+      <span class="status-badge">SYNTHÉTIQUE</span>
     </section>
 
-    <section class="panel" aria-labelledby="interactive-title">
-      <p class="eyebrow">Expérience testable · changement de référent</p>
-      <h2 id="interactive-title">Modifier une information, puis observer où sa propagation s’arrête.</h2>
-      <p>Le scénario est entièrement synthétique. Au départ, les cinq strates utilisent <strong>Référent X · v1</strong>. Créer une nouvelle version à la source rend visible la première frontière non convergente. Aucune propagation n’est automatique : chaque étape reste observable.</p>
-
-      <div class="pgca-demo" data-pgca-demo>
-        <div class="pgca-progress" aria-live="polite"><span>Progression</span><strong data-progress>0/5 · état initial</strong></div>
-
-        <div class="pgca-demo-toolbar" aria-label="Actions du démonstrateur">
-          <button class="button" type="button" data-action="new-version">Créer la version Y · v2</button>
-          <button class="button secondary" type="button" data-action="propagate">Propager vers la strate suivante</button>
-          <button class="button secondary" type="button" data-action="alternate">Tester une rupture cachée</button>
-          <button class="button secondary" type="button" data-action="reset">Réinitialiser</button>
-        </div>
-
-        <div class="pgca-chain" aria-label="Chaîne de propagation à cinq strates">
-          <article class="pgca-node" data-node>
-            <span class="node-label">Référentiel source</span>
-            <strong class="node-value" data-value>Référent X</strong>
-            <span class="node-meta" data-version>Version v1</span>
-            <span class="node-meta" data-status>CONVERGENT</span>
-          </article>
-          <div class="pgca-arrow" aria-hidden="true">→</div>
-          <article class="pgca-node" data-node>
-            <span class="node-label">Transmission</span>
-            <strong class="node-value" data-value>Référent X</strong>
-            <span class="node-meta" data-version>Version v1</span>
-            <span class="node-meta" data-status>CONVERGENT</span>
-          </article>
-          <div class="pgca-arrow" aria-hidden="true">→</div>
-          <article class="pgca-node" data-node>
-            <span class="node-label">Système territorial</span>
-            <strong class="node-value" data-value>Référent X</strong>
-            <span class="node-meta" data-version>Version v1</span>
-            <span class="node-meta" data-status>CONVERGENT</span>
-          </article>
-          <div class="pgca-arrow" aria-hidden="true">→</div>
-          <article class="pgca-node" data-node>
-            <span class="node-label">Outil métier</span>
-            <strong class="node-value" data-value>Référent X</strong>
-            <span class="node-meta" data-version>Version v1</span>
-            <span class="node-meta" data-status>CONVERGENT</span>
-          </article>
-          <div class="pgca-arrow" aria-hidden="true">→</div>
-          <article class="pgca-node" data-node>
-            <span class="node-label">Interface utilisateur</span>
-            <strong class="node-value" data-value>Référent X</strong>
-            <span class="node-meta" data-version>Version v1</span>
-            <span class="node-meta" data-status>CONVERGENT</span>
-          </article>
-        </div>
-
-        <div class="pgca-state-grid">
-          <div class="pgca-state"><span>État actuel</span><strong data-global-state>CONVERGENT</strong></div>
-          <div class="pgca-state"><span>Première divergence</span><strong data-first-divergence>Aucune</strong></div>
-          <div class="pgca-state"><span>Version attendue</span><strong data-expected>Référent X · v1</strong></div>
-          <div class="pgca-state"><span>Version observée</span><strong data-observed>Référent X · v1</strong></div>
-        </div>
-
-        <div class="callout pgca-demo-note">
-          <p class="pgca-live" data-live aria-live="polite">État initial restauré.</p>
-          <p class="pgca-outcome" data-outcome>La chaîne est cohérente. Créer une nouvelle version permet de tester sa propagation.</p>
-        </div>
-
-        <div>
-          <p class="eyebrow">Historique conservé</p>
-          <ol class="pgca-history" data-history><li>t0 · X · v1 · chaîne convergente</li></ol>
-        </div>
-
-        <div class="pgca-replay">
-          <button class="button secondary" type="button" data-action="replay">Rejouer le scénario</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <p class="eyebrow">Cas A · référentiel</p><h2>Une même fonction, plusieurs états</h2>
+    <section class="panel" aria-labelledby="example-title">
+      <h2 id="example-title">Comparaison</h2>
       <div class="metric-grid">
-        <article class="metric"><span>Source A · 08:15</span><strong>Référent X</strong><p class="muted">Version 3 · source métier</p></article>
-        <article class="metric"><span>Source B · 08:17</span><strong>Non renseigné</strong><p class="muted">Version reçue inconnue</p></article>
-        <article class="metric"><span>Document C · 08:02</span><strong>Référent X</strong><p class="muted">Document validé</p></article>
+        <article class="metric"><span>État A</span><strong>Version 2</strong><p class="muted">Source fictive A</p></article>
+        <article class="metric"><span>État B</span><strong>Version 1</strong><p class="muted">Source fictive B</p></article>
+        <article class="metric"><span>Résultat</span><strong>Écart visible</strong><p class="muted">Cause non déterminée</p></article>
       </div>
-      <div class="callout"><p><strong>Résultat visible :</strong> l’écart est localisé sur la restitution B. Aucune cause n’est déduite. <strong>Test :</strong> transmettre la version 3 à B et vérifier si l’état devient convergent.</p></div>
+      <div class="callout"><p><strong>Lecture :</strong> les états observés diffèrent. Cette différence suffit à justifier une vérification ; elle ne prouve rien de plus à elle seule.</p></div>
     </section>
 
     <section class="panel">
-      <p class="eyebrow">Cas B · document distribué</p><h2>Le document existe ; sa version doit rester identifiable</h2>
-      <div class="platform-formula" aria-label="Chemin documentaire"><strong>DOCUMENT v1</strong><span>→</span><strong>TRANSMISSION</strong><span>→</span><strong>DESTINATION</strong><span>→</span><strong>DOCUMENT v2</strong></div>
-      <div class="metric-grid">
-        <article class="metric"><span>Avant</span><strong>2 versions</strong><p class="muted">Même objet, états concurrents.</p></article>
-        <article class="metric"><span>PGC-A</span><strong>Écart visible</strong><p class="muted">Source · version · date · destination.</p></article>
-        <article class="metric"><span>Test</span><strong>Sans écrasement</strong><p class="muted">v1 reste historisée lorsque v2 arrive.</p></article>
-      </div>
-    </section>
-
-    <section class="panel">
-      <p class="eyebrow">Cas C · propagation d’une règle</p><h2>Une règle change ; les strates ne changent pas nécessairement au même instant</h2>
-      <div class="table-wrap"><table class="entity-table"><thead><tr><th>Strate</th><th>Version observée</th><th>État</th><th>Action de test</th></tr></thead><tbody>
-        <tr><td>Référentiel national</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
-        <tr><td>Transmission</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
-        <tr><td>Référentiel territorial</td><td>v2</td><td>CONVERGENT</td><td>—</td></tr>
-        <tr><td>Outil métier</td><td>v1</td><td>À VÉRIFIER</td><td>Propager v2</td></tr>
-        <tr><td>Interface de restitution</td><td>v1</td><td>INFORMATION MANQUANTE</td><td>Rejouer après mise à jour</td></tr>
-      </tbody></table></div>
-      <div class="callout"><p><strong>Correction locale :</strong> mettre à jour la première strate non convergente, puis rejouer le chemin. L’historique v1 reste conservé.</p></div>
-    </section>
-
-    <section class="panel">
-      <p class="eyebrow">Lecture minimale</p>
-      <h2>Observer → Tracer → Qualifier → Tester → Stabiliser</h2>
-      <div class="platform-formula" aria-label="Lecture publique minimale PGC-A"><strong>OBSERVATION</strong><span>→</span><strong>TRACE</strong><span>→</span><strong>QUALIFICATION</strong><span>→</span><strong>TEST</strong><span>→</span><strong>STABILISATION</strong></div>
-      <p>Une réponse n’est ni une victoire ni une défaite : c’est un nouvel état à comparer. Si l’état converge, la branche peut se stabiliser ; sinon l’écart reste visible et borné.</p>
-      <p class="muted">Données entièrement synthétiques. Aucun dossier réel, aucune donnée personnelle et aucune accusation institutionnelle.</p>
+      <p class="eyebrow">Limites</p>
+      <h2>Ce que cette page ne publie pas</h2>
+      <p>Le démonstrateur n’expose ni architecture privée, ni règles internes de gouvernance, ni mécanisme de synchronisation, ni logique de routage, ni processus de décision. Il présente uniquement une sortie publique minimale.</p>
+      <p class="muted">Aucune donnée réelle, personnelle, administrative ou institutionnelle n’est utilisée.</p>
       <p><a class="button secondary" href="../">Retour à la plateforme Muze-X</a></p>
     </section>
   </main>
@@ -158,11 +58,10 @@
   <footer class="site-footer">
     <div class="shell footer-inner">
       <span>Muze-X Lab Collaborative Platform</span>
-      <span class="brand-credit">PGC-A · démonstrateur synthétique</span>
-      <span>PRIVATE_METHOD → PUBLIC_RESULT</span>
+      <span class="brand-credit">Résultat public minimal · données synthétiques</span>
+      <span>PRIVATE_METHOD → MINIMAL_PUBLIC_RESULT</span>
     </div>
   </footer>
-  <script src="./demo.js"></script>
   <script src="../assets/mesh-portal.js"></script>
 </body>
 </html>
