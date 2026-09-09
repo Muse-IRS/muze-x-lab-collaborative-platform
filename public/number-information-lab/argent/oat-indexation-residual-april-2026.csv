@@ -1,0 +1,8 @@
+metric,value_bn_eur,qualification
+parent_displayed_residual_J,2.085500,displayed bridge residual
+indexed_nominal_additions,2.135000,line-level nominal additions across 4 indexed OATs
+indexed_outstanding_increase,4.256288,line-level reconstructed increase across 17 indexed OATs
+existing_principal_revaluation,1.811378,reconstructed from published nominal amounts and coefficients
+new_issuance_indexation_uplift,0.309910,reconstructed excess above new nominal amount
+supported_indexation_bridge_I,2.121288,reconstructed indexation adjustment
+remaining_displayed_residual_epsilon,-0.035788,small remainder within heterogeneous publication precision
