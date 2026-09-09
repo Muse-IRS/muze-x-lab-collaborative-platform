@@ -32,9 +32,11 @@ jobs:
           test -f public/number-information-lab/argent/trajectoire/index.html
           test -f public/number-information-lab/argent/extinction/index.html
           test -f public/number-information-lab/argent/roulement/index.html
+          test -f public/number-information-lab/argent/residu/index.html
           test -f public/number-information-lab/argent/oat-temporal-subgraph-2026.csv
           test -f public/number-information-lab/argent/oat-extinction-2026.csv
           test -f public/number-information-lab/argent/oat-turnover-april-2026.csv
+          test -f public/number-information-lab/argent/oat-indexation-residual-april-2026.csv
           test -f public/assets/brand-logo.svg
           test -f public/assets/favicon.svg
           test -f public/assets/brand.css
@@ -71,6 +73,9 @@ jobs:
           grep -q 'ΔQ = E − B − R + J' public/number-information-lab/argent/roulement/index.html
           grep -q '74,0855' public/number-information-lab/argent/roulement/index.html
           grep -q '2,0855' public/number-information-lab/argent/roulement/index.html
+          grep -q 'href="../residu/"' public/number-information-lab/argent/roulement/index.html
+          grep -q '2,121288' public/number-information-lab/argent/residu/index.html
+          grep -q '−0,035788' public/number-information-lab/argent/residu/index.html
 
       - name: Require full-screen attractor on every public HTML page
         shell: bash
