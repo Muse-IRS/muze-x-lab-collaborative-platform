@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Muze-X Lab — décomposer le résidu du pont stock-flux d’avril 2026 à partir des coefficients d’indexation publiés des OAT indexées.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Décomposer le résidu — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+  <link rel="stylesheet" href="../../../assets/brand.css">
+  <link rel="stylesheet" href="../../../assets/hub-nav.css">
+  <link rel="stylesheet" href="../../../assets/mesh-portal.css">
+  <link rel="stylesheet" href="../../lab.css">
+</head>
+<body>
+<header class="subpage-header">
+  <div class="shell">
+    <img class="muze-brand-logo muze-brand-logo--compact" src="../../../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+    <nav class="topnav" aria-label="Navigation principale">
+      <a class="home-link" href="../roulement/">← Entrées et sorties</a>
+      <div class="nav-links">
+        <a href="#residu">Résidu</a>
+        <a href="#regle">Règle</a>
+        <a href="#decomposition">Décomposition</a>
+        <a href="#reste">Reste</a>
+        <a href="#limites">Limites</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </nav>
+    <p class="eyebrow">Indexation · avril 2026</p>
+    <h1 class="subpage-title">Un résidu peut devenir explicable sans être forcé à zéro.</h1>
+    <p class="subpage-lead">Le pont stock-flux d’avril laissait 2,0855 Md€ non expliqués sur les valeurs affichées. Les lignes d’OAT indexées permettent d’identifier une composante mesurable de ce résidu.</p>
+    <div class="platform-formula" aria-label="Décomposition du résidu">
+      <strong>J = I + ε</strong>
+    </div>
+  </div>
+</header>
+
+<main class="shell content-stack">
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Lecture publique</p>
+      <h2>Une reconstruction à partir de données AFT publiées.</h2>
+      <p>Le calcul compare les montants nominaux et les coefficients d’indexation des OAT indexées entre le 31 mars et le 30 avril 2026. Le résultat reconstruit n’est pas un agrégat publié tel quel par l’AFT.</p>
+    </div>
+    <span class="status-badge">PUBLIC_RESULT</span>
+  </section>
+
+  <section class="panel lab-panel" id="residu">
+    <p class="eyebrow">01 · POINT DE DÉPART</p>
+    <h2>Le pont simplifié laissait 2,0855 Md€.</h2>
+    <div class="platform-formula" aria-label="Résidu initial">
+      <strong>J = 11 − (41,5 − 0,8 − 31,7855)</strong><span>=</span><strong>2,0855 Md€</strong>
+    </div>
+    <p>Ce nombre n’avait pas reçu de cause automatique. Il représentait seulement ce qui restait hors du modèle émission − rachat − échéance sur les valeurs affichées.</p>
+  </section>
+
+  <section class="panel lab-panel" id="regle">
+    <p class="eyebrow">02 · COMMENT UNE OAT INDEXÉE EST VALORISÉE</p>
+    <h2>Le montant publié dépend du nominal et du coefficient d’indexation.</h2>
+    <div class="platform-formula" aria-label="Règle de valorisation d'une OAT indexée">
+      <strong>V(t) = n(t) × c(t)</strong>
+    </div>
+    <p><strong>n</strong> est l’encours nominal et <strong>c</strong> le coefficient d’indexation publié. Ainsi, même sans nouvelle émission nominale, l’encours publié d’une ligne indexée peut évoluer lorsque son coefficient change.</p>
+  </section>
+
+  <section class="panel lab-panel" id="decomposition">
+    <p class="eyebrow">03 · 17 LIGNES COMPARÉES</p>
+    <h2>L’indexation reconstruit 2,121288 Md€ au-delà du nominal.</h2>
+    <div class="lab-readouts">
+      <div><span>Nouvelles quantités nominales indexées</span><strong>2,135000 Md€</strong></div>
+      <div><span>Hausse totale d’encours indexé</span><strong>4,256288 Md€</strong></div>
+      <div><span>Revalorisation du nominal déjà présent</span><strong>1,811378 Md€</strong></div>
+      <div><span>Surcroît d’indexation des nouvelles émissions</span><strong>0,309910 Md€</strong></div>
+    </div>
+    <div class="platform-formula" aria-label="Composante d'indexation reconstruite">
+      <strong>I = 1,811378 + 0,309910</strong><span>=</span><strong>2,121288 Md€</strong>
+    </div>
+    <p>Autrement dit, sur les lignes indexées étudiées, la hausse d’encours ne se limite pas aux nouveaux montants nominaux : le coefficient d’indexation transforme aussi la valeur publiée des encours.</p>
+  </section>
+
+  <section class="panel lab-panel" id="reste">
+    <p class="eyebrow">04 · CE QU’IL RESTE APRÈS INDEXATION</p>
+    <h2>Le résidu affiché tombe à environ −35,8 M€.</h2>
+    <div class="platform-formula" aria-label="Reste après composante d'indexation">
+      <strong>ε = 2,085500 − 2,121288</strong><span>=</span><strong>−0,035788 Md€</strong>
+    </div>
+    <div class="lab-readouts">
+      <div><span>Résidu initial J</span><strong>2,085500 Md€</strong></div>
+      <div><span>Composante d’indexation reconstruite I</span><strong>2,121288 Md€</strong></div>
+      <div><span>Reste ε</span><strong>−0,035788 Md€</strong></div>
+      <div><span>Ordre de grandeur du reste</span><strong>≈ −35,8 M€</strong></div>
+    </div>
+    <p class="muted">Le reste est compatible avec les différences de précision entre agrégats affichés au milliard, flux affichés au dixième de milliard et lignes détaillées plus précises. Cela ne prouve pas que l’arrondi est l’unique cause restante.</p>
+  </section>
+
+  <section class="panel lab-panel" id="limites">
+    <p class="eyebrow">05 · NE PAS CONFONDRE</p>
+    <h2>Une reconstruction précise reste une reconstruction.</h2>
+    <div class="lab-readouts">
+      <div><span>2,121288 Md€</span><strong>≠ agrégat AFT publié tel quel</strong></div>
+      <div><span>Indexation</span><strong>≠ nouvelle émission nominale</strong></div>
+      <div><span>Indexation</span><strong>≠ création monétaire démontrée</strong></div>
+      <div><span>−35,8 M€</span><strong>≠ arrondi seul démontré</strong></div>
+      <div><span>Même EUR</span><strong>≠ même quantité économique</strong></div>
+    </div>
+  </section>
+
+  <section class="panel" id="sources">
+    <p class="eyebrow">Sources primaires · recontrôlées le 09/09/2026</p>
+    <h2>Deux états mensuels et la règle d’indexation AFT.</h2>
+    <ul>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.2_BM/431_Bulletin%20mensuel%20avril%202026.pdf" target="_blank" rel="noopener noreferrer">AFT — bulletin n°431 · état au 31 mars 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/files/medias-aft/7_Publications/7.2_BM/432_Bulletin%20mensuel%20mai%202026.pdf" target="_blank" rel="noopener noreferrer">AFT — bulletin n°432 · état au 30 avril 2026</a></li>
+      <li><a href="https://www.aft.gouv.fr/fr/oateuroi-principaux-chiffres" target="_blank" rel="noopener noreferrer">AFT — coefficients d’indexation des OAT€i</a></li>
+    </ul>
+    <p><a class="button secondary" href="../oat-indexation-residual-april-2026.csv">Ouvrir la synthèse du calcul (CSV)</a></p>
+  </section>
+
+  <section class="notice-panel">
+    <div>
+      <p class="eyebrow">Frontière suivante</p>
+      <h2>Passer du pont agrégé au pont titre par titre.</h2>
+      <p>La prochaine étape consiste à reconstruire chaque variation de ligne du portefeuille moyen / long terme entre les deux dates, puis à sommer émissions, rachats, échéances et indexation sans dépendre des agrégats arrondis.</p>
+    </div>
+    <a class="button secondary" href="../roulement/">Revenir au roulement</a>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <span>Muze-X Lab — Décomposer le résidu</span>
+    <span>Nominal · coefficient · encours · précision</span>
+    <a href="../../../">Retour à l’accueil</a>
+  </div>
+</footer>
+<script src="../../../assets/mesh-portal.js"></script>
+</body>
+</html>
