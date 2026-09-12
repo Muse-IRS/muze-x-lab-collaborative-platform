@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../assets/mesh-portal.css">
   <link rel="stylesheet" href="./energy.css">
   <link rel="stylesheet" href="./territory.css">
+  <link rel="stylesheet" href="./route.css">
 </head>
 <body>
   <header class="subpage-header">
@@ -38,6 +39,7 @@
         <a href="#thermique">Simulateur thermique</a>
         <a href="#beznau">Preuve de principe</a>
         <a href="#saint-alban">Cas France</a>
+        <a href="#trace-thermique">Tracé thermique</a>
         <a href="#limites">Limites</a>
       </div>
     </div>
@@ -308,8 +310,74 @@
       </details>
     </section>
 
+    <section id="trace-thermique" class="panel route-anchor" aria-labelledby="route-title">
+      <p class="eyebrow">07 · Du bassin statistique au tracé thermique</p>
+      <h2 id="route-title">Relier la source aux usages avant de parler de chantier.</h2>
+      <p>Le module transforme les communes sélectionnées ci-dessus en <strong>nœuds géographiques</strong>. Il calcule l’arbre couvrant minimal sur leurs distances géodésiques, puis applique un facteur de tracé pour représenter les détours imposés par voirie, foncier, ouvrages et droits de passage. C’est une <strong>borne géométrique de pré-dimensionnement</strong>, pas un tracé cadastral ni un projet de canalisation.</p>
+
+      <div class="route-layout">
+        <div class="route-map-wrap">
+          <svg id="thermal-route-map" class="route-map" role="img" aria-label="Schéma géographique du pré-tracé thermique autour de Saint-Alban"></svg>
+          <div class="route-map-note">Géométrie relative calculée à partir du GPS public EDF du site et de centres communaux publics. Les traits sont des liaisons mathématiques, pas des emprises de travaux.</div>
+        </div>
+        <div>
+          <div class="route-controls">
+            <div class="energy-field"><label for="route-factor">Facteur de tracé réel / géodésique</label><input id="route-factor" type="number" min="1" step="0.01" value="1.20"></div>
+            <div class="energy-field"><label for="route-supply-temp">Température départ (°C)</label><input id="route-supply-temp" type="number" step="1" value="90"></div>
+            <div class="energy-field"><label for="route-return-temp">Température retour (°C)</label><input id="route-return-temp" type="number" step="1" value="50"></div>
+            <div class="energy-field"><label for="route-velocity">Vitesse cible eau (m/s)</label><input id="route-velocity" type="number" min="0.1" step="0.1" value="1.5"></div>
+            <div class="energy-field"><label for="route-linear-loss">Pertes linéiques aller + retour (W/m de corridor)</label><input id="route-linear-loss" type="number" min="0" step="1" value="20"></div>
+            <div class="energy-field"><label for="route-pressure-gradient">Gradient hydraulique test (Pa/m par conduite)</label><input id="route-pressure-gradient" type="number" min="0" step="10" value="150"></div>
+            <div class="energy-field"><label for="route-pump-efficiency">Rendement pompes (%)</label><input id="route-pump-efficiency" type="number" min="1" max="100" step="1" value="70"></div>
+          </div>
+          <div class="route-formula" aria-label="Formule hydraulique simplifiée">
+            <span>Q̇</span><span>=</span><span>ṁ · cₚ · ΔT</span><span>→</span><span>débit</span><span>→</span><strong>diamètre indicatif</strong>
+          </div>
+          <div class="energy-actions"><button id="run-route" type="button">Pré-dimensionner le tracé</button></div>
+          <p id="route-status" class="route-status" role="status" aria-live="polite">Le tracé utilise les mêmes communes et la même puissance thermique que le scénario Saint-Alban.</p>
+        </div>
+      </div>
+
+      <div class="route-results">
+        <div class="metric"><span>Arbre géodésique minimal</span><strong id="route-geo-length-result">—</strong><small>Somme des liaisons droites entre nœuds.</small></div>
+        <div class="metric"><span>Corridor après facteur</span><strong id="route-adjusted-length-result">—</strong><small>Longueur théorique de tranchée.</small></div>
+        <div class="metric"><span>Canalisations aller + retour</span><strong id="route-pipe-length-result">—</strong><small>Deux conduites sur le corridor.</small></div>
+        <div class="metric"><span>Débit massique source</span><strong id="route-source-flow-result">—</strong><small>À la puissance et au ΔT saisis.</small></div>
+        <div class="metric"><span>Plus grand diamètre indicatif</span><strong id="route-max-dn-result">—</strong><small>DN supérieur arrondi, pas une prescription.</small></div>
+        <div class="metric"><span>Pertes thermiques linéiques</span><strong id="route-heat-loss-result">—</strong><small>Hypothèse W/m × corridor × heures.</small></div>
+        <div class="metric"><span>Puissance de pompage</span><strong id="route-pump-power-result">—</strong><small>Approximation hydraulique sur les segments.</small></div>
+        <div class="metric"><span>Électricité de pompage</span><strong id="route-pump-energy-result">—</strong><small>Puissance de pompage × heures équivalentes.</small></div>
+      </div>
+
+      <div class="route-table-wrap" aria-label="Pré-dimensionnement par segment">
+        <table class="route-table">
+          <thead><tr><th>De</th><th>Vers</th><th>Géodésique</th><th>Corridor</th><th>Ménages aval</th><th>Puissance</th><th>Débit</th><th>DN indicatif</th></tr></thead>
+          <tbody id="route-segments-body"></tbody>
+        </table>
+      </div>
+
+      <div class="route-assumptions">
+        <article><strong>Topologie</strong><span>L’arbre couvrant minimal minimise uniquement la somme des distances droites. Un vrai réseau peut préférer une autre topologie pour la résilience, la voirie ou les grands consommateurs.</span></article>
+        <article><strong>Hydraulique</strong><span>Le diamètre utilise eau ≈ 980 kg/m³, cₚ ≈ 4,18 kJ/kg·K et une vitesse cible modifiable. Les pertes de charge réelles dépendent du matériau, du diamètre intérieur, des singularités et du régime d’écoulement.</span></article>
+        <article><strong>Thermique</strong><span>La perte linéique est saisie directement pour que l’hypothèse reste visible. Isolation, température du sol, diamètre et saison doivent ensuite remplacer cette valeur générique.</span></article>
+      </div>
+
+      <div class="callout">
+        <p><strong>Lecture :</strong> cette étape remplace « six communes = un bassin » par un réseau de segments quantifiés. Elle permet déjà de tester ce qui augmente avec la distance : kilomètres de tranchée, kilomètres de tubes, débit, diamètres, pertes et pompage. La prochaine falsification consiste à confronter cette géométrie à la voirie, au Rhône, aux parcelles, aux franchissements et aux vrais points de demande.</p>
+      </div>
+
+      <details class="territory-sources">
+        <summary>Sources géographiques et méthode</summary>
+        <ul>
+          <li><a href="https://www.edf.fr/sites/default/files/contrib/groupe-edf/producteur-industriel/visitez-nos-centrales/JIE%202018/Nuc_Saint%20Alban/plan_acces_saintalban.pdf" target="_blank" rel="noopener noreferrer">EDF — plan d’accès Saint-Alban / Saint-Maurice</a> : GPS public du site 45.4024075, 4.769878.</li>
+          <li><a href="https://geo.api.gouv.fr/decoupage-administratif/communes" target="_blank" rel="noopener noreferrer">API Découpage administratif — communes</a> : référentiel public permettant d’obtenir centre, contour, mairie et emprise communale.</li>
+          <li>Les coordonnées de centres communaux embarquées sont des repères géographiques publics de commune, suffisants pour la géométrie relative ; elles ne valent ni point de raccordement réel ni levé topographique.</li>
+        </ul>
+      </details>
+    </section>
+
     <section id="limites" class="panel" aria-labelledby="limits-title">
-      <p class="eyebrow">07 · Ce que le modèle ne prouve pas</p>
+      <p class="eyebrow">08 · Ce que le modèle ne prouve pas</p>
       <h2 id="limits-title">Une architecture plausible n’est pas encore un projet rentable.</h2>
       <div class="boundary-list">
         <article><strong>Distance</strong><span>Le transport thermique dépend du diamètre des conduites, de leur isolation, du débit et du coût des travaux.</span></article>
@@ -330,14 +398,15 @@
         <li><a href="https://analysesetdonnees.rte-france.com/bilan-electrique-2024/production" target="_blank" rel="noopener noreferrer">RTE — Bilan électrique 2024 · Production</a><span>Production nucléaire française : 361,7 TWh en 2024.</span></li>
         <li><a href="https://analysesetdonnees.rte-france.com/bilan-electrique-2024/synthese" target="_blank" rel="noopener noreferrer">RTE — Bilan électrique 2024 · Synthèse</a><span>89 TWh d’exportations nettes et enjeu d’utilisation de l’électricité bas-carbone pour substituer des usages fossiles.</span></li>
         <li><a href="https://nuclear-safety.asn.fr/controle/l-asnr-en-region/auvergne-rhone-alpes/centrale-nucleaire-de-saint-alban" target="_blank" rel="noopener noreferrer">ASNR — Saint-Alban / Saint-Maurice</a><span>Deux réacteurs REP de 1 300 MWₑ chacun ; localisation et caractéristiques du site.</span></li>
+        <li><a href="https://geo.api.gouv.fr/decoupage-administratif/communes" target="_blank" rel="noopener noreferrer">API Découpage administratif</a><span>Référentiel géographique public des communes et de leurs géométries.</span></li>
       </ul>
     </section>
 
     <section class="notice-panel" aria-labelledby="next-title">
       <div>
         <p class="eyebrow">Étape suivante</p>
-        <h2 id="next-title">Du bassin statistique au tracé thermique.</h2>
-        <p>Le prochain niveau consiste à poser des distances réelles, un tracé de conduite, des températures départ/retour, des diamètres, des débits, des stations intermédiaires et un CAPEX/OPEX. À ce stade seulement, le cas Saint-Alban pourra passer d’un bilan énergétique à un pré-dimensionnement territorial.</p>
+        <h2 id="next-title">Du tracé mathématique au corridor territorial vérifiable.</h2>
+        <p>Le prochain niveau consiste à remplacer le facteur de tracé par des corridors réellement praticables : voirie, ponts et franchissements, emprises publiques, zones industrielles, densité bâtie et grands consommateurs thermiques. Les diamètres et pertes pourront alors être recalculés segment par segment sur une géométrie qui commence à ressembler à une infrastructure.</p>
       </div>
     </section>
   </main>
@@ -352,6 +421,7 @@
 
   <script src="./app.js"></script>
   <script src="./territory.js"></script>
+  <script src="./route.js"></script>
   <script src="../assets/mesh-portal.js"></script>
 </body>
 </html>
