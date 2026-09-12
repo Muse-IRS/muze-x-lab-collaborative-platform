@@ -87,6 +87,7 @@
     automataMultiplier: 9,
     palette: Object.freeze({
       cycleSeconds: 9.5,
+      timeScale: 0.1,
       stops: Object.freeze([
         Object.freeze({ stop: 0.000, color: Object.freeze({ r: 5, g: 3, b: 10 }) }),
         Object.freeze({ stop: 0.146, color: Object.freeze({ r: 42, g: 14, b: 94 }) }),
@@ -182,15 +183,16 @@
 
   function dynamicColor(x, y, time, normalized) {
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
+    const colorElapsed = elapsed * CONFIG.palette.timeScale;
     const xNorm = x / Math.max(1, state.width);
     const yNorm = y / Math.max(1, state.height);
     const spatial =
       xNorm * GOLDEN_ANGLE_TURNS +
       yNorm * PHI_INVERSE +
       normalized * 0.236;
-    const localPhi = phiWave(elapsed, spatial);
+    const localPhi = phiWave(colorElapsed, spatial);
     const phase = (
-      elapsed / CONFIG.palette.cycleSeconds +
+      colorElapsed / CONFIG.palette.cycleSeconds +
       spatial +
       (localPhi - 0.5) * 0.146
     ) % 1;
