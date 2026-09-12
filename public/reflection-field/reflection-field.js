@@ -121,6 +121,21 @@
       longitudeColorInfluence: 0.146,
       latitudeColorInfluence: 0.090
     }),
+    binary: Object.freeze({
+      influenceStartRatio: 0.62,
+      strongInteractionRatio: 0.22,
+      attraction: 0.20,
+      orbitBlend: 0.38,
+      orbitSeconds: PI * PHI * 3.2,
+      tidalStretch: 0.42,
+      tidalCompression: 0.16,
+      heartbeatBoost: 0.42,
+      gapCollapse: 0.90,
+      bridgeStrength: 0.24,
+      chromaticExchange: 0.58,
+      contactGlow: 0.30,
+      auraStrength: 0.055
+    }),
     reveal: Object.freeze({
       activationRadiusRatio: 0.16,
       activationRadiusMin: 64,
@@ -147,6 +162,7 @@
     lastFrame: performance.now(),
     reveal: 0,
     revealTarget: 0,
+    binaryInteraction: 0,
     pointer: {
       x: 0,
       y: 0,
@@ -185,24 +201,39 @@
     return stops[stops.length - 1].color;
   }
 
-  function phiWave(seconds, phaseOffset = 0) {
+  function phiWave(seconds, phaseOffset = 0, bpmScale = 1) {
     if (reducedMotion) return 0.5;
-    const cyclesPerSecond = CONFIG.heartbeat.bpm / 60;
+    const cyclesPerSecond = (CONFIG.heartbeat.bpm * bpmScale) / 60;
     const phase = seconds * (cyclesPerSecond / PHI) + phaseOffset * PHI_INVERSE;
     return 0.5 + 0.5 * Math.sin(TAU * phase);
   }
 
+  function localCoordinates(x, y, center) {
+    const dx = x - center.x;
+    const dy = y - center.y;
+    const cos = Math.cos(center.angle || 0);
+    const sin = Math.sin(center.angle || 0);
+    return {
+      x: dx * cos + dy * sin,
+      y: -dx * sin + dy * cos
+    };
+  }
+
   function planetProjection(x, y, centers, time) {
     let chosen = null;
+    let chosenIndex = -1;
     let bestRadialSquared = Infinity;
 
-    for (const center of centers) {
-      const nx = (x - center.x) / Math.max(1, center.sx * CONFIG.heartbeat.fadeEnd);
-      const ny = (y - center.y) / Math.max(1, center.sy * CONFIG.heartbeat.fadeEnd);
+    for (let index = 0; index < centers.length; index += 1) {
+      const center = centers[index];
+      const local = localCoordinates(x, y, center);
+      const nx = local.x / Math.max(1, center.sx * CONFIG.heartbeat.fadeEnd);
+      const ny = local.y / Math.max(1, center.sy * CONFIG.heartbeat.fadeEnd);
       const radialSquared = nx * nx + ny * ny;
       if (radialSquared < bestRadialSquared) {
         bestRadialSquared = radialSquared;
-        chosen = { nx, ny };
+        chosen = { nx, ny, center };
+        chosenIndex = index;
       }
     }
 
@@ -211,7 +242,9 @@
         depth: 0,
         shade: CONFIG.planet.ambient,
         longitudeTurns: 0,
-        latitudeTurns: 0.5
+        latitudeTurns: 0.5,
+        centerIndex: 0,
+        facing: 0
       };
     }
 
@@ -219,7 +252,7 @@
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
     const rotation = reducedMotion
       ? PI * PHI_INVERSE
-      : TAU * (elapsed / CONFIG.planet.rotationSeconds);
+      : TAU * (elapsed / CONFIG.planet.rotationSeconds) + chosenIndex * PI * PHI_INVERSE;
 
     const cosTilt = Math.cos(CONFIG.planet.axialTilt);
     const sinTilt = Math.sin(CONFIG.planet.axialTilt);
@@ -231,11 +264,28 @@
     const longitudeTurns = ((Math.atan2(chosen.nx, depth) + rotation) / TAU + 1) % 1;
     const latitudeTurns = clamp(Math.asin(clamp(chosen.ny, -1, 1)) / PI + 0.5, 0, 1);
 
+    let facing = 0;
+    if (centers.length === 2) {
+      const other = centers[chosenIndex === 0 ? 1 : 0];
+      const toOtherX = other.x - chosen.center.x;
+      const toOtherY = other.y - chosen.center.y;
+      const toOtherLength = Math.max(1, Math.hypot(toOtherX, toOtherY));
+      const surfaceX = x - chosen.center.x;
+      const surfaceY = y - chosen.center.y;
+      const surfaceLength = Math.max(1, Math.hypot(surfaceX, surfaceY));
+      const dot =
+        (surfaceX / surfaceLength) * (toOtherX / toOtherLength) +
+        (surfaceY / surfaceLength) * (toOtherY / toOtherLength);
+      facing = smooth(clamp((dot + 0.20) / 1.20, 0, 1));
+    }
+
     return {
       depth,
       shade: clamp(CONFIG.planet.ambient + CONFIG.planet.lightStrength * light, 0, 1),
       longitudeTurns,
-      latitudeTurns
+      latitudeTurns,
+      centerIndex: Math.max(0, chosenIndex),
+      facing
     };
   }
 
@@ -244,12 +294,16 @@
     const colorElapsed = elapsed * CONFIG.palette.timeScale;
     const xNorm = x / Math.max(1, state.width);
     const yNorm = y / Math.max(1, state.height);
+    const exchangeSync = state.binaryInteraction * planet.facing;
+    const centerPhase =
+      planet.centerIndex * PHI_INVERSE * 0.236 * (1 - exchangeSync * 0.72);
     const spatial =
       xNorm * GOLDEN_ANGLE_TURNS +
       yNorm * PHI_INVERSE +
       normalized * 0.236 +
       planet.longitudeTurns * CONFIG.planet.longitudeColorInfluence +
-      planet.latitudeTurns * CONFIG.planet.latitudeColorInfluence;
+      planet.latitudeTurns * CONFIG.planet.latitudeColorInfluence +
+      centerPhase;
     const localPhi = phiWave(colorElapsed, spatial);
     const phase = (
       colorElapsed / CONFIG.palette.cycleSeconds +
@@ -257,12 +311,22 @@
       (localPhi - 0.5) * 0.146
     ) % 1;
 
-    const color = paletteColorAt((phase + 1) % 1);
-    return {
-      r: Math.round(color.r * planet.shade),
-      g: Math.round(color.g * planet.shade),
-      b: Math.round(color.b * planet.shade)
+    const base = paletteColorAt((phase + 1) % 1);
+    const shaded = {
+      r: Math.round(base.r * planet.shade),
+      g: Math.round(base.g * planet.shade),
+      b: Math.round(base.b * planet.shade)
     };
+    const exchange = clamp(
+      state.binaryInteraction *
+        planet.facing *
+        CONFIG.binary.chromaticExchange *
+        (0.35 + normalized * 0.65),
+      0,
+      0.88
+    );
+    const hot = paletteColorAt(0.764 + 0.236 * planet.depth);
+    return interpolateColor(shaded, hot, exchange);
   }
 
   function drawPortalQr() {
@@ -328,17 +392,29 @@
     return amplitude * Math.exp(-0.5 * (dx * dx + dy * dy));
   }
 
-  function heartbeatEnvelope(seconds, phaseOffset = 0) {
+  function heartbeatEnvelope(seconds, phaseOffset = 0, bpmScale = 1) {
     if (reducedMotion) return 0;
 
-    const cyclesPerSecond = CONFIG.heartbeat.bpm / 60;
+    const cyclesPerSecond = (CONFIG.heartbeat.bpm * bpmScale) / 60;
     const phase = (seconds * cyclesPerSecond + phaseOffset) % 1;
     const firstBeat = Math.exp(-Math.pow((phase - 0.12) / 0.055, 2));
     const secondBeat = 0.52 * Math.exp(-Math.pow((phase - 0.27) / 0.075, 2));
     const pulse = clamp(firstBeat + secondBeat, 0, 1);
-    const phi = phiWave(seconds, phaseOffset);
-    const modulated = pulse * (1 - CONFIG.heartbeat.phiModulation + CONFIG.heartbeat.phiModulation * phi);
+    const phi = phiWave(seconds, phaseOffset, bpmScale);
+    const modulated =
+      pulse *
+      (1 - CONFIG.heartbeat.phiModulation + CONFIG.heartbeat.phiModulation * phi);
     return clamp(modulated + CONFIG.heartbeat.phiRestGlow * phi, 0, 1);
+  }
+
+  function interactionStrength(distance) {
+    const shortest = Math.max(1, Math.min(state.width, state.height));
+    const ratio = distance / shortest;
+    const span =
+      CONFIG.binary.influenceStartRatio - CONFIG.binary.strongInteractionRatio;
+    return smooth(
+      clamp((CONFIG.binary.influenceStartRatio - ratio) / Math.max(0.001, span), 0, 1)
+    );
   }
 
   function applyRevealRepulsion(centers) {
@@ -387,25 +463,65 @@
     const driftX = w * 0.035 * Math.sin(t * 0.21);
     const driftY = h * 0.030 * Math.cos(t * 0.17);
 
+    const baseFirst = {
+      x: midX - spreadX + driftX,
+      y: midY - spreadY + driftY
+    };
+    const baseSecond = {
+      x: midX + spreadX - driftX,
+      y: midY + spreadY - driftY
+    };
+
+    const rawDx = baseSecond.x - baseFirst.x;
+    const rawDy = baseSecond.y - baseFirst.y;
+    const rawDistance = Math.max(1, Math.hypot(rawDx, rawDy));
+    const interaction = interactionStrength(rawDistance);
+    state.binaryInteraction = interaction;
+
+    const baryX = (baseFirst.x + baseSecond.x) * 0.5;
+    const baryY = (baseFirst.y + baseSecond.y) * 0.5;
+    const attractionScale = 1 - CONFIG.binary.attraction * interaction;
+    const halfX = rawDx * 0.5 * attractionScale;
+    const halfY = rawDy * 0.5 * attractionScale;
+    const orbitPhase = reducedMotion ? PI * PHI_INVERSE : TAU * elapsed / CONFIG.binary.orbitSeconds;
+    const cosOrbit = Math.cos(orbitPhase);
+    const sinOrbit = Math.sin(orbitPhase);
+    const rotatedHalfX = halfX * cosOrbit - halfY * sinOrbit;
+    const rotatedHalfY = halfX * sinOrbit + halfY * cosOrbit;
+    const orbitMix = CONFIG.binary.orbitBlend * interaction;
+    const finalHalfX = lerp(halfX, rotatedHalfX, orbitMix);
+    const finalHalfY = lerp(halfY, rotatedHalfY, orbitMix);
+
+    const firstX = baryX - finalHalfX;
+    const firstY = baryY - finalHalfY;
+    const secondX = baryX + finalHalfX;
+    const secondY = baryY + finalHalfY;
+    const axis = Math.atan2(secondY - firstY, secondX - firstX);
+    const bpmScale = 1 + CONFIG.binary.heartbeatBoost * interaction;
+
     const beats = [
-      heartbeatEnvelope(elapsed, 0),
-      heartbeatEnvelope(elapsed, PHI_INVERSE)
+      heartbeatEnvelope(elapsed, 0, bpmScale),
+      heartbeatEnvelope(elapsed, PHI_INVERSE, bpmScale)
     ];
 
+    const tidalLong = 1 + CONFIG.binary.tidalStretch * interaction;
+    const tidalShort = 1 - CONFIG.binary.tidalCompression * interaction;
     const centers = [
       {
-        x: midX - spreadX + driftX,
-        y: midY - spreadY + driftY,
-        sx: sigmaX * (1 + CONFIG.heartbeat.expansion * beats[0]),
-        sy: sigmaY * (1 + CONFIG.heartbeat.expansion * beats[0]),
-        a: amplitude * (1 + CONFIG.heartbeat.glow * beats[0])
+        x: firstX,
+        y: firstY,
+        sx: sigmaX * tidalLong * (1 + CONFIG.heartbeat.expansion * beats[0]),
+        sy: sigmaY * tidalShort * (1 + CONFIG.heartbeat.expansion * beats[0]),
+        a: amplitude * (1 + CONFIG.heartbeat.glow * beats[0]),
+        angle: axis
       },
       {
-        x: midX + spreadX - driftX,
-        y: midY + spreadY - driftY,
-        sx: sigmaX * (1 + CONFIG.heartbeat.expansion * beats[1]),
-        sy: sigmaY * (1 + CONFIG.heartbeat.expansion * beats[1]),
-        a: amplitude * (1 + CONFIG.heartbeat.glow * beats[1])
+        x: secondX,
+        y: secondY,
+        sx: sigmaX * tidalLong * (1 + CONFIG.heartbeat.expansion * beats[1]),
+        sy: sigmaY * tidalShort * (1 + CONFIG.heartbeat.expansion * beats[1]),
+        a: amplitude * (1 + CONFIG.heartbeat.glow * beats[1]),
+        angle: axis
       }
     ];
 
@@ -424,13 +540,18 @@
     const uy = dy / distance;
     const projection = (x - first.x) * ux + (y - first.y) * uy;
     const midpoint = distance * 0.5;
-    const gapHalf = Math.max(
+    const baseGapHalf = Math.max(
       state.spacing * 1.5,
       distance * CONFIG.heartbeat.separationGapRatio
     );
+    const gapHalf = Math.max(
+      state.spacing * 0.18,
+      baseGapHalf * (1 - CONFIG.binary.gapCollapse * state.binaryInteraction)
+    );
     const feather = Math.max(
-      state.spacing * 2,
-      distance * CONFIG.heartbeat.separationFeatherRatio
+      state.spacing * 1.35,
+      distance * CONFIG.heartbeat.separationFeatherRatio *
+        (1 - state.binaryInteraction * 0.35)
     );
 
     if (index === 0) {
@@ -447,8 +568,9 @@
   }
 
   function swarmContribution(x, y, center, index, centers) {
-    const dx = (x - center.x) / Math.max(1, center.sx);
-    const dy = (y - center.y) / Math.max(1, center.sy);
+    const local = localCoordinates(x, y, center);
+    const dx = local.x / Math.max(1, center.sx);
+    const dy = local.y / Math.max(1, center.sy);
     const radial = Math.sqrt(dx * dx + dy * dy);
 
     if (radial >= CONFIG.heartbeat.fadeEnd) return 0;
@@ -466,6 +588,32 @@
 
     const separation = separationMask(x, y, index, centers);
     return center.a * Math.exp(-0.5 * radial * radial) * taper * separation;
+  }
+
+  function binaryBridgeContribution(x, y, centers) {
+    if (centers.length !== 2 || state.binaryInteraction < 0.18) return 0;
+
+    const first = centers[0];
+    const second = centers[1];
+    const dx = second.x - first.x;
+    const dy = second.y - first.y;
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const ux = dx / distance;
+    const uy = dy / distance;
+    const vx = -uy;
+    const vy = ux;
+    const midpointX = (first.x + second.x) * 0.5;
+    const midpointY = (first.y + second.y) * 0.5;
+    const px = x - midpointX;
+    const py = y - midpointY;
+    const along = (px * ux + py * uy) / Math.max(state.spacing * 6, distance * 0.24);
+    const across = (px * vx + py * vy) / Math.max(state.spacing * 2.8, distance * 0.045);
+    const envelope = Math.exp(-0.5 * (along * along + across * across));
+    return (
+      CONFIG.binary.bridgeStrength *
+      Math.pow(state.binaryInteraction, 3) *
+      envelope
+    );
   }
 
   function pointerContribution(x, y) {
@@ -506,12 +654,53 @@
       value = Math.max(value, swarmContribution(x, y, centers[index], index, centers));
     }
 
+    value += binaryBridgeContribution(x, y, centers);
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
     const t = elapsed * CONFIG.speed;
     const phase = Math.sin(x * 0.012 + y * 0.009 - t * 0.52) * 0.028;
     value += phase + pointerContribution(x, y);
 
     return clamp(value, 0, 1.35) * qrRevealMask(x, y);
+  }
+
+  function drawBinaryAura(centers, time) {
+    if (reducedMotion || centers.length !== 2 || state.binaryInteraction < 0.10) return;
+
+    const first = centers[0];
+    const second = centers[1];
+    const midpointX = (first.x + second.x) * 0.5;
+    const midpointY = (first.y + second.y) * 0.5;
+    const distance = Math.max(1, Math.hypot(second.x - first.x, second.y - first.y));
+    const angle = Math.atan2(second.y - first.y, second.x - first.x);
+    const elapsed = (time - state.start) / 1000;
+    const wave = 0.5 + 0.5 * Math.sin(TAU * elapsed / (PI * PHI));
+
+    ctx.save();
+    ctx.translate(midpointX, midpointY);
+    ctx.rotate(angle);
+    ctx.lineWidth = Math.max(0.6, state.spacing * 0.16);
+
+    for (let ring = 0; ring < 3; ring += 1) {
+      const growth = 1 + ring * 0.24 + wave * 0.08;
+      const alpha =
+        CONFIG.binary.auraStrength *
+        state.binaryInteraction *
+        (1 - ring * 0.22);
+      ctx.strokeStyle = `rgba(255, 244, 255, ${alpha})`;
+      ctx.beginPath();
+      ctx.ellipse(
+        0,
+        0,
+        distance * 0.58 * growth,
+        Math.max(state.spacing * 8, distance * 0.22 * growth),
+        0,
+        0,
+        TAU
+      );
+      ctx.stroke();
+    }
+
+    ctx.restore();
   }
 
   function updateReveal(time) {
@@ -543,6 +732,7 @@
 
     const centers = movingCenters(time);
     const spacing = state.spacing;
+    drawBinaryAura(centers, time);
 
     for (let row = 0; row < state.rows; row += 1) {
       const y = state.y0 + row * spacing;
@@ -555,18 +745,30 @@
         const dynamicRadius = 0.7 + normalized * 2.55;
         const radius = Math.max(
           spacing * 0.51,
-          dynamicRadius * (1 - CONFIG.planet.depthRadius + planet.depth * CONFIG.planet.depthRadius)
+          dynamicRadius *
+            (1 - CONFIG.planet.depthRadius + planet.depth * CONFIG.planet.depthRadius)
         );
-        const alpha =
+        const interactionAlpha =
+          1 +
+          CONFIG.binary.contactGlow *
+            state.binaryInteraction *
+            planet.facing *
+            normalized;
+        const alpha = clamp(
           (0.045 + normalized * 0.88) *
-          (1 - CONFIG.planet.depthAlpha + planet.depth * CONFIG.planet.depthAlpha);
+            (1 - CONFIG.planet.depthAlpha + planet.depth * CONFIG.planet.depthAlpha) *
+            interactionAlpha,
+          0,
+          1
+        );
         const { r, g, b } = dynamicColor(x, y, time, normalized, planet);
 
         ctx.beginPath();
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
         if (normalized > 0.54 && !reducedMotion) {
+          const interactionGlow = 1 + state.binaryInteraction * planet.facing * 0.55;
           ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${normalized * 0.48})`;
-          ctx.shadowBlur = 5 + normalized * 8;
+          ctx.shadowBlur = (5 + normalized * 8) * interactionGlow;
         } else {
           ctx.shadowBlur = 0;
         }
