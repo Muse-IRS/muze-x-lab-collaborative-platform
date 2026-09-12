@@ -9,17 +9,19 @@
 
   const CONFIG = Object.freeze({
     swarmCount: 2,
-    speed: 4.4,
+    speed: 6.6,
     mode: 'dispersion',
-    density: 3,
+    density: 9,
+    automataMultiplier: 3,
     color: Object.freeze({ r: 244, g: 93, b: 211 }),
     heartbeat: Object.freeze({
       bpm: 72,
-      expansion: 0.11,
+      expansion: 0.33,
       glow: 0.06,
-      separationRatio: 0.26,
       fadeStart: 1.35,
-      fadeEnd: 1.75
+      fadeEnd: 1.75,
+      separationGapRatio: 0.06,
+      separationFeatherRatio: 0.05
     })
   });
 
@@ -76,33 +78,6 @@
     return clamp(firstBeat + secondBeat, 0, 1);
   }
 
-  function constrainSeparation(centers) {
-    if (centers.length !== 2) return centers;
-
-    const first = centers[0];
-    const second = centers[1];
-    const dx = second.x - first.x;
-    const dy = second.y - first.y;
-    const distance = Math.max(1, Math.hypot(dx, dy));
-    const ux = dx / distance;
-    const uy = dy / distance;
-    const maxDirectionalSigma = distance * CONFIG.heartbeat.separationRatio;
-
-    for (const center of centers) {
-      const directionalSigma = Math.sqrt(
-        Math.pow(ux * center.sx, 2) + Math.pow(uy * center.sy, 2)
-      );
-
-      if (directionalSigma > maxDirectionalSigma) {
-        const scale = maxDirectionalSigma / directionalSigma;
-        center.sx *= scale;
-        center.sy *= scale;
-      }
-    }
-
-    return centers;
-  }
-
   function movingCenters(time) {
     const elapsed = reducedMotion ? 0.65 : (time - state.start) / 1000;
     const t = elapsed * CONFIG.speed;
@@ -126,7 +101,7 @@
       heartbeatEnvelope(elapsed, 0.5)
     ];
 
-    const centers = [
+    return [
       {
         x: midX - spreadX + driftX,
         y: midY - spreadY + driftY,
@@ -142,11 +117,43 @@
         a: amplitude * (1 + CONFIG.heartbeat.glow * beats[1])
       }
     ];
-
-    return constrainSeparation(centers);
   }
 
-  function swarmContribution(x, y, center) {
+  function separationMask(x, y, index, centers) {
+    if (centers.length !== 2) return 1;
+
+    const first = centers[0];
+    const second = centers[1];
+    const dx = second.x - first.x;
+    const dy = second.y - first.y;
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const ux = dx / distance;
+    const uy = dy / distance;
+    const projection = (x - first.x) * ux + (y - first.y) * uy;
+    const midpoint = distance * 0.5;
+    const gapHalf = Math.max(
+      state.spacing * 1.5,
+      distance * CONFIG.heartbeat.separationGapRatio
+    );
+    const feather = Math.max(
+      state.spacing * 2,
+      distance * CONFIG.heartbeat.separationFeatherRatio
+    );
+
+    if (index === 0) {
+      const boundary = midpoint - gapHalf;
+      if (projection >= boundary) return 0;
+      if (projection <= boundary - feather) return 1;
+      return 1 - smooth(clamp((projection - (boundary - feather)) / feather, 0, 1));
+    }
+
+    const boundary = midpoint + gapHalf;
+    if (projection <= boundary) return 0;
+    if (projection >= boundary + feather) return 1;
+    return smooth(clamp((projection - boundary) / feather, 0, 1));
+  }
+
+  function swarmContribution(x, y, center, index, centers) {
     const dx = (x - center.x) / Math.max(1, center.sx);
     const dy = (y - center.y) / Math.max(1, center.sy);
     const radial = Math.sqrt(dx * dx + dy * dy);
@@ -164,7 +171,8 @@
       taper = 1 - smooth(edge);
     }
 
-    return center.a * Math.exp(-0.5 * radial * radial) * taper;
+    const separation = separationMask(x, y, index, centers);
+    return center.a * Math.exp(-0.5 * radial * radial) * taper * separation;
   }
 
   function pointerContribution(x, y) {
@@ -176,8 +184,8 @@
 
   function intensityAt(x, y, centers, time) {
     let value = 0;
-    for (const center of centers) {
-      value = Math.max(value, swarmContribution(x, y, center));
+    for (let index = 0; index < centers.length; index += 1) {
+      value = Math.max(value, swarmContribution(x, y, centers[index], index, centers));
     }
 
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
