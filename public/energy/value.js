@@ -130,6 +130,7 @@ mountValueFlowUi()
 const valueNumber = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 })
 const valueInputs = [...document.querySelectorAll('#flux-valeur input, #flux-valeur select')]
 const valueStatus = document.querySelector('#value-status')
+const BEZNAU_RATIO_VALUE_LAYER = 10 / 80
 
 function valueNumeric(selector) {
   const value = Number(document.querySelector(selector)?.value)
@@ -183,8 +184,82 @@ function applyValuePreset(name) {
   runValueFlow()
 }
 
+function deriveEconomicsModel() {
+  const physical = window.MuzeEnergyPhysical?.currentModel?.()
+  const route = window.MuzeEnergyRoute?.currentModel?.()
+  const selected = window.MuzeEnergyTerritory?.selectedTerritories?.() || []
+  if (!physical || !route || !physical.segmentModels?.length || !document.querySelector('#cout-complet')) return null
+
+  const read = id => {
+    const value = Number(document.querySelector(id)?.value)
+    return Number.isFinite(value) ? value : null
+  }
+  const fields = [
+    '#cost-site-access', '#cost-valley-axis', '#cost-urban', '#cost-industrial', '#cost-crossing-km',
+    '#cost-crossing-fixed', '#cost-source-interface', '#cost-delivery-node', '#cost-industrial-node',
+    '#cost-contingency', '#cost-life', '#cost-discount', '#cost-opex', '#cost-electricity', '#cost-gas',
+    '#industry-inspira-mw', '#industry-inspira-hours', '#industry-roussillon-mw', '#industry-roussillon-hours'
+  ]
+  const values = Object.fromEntries(fields.map(id => [id, read(id)]))
+  if (Object.values(values).some(value => value === null || value < 0) || values['#cost-life'] <= 0) return null
+
+  const costByClass = {
+    'site-access': values['#cost-site-access'],
+    'valley-axis': values['#cost-valley-axis'],
+    urban: values['#cost-urban'],
+    industrial: values['#cost-industrial'],
+    crossing: values['#cost-crossing-km']
+  }
+  const industrialLoads = [
+    { mw: values['#industry-inspira-mw'], hours: values['#industry-inspira-hours'] },
+    { mw: values['#industry-roussillon-mw'], hours: values['#industry-roussillon-hours'] }
+  ]
+  const activeIndustrial = industrialLoads.filter(load => load.mw > 0 && load.hours > 0)
+  const industrialMwh = activeIndustrial.reduce((sum, load) => sum + load.mw * load.hours, 0)
+  const householdHeatDemand = Number(document.querySelector('#territory-heat-demand')?.value) || 0
+  const householdMwh = selected.reduce((sum, place) => sum + place.households, 0) * householdHeatDemand
+  const usefulDemandMwh = householdMwh + industrialMwh
+
+  const segmentCapex = physical.segmentModels.reduce((sum, edge) => sum + edge.physicalKm * (costByClass[edge.classId] ?? 0), 0)
+  const crossingCapex = physical.crossings * values['#cost-crossing-fixed']
+  const deliveryCapex = selected.length * values['#cost-delivery-node']
+  const industrialNodesCapex = activeIndustrial.length * values['#cost-industrial-node']
+  const directCapex = segmentCapex + crossingCapex + values['#cost-source-interface'] + deliveryCapex + industrialNodesCapex
+  const totalCapex = directCapex * (1 + values['#cost-contingency'] / 100)
+
+  const rate = values['#cost-discount'] / 100
+  const life = values['#cost-life']
+  const crf = rate === 0 ? 1 / life : (rate * (1 + rate) ** life) / ((1 + rate) ** life - 1)
+  const annualizedCapexMEur = totalCapex * crf
+  const opexMEur = totalCapex * values['#cost-opex'] / 100
+  const pumpingMEur = physical.pumpEnergyMwh * values['#cost-electricity'] / 1e6
+
+  const sourceCapacityMwh = route.sourceMw * route.hours
+  const sourceRequiredMwh = usefulDemandMwh + physical.heatLossMwh
+  const sourceUsedMwh = Math.min(sourceCapacityMwh, sourceRequiredMwh)
+  const servedUsefulMwh = Math.max(0, Math.min(usefulDemandMwh, sourceUsedMwh - physical.heatLossMwh))
+  const electricOpportunityMwh = sourceUsedMwh * BEZNAU_RATIO_VALUE_LAYER
+  const opportunityMEur = electricOpportunityMwh * values['#cost-electricity'] / 1e6
+  const annualFullCostMEur = annualizedCapexMEur + opexMEur + pumpingMEur + opportunityMEur
+
+  const boilerEfficiency = Math.max(0.01, (Number(document.querySelector('#territory-boiler-efficiency')?.value) || 92) / 100)
+  const gasEquivalentMwh = servedUsefulMwh / boilerEfficiency
+  const gasCostMEur = gasEquivalentMwh * values['#cost-gas'] / 1e6
+
+  return {
+    totalCapex,
+    annualizedCapexMEur,
+    opexMEur,
+    pumpingMEur,
+    opportunityMEur,
+    annualFullCostMEur,
+    servedUsefulMwh,
+    gasCostMEur
+  }
+}
+
 function runValueFlow() {
-  const economics = window.MuzeEnergyEconomics?.currentModel?.()
+  const economics = window.MuzeEnergyEconomics?.currentModel?.() || deriveEconomicsModel()
   if (!economics) {
     valueStatus.textContent = 'Le coût complet doit d’abord produire un modèle valide.'
     return
@@ -215,7 +290,7 @@ function runValueFlow() {
     return
   }
 
-  const tariffRevenueMEur = (economics.servedUsefulMwh * tariff) / 1e6
+  const tariffRevenueMEur = economics.servedUsefulMwh * tariff / 1e6
   const publicFeeMEur = tariffRevenueMEur * publicFeePct / 100
   const annualRequirementMEur = economics.annualFullCostMEur + publicFeeMEur
   const balanceMEur = tariffRevenueMEur - annualRequirementMEur
@@ -231,7 +306,6 @@ function runValueFlow() {
   const privateCapitalFlow = economics.annualizedCapexMEur * privateShare / 100
   const publicOpsFlow = management === 'public' ? economics.opexMEur : 0
   const privateOpsFlow = management === 'delegated' ? economics.opexMEur : 0
-
   const stateSourceFlow = economics.opportunityMEur
   const publicAnnualFlow = stateCapitalFlow + localCapitalFlow + stateSourceFlow + publicOpsFlow + publicFeeMEur
   const privateAnnualFlow = privateCapitalFlow + privateOpsFlow
@@ -282,5 +356,8 @@ function runValueFlow() {
 document.querySelector('#run-value').addEventListener('click', runValueFlow)
 valueInputs.forEach(input => input.addEventListener('change', runValueFlow))
 document.querySelectorAll('[data-value-preset]').forEach(button => button.addEventListener('click', () => applyValuePreset(button.dataset.valuePreset)))
+document.querySelectorAll('#cout-complet input').forEach(input => input.addEventListener('change', runValueFlow))
 window.addEventListener('muze:economics-updated', runValueFlow)
+window.addEventListener('muze:physical-updated', runValueFlow)
+window.addEventListener('muze:territory-updated', runValueFlow)
 runValueFlow()
