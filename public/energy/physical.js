@@ -138,6 +138,7 @@ const CORRIDOR_CLASSES = Object.freeze({
 })
 
 const physicalOverrides = new Map()
+let currentPhysicalModel = null
 
 function physicalNumeric(input) {
   const value = Number(input.value)
@@ -236,12 +237,16 @@ function runPhysicalCorridor() {
   const crossingExtraKm = physicalNumeric(physicalCrossingExtraInput)
 
   if (!model || !model.edgeModels?.length) {
+    currentPhysicalModel = null
     physicalStatus.textContent = 'Le pré-tracé thermique doit d’abord produire un modèle valide.'
+    window.dispatchEvent(new CustomEvent('muze:physical-updated'))
     return
   }
 
   if (crossings === null || crossingExtraKm === null || crossings < 0 || crossingExtraKm < 0) {
+    currentPhysicalModel = null
     physicalStatus.textContent = 'Vérifier les hypothèses de franchissement : valeurs positives ou nulles.'
+    window.dispatchEvent(new CustomEvent('muze:physical-updated'))
     return
   }
 
@@ -273,6 +278,20 @@ function runPhysicalCorridor() {
   const pumpPowerMw = pumpPowerMwSegments + crossingPumpPowerMw
   const pumpEnergyMwh = pumpPowerMw * model.hours
 
+  currentPhysicalModel = {
+    routeModel: model,
+    segmentModels,
+    crossings,
+    crossingExtraKm,
+    crossingsExtraTotalKm,
+    corridorKm,
+    pairedPipeKm,
+    deltaPct,
+    heatLossMwh,
+    pumpPowerMw,
+    pumpEnergyMwh
+  }
+
   physicalGeoResult.textContent = `${physicalNumber.format(model.geoKm)} km`
   physicalCorridorResult.textContent = `${physicalNumber.format(corridorKm)} km`
   physicalDeltaResult.textContent = `+${physicalNumber.format(deltaPct)} %`
@@ -285,10 +304,24 @@ function runPhysicalCorridor() {
   renderPhysicalRows(model)
 
   physicalStatus.textContent = `${segmentModels.length} segment(s) reclassés : ${physicalNumber.format(model.geoKm)} km géodésiques deviennent ${physicalNumber.format(corridorKm)} km dans ce scénario physique. Les classes et coefficients restent des hypothèses de pré-étude, pas des emprises validées.`
+  window.dispatchEvent(new CustomEvent('muze:physical-updated'))
 }
 
 runPhysicalButton.addEventListener('click', runPhysicalCorridor)
 physicalCrossingsInput.addEventListener('change', runPhysicalCorridor)
 physicalCrossingExtraInput.addEventListener('change', runPhysicalCorridor)
 window.addEventListener('muze:route-updated', runPhysicalCorridor)
+
+window.MuzeEnergyPhysical = Object.freeze({
+  currentModel: () => currentPhysicalModel,
+  corridorClasses: CORRIDOR_CLASSES
+})
+
 runPhysicalCorridor()
+
+if (!document.querySelector('script[data-economics-layer]')) {
+  const economicsScript = document.createElement('script')
+  economicsScript.src = './economics.js'
+  economicsScript.dataset.economicsLayer = 'true'
+  document.body.appendChild(economicsScript)
+}
