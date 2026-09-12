@@ -76,7 +76,7 @@
 
   const CONFIG = Object.freeze({
     swarmCount: 2,
-    speed: 6.6,
+    speed: 8.8,
     mode: 'dispersion',
     density: 27,
     automataMultiplier: 9,
@@ -457,7 +457,7 @@
         const raw = intensityAt(x, y, centers, time);
         const normalized = smooth(clamp(raw / 1.16, 0, 1));
 
-        const radius = 0.7 + normalized * 2.55;
+        const radius = Math.max(spacing * 0.51, 0.7 + normalized * 2.55);
         const alpha = 0.045 + normalized * 0.88;
         const { r, g, b } = dynamicColor(x, y, time, normalized);
 
