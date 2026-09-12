@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/brand.css">
   <link rel="stylesheet" href="../assets/mesh-portal.css">
   <link rel="stylesheet" href="./energy.css">
+  <link rel="stylesheet" href="./territory.css">
 </head>
 <body>
   <header class="subpage-header">
@@ -35,7 +36,8 @@
         <a href="#logement">Puissance du logement</a>
         <a href="#architecture">Architecture réseau</a>
         <a href="#thermique">Simulateur thermique</a>
-        <a href="#beznau">Cas réel</a>
+        <a href="#beznau">Preuve de principe</a>
+        <a href="#saint-alban">Cas France</a>
         <a href="#limites">Limites</a>
       </div>
     </div>
@@ -222,8 +224,92 @@
       </div>
     </section>
 
+    <section id="saint-alban" class="panel territory-anchor" aria-labelledby="saint-alban-title">
+      <p class="eyebrow">06 · Cas France · centrale réelle + territoire réel</p>
+      <h2 id="saint-alban-title">Saint-Alban / Saint-Maurice : remplacer l’échelle abstraite par un bassin réellement habité.</h2>
+      <p>L’ASNR décrit la centrale de Saint-Alban / Saint-Maurice comme deux réacteurs à eau sous pression de <strong>1 300 MWₑ chacun</strong>, exploités par EDF en Isère. Ce fait ne prouve aucune capacité actuelle de fourniture de chaleur au territoire. Il fournit seulement un ancrage industriel réel pour tester le modèle.</p>
+
+      <div class="territory-facts">
+        <article><strong>2 × 1 300 MWₑ</strong><span>puissance électrique des deux réacteurs selon l’ASNR</span></article>
+        <article><strong>15 359 ménages</strong><span>somme INSEE 2023 des six communes proposées par défaut</span></article>
+        <article><strong>40 km au sud de Lyon</strong><span>localisation générale indiquée par l’ASNR</span></article>
+      </div>
+
+      <div class="territory-source-note">
+        <p><strong>Données réelles :</strong> identité et puissance de la centrale ; nombre de ménages par commune.</p>
+        <p><strong>Hypothèses modifiables :</strong> besoin thermique par ménage, rendement du réseau, puissance thermique extraite, heures équivalentes de fonctionnement et rendement de la chaudière de comparaison.</p>
+        <p><strong>Non établi :</strong> tracé des canalisations, capacité de soutirage thermique à Saint-Alban, température disponible, coûts, autorisations, raccordabilité et faisabilité économique.</p>
+      </div>
+
+      <h3>Choisir le périmètre statistique</h3>
+      <div id="territory-list" class="territory-list" aria-label="Communes du scénario Saint-Alban"></div>
+
+      <div class="scale-presets" aria-label="Puissances thermiques de test">
+        <button type="button" class="button secondary" data-territory-source-mw="20">Tester 20 MWₜₕ</button>
+        <button type="button" class="button secondary" data-territory-source-mw="40">Tester 40 MWₜₕ</button>
+        <button type="button" class="button secondary" data-territory-source-mw="80">Tester 80 MWₜₕ</button>
+      </div>
+
+      <div class="energy-form-grid">
+        <div class="energy-field">
+          <label for="territory-heat-demand">Besoin utile par ménage (MWhₜₕ/an)</label>
+          <input id="territory-heat-demand" type="number" min="0.1" step="0.1" value="8">
+        </div>
+        <div class="energy-field">
+          <label for="territory-efficiency">Rendement de distribution (%)</label>
+          <input id="territory-efficiency" type="number" min="50" max="100" step="0.1" value="90">
+        </div>
+        <div class="energy-field">
+          <label for="territory-source-mw">Puissance thermique testée (MWₜₕ)</label>
+          <input id="territory-source-mw" type="number" min="0.1" step="0.1" value="40">
+        </div>
+        <div class="energy-field">
+          <label for="territory-hours">Heures équivalentes/an</label>
+          <input id="territory-hours" type="number" min="1" max="8760" step="1" value="4000">
+        </div>
+        <div class="energy-field">
+          <label for="territory-boiler-efficiency">Rendement chaudière gaz de référence (%)</label>
+          <input id="territory-boiler-efficiency" type="number" min="50" max="110" step="0.1" value="92">
+        </div>
+      </div>
+
+      <div class="territory-equation" aria-label="Chaîne de calcul du cas Saint-Alban">
+        <span>ménages INSEE</span><span>×</span><span>besoin thermique</span><span>÷</span><span>rendement réseau</span><span>↔</span><strong>capacité thermique testée</strong>
+      </div>
+
+      <div class="energy-actions"><button id="run-territory" type="button">Calculer le bassin réel</button></div>
+      <p id="territory-status" class="territory-status" role="status" aria-live="polite">Le calcul utilise les ménages réels et des hypothèses thermiques modifiables.</p>
+
+      <div id="territory-results" class="territory-results" hidden>
+        <div class="metric"><span>Ménages sélectionnés</span><strong id="territory-households-result">—</strong><small>Somme des ménages INSEE 2023.</small></div>
+        <div class="metric"><span>Chaleur utile</span><strong id="territory-useful-result">—</strong><small>Besoin annuel selon l’hypothèse saisie.</small></div>
+        <div class="metric"><span>Chaleur à la source</span><strong id="territory-source-result">—</strong><small>Besoin avant pertes de distribution.</small></div>
+        <div class="metric"><span>Pertes réseau</span><strong id="territory-loss-result">—</strong><small>Écart entre source et chaleur utile.</small></div>
+        <div class="metric"><span>Capacité / besoin annuel</span><strong id="territory-coverage-result">—</strong><small>Puissance testée × heures, rapportée au besoin source.</small></div>
+        <div class="metric"><span>Gaz équivalent</span><strong id="territory-gas-result">—</strong><small>Énergie gaz théorique pour le même service utile.</small></div>
+        <div class="metric"><span>Coût d’opportunité électrique</span><strong id="territory-electric-result">—</strong><small>Benchmark Beznau 10 MWₑ / 80 MWₜₕ, pas une mesure Saint-Alban.</small></div>
+      </div>
+
+      <div class="callout">
+        <p><strong>Test falsifiable :</strong> si la chaleur demandée, les pertes, le coût d’opportunité électrique, la température, le tracé ou le CAPEX rendent le scénario défavorable, le modèle doit le montrer. Le but n’est pas de conclure que Saint-Alban doit alimenter ces communes ; le but est de quantifier ce qu’il faudrait démontrer avant de pouvoir l’affirmer.</p>
+      </div>
+
+      <details class="territory-sources">
+        <summary>Sources du périmètre réel</summary>
+        <ul>
+          <li><a href="https://nuclear-safety.asn.fr/controle/l-asnr-en-region/auvergne-rhone-alpes/centrale-nucleaire-de-saint-alban" target="_blank" rel="noopener noreferrer">ASNR — Centrale nucléaire de Saint-Alban / Saint-Maurice</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-38425" target="_blank" rel="noopener noreferrer">INSEE — Saint-Maurice-l’Exil : 2 690 ménages en 2023</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-38298" target="_blank" rel="noopener noreferrer">INSEE — Le Péage-de-Roussillon : 2 675 ménages en 2023</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-38344" target="_blank" rel="noopener noreferrer">INSEE — Roussillon : 3 726 ménages en 2023</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-38468" target="_blank" rel="noopener noreferrer">INSEE — Salaise-sur-Sanne : 1 946 ménages en 2023</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-38378" target="_blank" rel="noopener noreferrer">INSEE — Saint-Clair-du-Rhône : 1 649 ménages en 2023</a></li>
+          <li><a href="https://www.insee.fr/fr/statistiques/1405599?geo=COM-26325" target="_blank" rel="noopener noreferrer">INSEE — Saint-Rambert-d’Albon : 2 673 ménages en 2023</a></li>
+        </ul>
+      </details>
+    </section>
+
     <section id="limites" class="panel" aria-labelledby="limits-title">
-      <p class="eyebrow">06 · Ce que le modèle ne prouve pas</p>
+      <p class="eyebrow">07 · Ce que le modèle ne prouve pas</p>
       <h2 id="limits-title">Une architecture plausible n’est pas encore un projet rentable.</h2>
       <div class="boundary-list">
         <article><strong>Distance</strong><span>Le transport thermique dépend du diamètre des conduites, de leur isolation, du débit et du coût des travaux.</span></article>
@@ -243,14 +329,15 @@
         <li><a href="https://reseaux-chaleur.cerema.fr/espace-documentaire/renover-reseau-chaleur" target="_blank" rel="noopener noreferrer">Cerema — Rénover un réseau de chaleur</a><span>Le rendement de distribution observé sur 17 réseaux étudiés est compris entre 75 et 95 %.</span></li>
         <li><a href="https://analysesetdonnees.rte-france.com/bilan-electrique-2024/production" target="_blank" rel="noopener noreferrer">RTE — Bilan électrique 2024 · Production</a><span>Production nucléaire française : 361,7 TWh en 2024.</span></li>
         <li><a href="https://analysesetdonnees.rte-france.com/bilan-electrique-2024/synthese" target="_blank" rel="noopener noreferrer">RTE — Bilan électrique 2024 · Synthèse</a><span>89 TWh d’exportations nettes et enjeu d’utilisation de l’électricité bas-carbone pour substituer des usages fossiles.</span></li>
+        <li><a href="https://nuclear-safety.asn.fr/controle/l-asnr-en-region/auvergne-rhone-alpes/centrale-nucleaire-de-saint-alban" target="_blank" rel="noopener noreferrer">ASNR — Saint-Alban / Saint-Maurice</a><span>Deux réacteurs REP de 1 300 MWₑ chacun ; localisation et caractéristiques du site.</span></li>
       </ul>
     </section>
 
     <section class="notice-panel" aria-labelledby="next-title">
       <div>
         <p class="eyebrow">Étape suivante</p>
-        <h2 id="next-title">Du modèle générique à un territoire réel.</h2>
-        <p>La prochaine couche pourra prendre une centrale et un bassin de population réels, poser les distances, les températures, les densités de demande et les coûts de réseau, puis comparer chaleur valorisée, électricité sacrifiée et combustible fossile évité. Le modèle public doit pouvoir conclure aussi bien « pertinent » que « non pertinent ».</p>
+        <h2 id="next-title">Du bassin statistique au tracé thermique.</h2>
+        <p>Le prochain niveau consiste à poser des distances réelles, un tracé de conduite, des températures départ/retour, des diamètres, des débits, des stations intermédiaires et un CAPEX/OPEX. À ce stade seulement, le cas Saint-Alban pourra passer d’un bilan énergétique à un pré-dimensionnement territorial.</p>
       </div>
     </section>
   </main>
@@ -264,6 +351,7 @@
   </footer>
 
   <script src="./app.js"></script>
+  <script src="./territory.js"></script>
   <script src="../assets/mesh-portal.js"></script>
 </body>
 </html>
