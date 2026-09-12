@@ -21,6 +21,9 @@ jobs:
           test -f public/privacy.html
           test -f public/information/index.html
           test -f public/everyday-products/index.html
+          test -f public/reflection-field/index.html
+          test -f public/reflection-field/reflection-field.css
+          test -f public/reflection-field/reflection-field.js
           test -f public/dpe/index.html
           test -f public/dpe/app.js
           test -f public/energy/index.html
@@ -50,6 +53,7 @@ jobs:
         run: |
           node --check public/dpe/app.js
           node --check public/energy/app.js
+          node --check public/reflection-field/reflection-field.js
           node --check public/assets/mesh-portal.js
 
       - name: Preserve central public hub navigation
@@ -61,6 +65,7 @@ jobs:
           grep -q 'href="./dpe/"' public/index.html
           grep -q 'href="./energy/"' public/index.html
           grep -q 'href="./everyday-products/"' public/index.html
+          grep -q 'href="./reflection-field/"' public/index.html
           grep -q 'href="./justice/"' public/index.html
           grep -q 'href="./number-information-lab/"' public/index.html
           grep -q 'href="./number-information-lab/argent/"' public/index.html
@@ -70,6 +75,9 @@ jobs:
           grep -q 'hub-nav.css' public/index.html
           grep -q 'Pourquoi transportons-nous de l’air et de l’eau' public/everyday-products/index.html
           grep -q 'RESSOURCES NÉCESSAIRES À LA FONCTION' public/everyday-products/index.html
+          grep -q 'Réflexion en cours' public/reflection-field/index.html
+          grep -q 'data-portal-exempt="reflection-field"' public/reflection-field/index.html
+          grep -q 'reflection-field.js' public/reflection-field/index.html
           grep -q 'href="../trajectoire/"' public/number-information-lab/argent/portefeuille/index.html
           grep -q 'FR0010916924' public/number-information-lab/argent/extinction/index.html
           grep -q '125,7005' public/number-information-lab/argent/extinction/index.html
@@ -81,17 +89,23 @@ jobs:
           grep -q '2,121288' public/number-information-lab/argent/residu/index.html
           grep -q '−0,035788' public/number-information-lab/argent/residu/index.html
 
-      - name: Require full-screen attractor on every public HTML page
+      - name: Require full-screen attractor on standard public HTML pages
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
           missing = []
+          exemptions = []
           for path in Path('public').rglob('*.html'):
               text = path.read_text(encoding='utf-8')
+              if 'data-portal-exempt="reflection-field"' in text:
+                  exemptions.append(str(path))
+                  continue
               if 'mesh-portal.css' not in text or 'mesh-portal.js' not in text:
                   missing.append(str(path))
+          if exemptions != ['public/reflection-field/index.html']:
+              raise SystemExit('Unexpected portal exemption set: ' + ', '.join(exemptions))
           if missing:
               raise SystemExit('Portal attractor missing from: ' + ', '.join(missing))
           PY
@@ -102,6 +116,19 @@ jobs:
             echo 'Legacy in-flow portal block must not return.' >&2
             exit 1
           fi
+
+      - name: Preserve reflection field isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'mesh-portal.js' public/reflection-field/index.html; then
+            echo 'Reflection field must remain isolated from the global portal attractor.' >&2
+            exit 1
+          fi
+          grep -q 'requestAnimationFrame' public/reflection-field/reflection-field.js
+          grep -q 'gaussian' public/reflection-field/reflection-field.js
+          grep -q 'prefers-reduced-motion' public/reflection-field/reflection-field.js
+          grep -q 'position: fixed' public/reflection-field/reflection-field.css
 
       - name: Preserve bottom swarm anchor and conceptual interface note
         shell: bash
