@@ -78,9 +78,14 @@
     swarmCount: 2,
     speed: 6.6,
     mode: 'dispersion',
-    density: 9,
-    automataMultiplier: 3,
-    color: Object.freeze({ r: 244, g: 93, b: 211 }),
+    density: 27,
+    automataMultiplier: 9,
+    palette: Object.freeze({
+      neon: Object.freeze({ r: 255, g: 36, b: 214 }),
+      violet: Object.freeze({ r: 166, g: 72, b: 255 }),
+      deep: Object.freeze({ r: 78, g: 24, b: 145 }),
+      cycleSeconds: 9.5
+    }),
     heartbeat: Object.freeze({
       bpm: 72,
       expansion: 0.33,
@@ -127,6 +132,47 @@
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const smooth = value => value * value * (3 - 2 * value);
+  const lerp = (from, to, amount) => from + (to - from) * amount;
+
+  function interpolateColor(from, to, amount) {
+    return {
+      r: Math.round(lerp(from.r, to.r, amount)),
+      g: Math.round(lerp(from.g, to.g, amount)),
+      b: Math.round(lerp(from.b, to.b, amount))
+    };
+  }
+
+  function dynamicColor(x, y, time, normalized) {
+    const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
+    const spatial =
+      (x / Math.max(1, state.width)) * 0.28 +
+      (y / Math.max(1, state.height)) * 0.18 +
+      normalized * 0.08;
+    const phase = ((elapsed / CONFIG.palette.cycleSeconds + spatial) % 1 + 1) % 1;
+    const third = 1 / 3;
+
+    if (phase < third) {
+      return interpolateColor(
+        CONFIG.palette.neon,
+        CONFIG.palette.violet,
+        smooth(phase / third)
+      );
+    }
+
+    if (phase < third * 2) {
+      return interpolateColor(
+        CONFIG.palette.violet,
+        CONFIG.palette.deep,
+        smooth((phase - third) / third)
+      );
+    }
+
+    return interpolateColor(
+      CONFIG.palette.deep,
+      CONFIG.palette.neon,
+      smooth((phase - third * 2) / third)
+    );
+  }
 
   function drawPortalQr() {
     const side = QR_MATRIX.length;
@@ -403,7 +449,6 @@
 
     const centers = movingCenters(time);
     const spacing = state.spacing;
-    const { r, g, b } = CONFIG.color;
 
     for (let row = 0; row < state.rows; row += 1) {
       const y = state.y0 + row * spacing;
@@ -414,6 +459,7 @@
 
         const radius = 0.7 + normalized * 2.55;
         const alpha = 0.045 + normalized * 0.88;
+        const { r, g, b } = dynamicColor(x, y, time, normalized);
 
         ctx.beginPath();
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
@@ -448,7 +494,10 @@
     state.pointer.active = true;
     state.pointer.pointerId = event.pointerId;
     state.pointer.revealPress = isCentralPress(event.clientX, event.clientY);
-    state.revealTarget = state.pointer.revealPress ? 1 : 0;
+
+    if (state.pointer.revealPress) {
+      state.revealTarget = state.revealTarget > 0.5 ? 0 : 1;
+    }
 
     if (state.pointer.revealPress && canvas.setPointerCapture) {
       try {
@@ -475,7 +524,6 @@
     state.pointer.active = false;
     state.pointer.revealPress = false;
     state.pointer.pointerId = null;
-    state.revealTarget = 0;
   }
 
   window.addEventListener('resize', resize, { passive: true });
@@ -487,7 +535,6 @@
     state.pointer.active = false;
     state.pointer.revealPress = false;
     state.pointer.pointerId = null;
-    state.revealTarget = 0;
   });
 
   resize();
