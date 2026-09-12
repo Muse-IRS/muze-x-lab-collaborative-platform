@@ -74,10 +74,11 @@
     '00000000000000000000000000000000000000000000000000000'
   ]);
 
+  const PI = Math.PI;
   const PHI = (1 + Math.sqrt(5)) / 2;
   const PHI_INVERSE = 1 / PHI;
   const GOLDEN_ANGLE_TURNS = 1 / (PHI * PHI);
-  const TAU = Math.PI * 2;
+  const TAU = PI * 2;
 
   const CONFIG = Object.freeze({
     swarmCount: 2,
@@ -109,6 +110,16 @@
       fadeEnd: 1.75,
       separationGapRatio: 0.06,
       separationFeatherRatio: 0.05
+    }),
+    planet: Object.freeze({
+      rotationSeconds: PI * PHI * 4,
+      axialTilt: PI / 7,
+      ambient: 0.72,
+      lightStrength: 0.28,
+      depthAlpha: 0.18,
+      depthRadius: 0.12,
+      longitudeColorInfluence: 0.146,
+      latitudeColorInfluence: 0.090
     }),
     reveal: Object.freeze({
       activationRadiusRatio: 0.16,
@@ -181,7 +192,54 @@
     return 0.5 + 0.5 * Math.sin(TAU * phase);
   }
 
-  function dynamicColor(x, y, time, normalized) {
+  function planetProjection(x, y, centers, time) {
+    let chosen = null;
+    let bestRadialSquared = Infinity;
+
+    for (const center of centers) {
+      const nx = (x - center.x) / Math.max(1, center.sx * CONFIG.heartbeat.fadeEnd);
+      const ny = (y - center.y) / Math.max(1, center.sy * CONFIG.heartbeat.fadeEnd);
+      const radialSquared = nx * nx + ny * ny;
+      if (radialSquared < bestRadialSquared) {
+        bestRadialSquared = radialSquared;
+        chosen = { nx, ny };
+      }
+    }
+
+    if (!chosen || bestRadialSquared >= 1) {
+      return {
+        depth: 0,
+        shade: CONFIG.planet.ambient,
+        longitudeTurns: 0,
+        latitudeTurns: 0.5
+      };
+    }
+
+    const depth = Math.sqrt(Math.max(0, 1 - bestRadialSquared));
+    const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
+    const rotation = reducedMotion
+      ? PI * PHI_INVERSE
+      : TAU * (elapsed / CONFIG.planet.rotationSeconds);
+
+    const cosTilt = Math.cos(CONFIG.planet.axialTilt);
+    const sinTilt = Math.sin(CONFIG.planet.axialTilt);
+    const lx = Math.cos(rotation) * cosTilt;
+    const ly = sinTilt;
+    const lz = Math.sin(rotation) * cosTilt;
+    const light = clamp(chosen.nx * lx + chosen.ny * ly + depth * lz, 0, 1);
+
+    const longitudeTurns = ((Math.atan2(chosen.nx, depth) + rotation) / TAU + 1) % 1;
+    const latitudeTurns = clamp(Math.asin(clamp(chosen.ny, -1, 1)) / PI + 0.5, 0, 1);
+
+    return {
+      depth,
+      shade: clamp(CONFIG.planet.ambient + CONFIG.planet.lightStrength * light, 0, 1),
+      longitudeTurns,
+      latitudeTurns
+    };
+  }
+
+  function dynamicColor(x, y, time, normalized, planet) {
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
     const colorElapsed = elapsed * CONFIG.palette.timeScale;
     const xNorm = x / Math.max(1, state.width);
@@ -189,7 +247,9 @@
     const spatial =
       xNorm * GOLDEN_ANGLE_TURNS +
       yNorm * PHI_INVERSE +
-      normalized * 0.236;
+      normalized * 0.236 +
+      planet.longitudeTurns * CONFIG.planet.longitudeColorInfluence +
+      planet.latitudeTurns * CONFIG.planet.latitudeColorInfluence;
     const localPhi = phiWave(colorElapsed, spatial);
     const phase = (
       colorElapsed / CONFIG.palette.cycleSeconds +
@@ -197,7 +257,12 @@
       (localPhi - 0.5) * 0.146
     ) % 1;
 
-    return paletteColorAt((phase + 1) % 1);
+    const color = paletteColorAt((phase + 1) % 1);
+    return {
+      r: Math.round(color.r * planet.shade),
+      g: Math.round(color.g * planet.shade),
+      b: Math.round(color.b * planet.shade)
+    };
   }
 
   function drawPortalQr() {
@@ -485,10 +550,17 @@
         const x = state.x0 + col * spacing;
         const raw = intensityAt(x, y, centers, time);
         const normalized = smooth(clamp(raw / 1.16, 0, 1));
+        const planet = planetProjection(x, y, centers, time);
 
-        const radius = Math.max(spacing * 0.51, 0.7 + normalized * 2.55);
-        const alpha = 0.045 + normalized * 0.88;
-        const { r, g, b } = dynamicColor(x, y, time, normalized);
+        const dynamicRadius = 0.7 + normalized * 2.55;
+        const radius = Math.max(
+          spacing * 0.51,
+          dynamicRadius * (1 - CONFIG.planet.depthRadius + planet.depth * CONFIG.planet.depthRadius)
+        );
+        const alpha =
+          (0.045 + normalized * 0.88) *
+          (1 - CONFIG.planet.depthAlpha + planet.depth * CONFIG.planet.depthAlpha);
+        const { r, g, b } = dynamicColor(x, y, time, normalized, planet);
 
         ctx.beginPath();
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
@@ -498,7 +570,7 @@
         } else {
           ctx.shadowBlur = 0;
         }
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.arc(x, y, radius, 0, TAU);
         ctx.fill();
       }
     }
