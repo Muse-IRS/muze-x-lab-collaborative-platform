@@ -36,6 +36,8 @@ const THERMAL_SOURCE = Object.freeze({
   source: true
 })
 
+let currentRouteModel = null
+
 function routeNumeric(input) {
   const value = Number(input.value)
   return Number.isFinite(value) ? value : null
@@ -246,7 +248,9 @@ function runThermalRoute() {
     || hours <= 0
 
   if (invalid) {
+    currentRouteModel = null
     routeStatus.textContent = 'Vérifier les hypothèses : au moins une commune, facteur de tracé ≥ 1, départ > retour, valeurs positives et rendement de pompe ≤ 100 %.'
+    window.dispatchEvent(new CustomEvent('muze:route-updated'))
     return
   }
 
@@ -294,6 +298,28 @@ function runThermalRoute() {
   const pumpPowerMw = edgeModels.reduce((sum, edge) => sum + edge.pumpPowerW, 0) / 1e6
   const pumpEnergyMwh = pumpPowerMw * hours
 
+  currentRouteModel = {
+    nodes,
+    edgeModels,
+    geoKm,
+    adjustedKm,
+    pairedPipeKm,
+    sourceMw,
+    hours,
+    deltaT,
+    supplyTemp,
+    returnTemp,
+    velocity,
+    linearLoss,
+    pressureGradient,
+    pumpEfficiency,
+    sourceMassFlowKgS,
+    maxDn,
+    heatLossMwh,
+    pumpPowerMw,
+    pumpEnergyMwh
+  }
+
   routeGeoLengthResult.textContent = `${routeNumber.format(geoKm)} km`
   routeAdjustedLengthResult.textContent = `${routeNumber.format(adjustedKm)} km`
   routePipeLengthResult.textContent = `${routeNumber.format(pairedPipeKm)} km`
@@ -307,6 +333,7 @@ function runThermalRoute() {
   renderSegments(edgeModels)
 
   routeStatus.textContent = `Tracé mathématique : ${tree.length} segment(s), ${routeNumber.format(geoKm)} km géodésiques puis ${routeNumber.format(adjustedKm)} km après facteur ${routeNumber.format(routeFactor)}. Ce résultat est un pré-dimensionnement géométrique, pas un tracé de travaux.`
+  window.dispatchEvent(new CustomEvent('muze:route-updated'))
 }
 
 runRouteButton.addEventListener('click', runThermalRoute)
@@ -314,4 +341,10 @@ runRouteButton.addEventListener('click', runThermalRoute)
   .forEach(input => input.addEventListener('change', runThermalRoute))
 
 window.addEventListener('muze:territory-updated', runThermalRoute)
+
+window.MuzeEnergyRoute = Object.freeze({
+  currentModel: () => currentRouteModel,
+  thermalSource: THERMAL_SOURCE
+})
+
 runThermalRoute()
