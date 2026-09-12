@@ -36,6 +36,8 @@ const THERMAL_SOURCE = Object.freeze({
   source: true
 })
 
+let currentRouteModel = null
+
 function routeNumeric(input) {
   const value = Number(input.value)
   return Number.isFinite(value) ? value : null
@@ -104,11 +106,7 @@ function projectNodes(nodes) {
   const pad = 62
   const meanLat = nodes.reduce((sum, node) => sum + node.lat, 0) / nodes.length
   const lonScale = Math.cos(meanLat * Math.PI / 180)
-  const points = nodes.map(node => ({
-    ...node,
-    px: node.lon * lonScale,
-    py: node.lat
-  }))
+  const points = nodes.map(node => ({ ...node, px: node.lon * lonScale, py: node.lat }))
   const xs = points.map(point => point.px)
   const ys = points.map(point => point.py)
   const minX = Math.min(...xs)
@@ -145,14 +143,7 @@ function renderRouteMap(nodes, edgeModels, sourceMw) {
     const a = projectedById.get(edge.parent.id)
     const b = projectedById.get(edge.child.id)
     const width = sourceMw > 0 ? 2.5 + Math.min(8, (edge.designPowerMw / sourceMw) * 8) : 3
-    const line = svgElement('line', {
-      x1: a.x,
-      y1: a.y,
-      x2: b.x,
-      y2: b.y,
-      class: 'route-edge',
-      'stroke-width': width
-    })
+    const line = svgElement('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'route-edge', 'stroke-width': width })
     const title = svgElement('title')
     title.textContent = `${edge.parent.name} → ${edge.child.name} · ${routeNumber.format(edge.adjustedKm)} km · DN ${edge.dn}`
     line.appendChild(title)
@@ -169,20 +160,12 @@ function renderRouteMap(nodes, edgeModels, sourceMw) {
     })
     group.appendChild(circle)
 
-    const text = svgElement('text', {
-      x: node.x + 14,
-      y: node.y - 7,
-      class: 'route-label'
-    })
+    const text = svgElement('text', { x: node.x + 14, y: node.y - 7, class: 'route-label' })
     text.textContent = node.source ? 'CNPE Saint-Alban' : node.name
     group.appendChild(text)
 
     if (!node.source) {
-      const small = svgElement('text', {
-        x: node.x + 14,
-        y: node.y + 10,
-        class: 'route-small'
-      })
+      const small = svgElement('text', { x: node.x + 14, y: node.y + 10, class: 'route-small' })
       small.textContent = `${routeInteger.format(node.households)} ménages`
       group.appendChild(small)
     }
@@ -246,7 +229,9 @@ function runThermalRoute() {
     || hours <= 0
 
   if (invalid) {
+    currentRouteModel = null
     routeStatus.textContent = 'Vérifier les hypothèses : au moins une commune, facteur de tracé ≥ 1, départ > retour, valeurs positives et rendement de pompe ≤ 100 %.'
+    window.dispatchEvent(new CustomEvent('muze:route-updated'))
     return
   }
 
@@ -270,17 +255,7 @@ function runThermalRoute() {
     const pressureDropPa = pressureGradient * roundTripM
     const pumpPowerW = (pressureDropPa * volumeFlowM3S) / pumpEfficiency
 
-    return {
-      ...edge,
-      adjustedKm,
-      downstreamHouseholds,
-      designPowerMw,
-      massFlowKgS,
-      volumeFlowM3S,
-      diameterM,
-      dn,
-      pumpPowerW
-    }
+    return { ...edge, adjustedKm, downstreamHouseholds, designPowerMw, massFlowKgS, volumeFlowM3S, diameterM, dn, pumpPowerW }
   })
 
   const geoKm = edgeModels.reduce((sum, edge) => sum + edge.distanceKm, 0)
@@ -293,6 +268,28 @@ function runThermalRoute() {
   const heatLossShare = transportedMwh > 0 ? (heatLossMwh / transportedMwh) * 100 : 0
   const pumpPowerMw = edgeModels.reduce((sum, edge) => sum + edge.pumpPowerW, 0) / 1e6
   const pumpEnergyMwh = pumpPowerMw * hours
+
+  currentRouteModel = {
+    nodes,
+    edgeModels,
+    geoKm,
+    adjustedKm,
+    pairedPipeKm,
+    sourceMw,
+    hours,
+    deltaT,
+    supplyTemp,
+    returnTemp,
+    velocity,
+    linearLoss,
+    pressureGradient,
+    pumpEfficiency,
+    sourceMassFlowKgS,
+    maxDn,
+    heatLossMwh,
+    pumpPowerMw,
+    pumpEnergyMwh
+  }
 
   routeGeoLengthResult.textContent = `${routeNumber.format(geoKm)} km`
   routeAdjustedLengthResult.textContent = `${routeNumber.format(adjustedKm)} km`
@@ -307,6 +304,7 @@ function runThermalRoute() {
   renderSegments(edgeModels)
 
   routeStatus.textContent = `Tracé mathématique : ${tree.length} segment(s), ${routeNumber.format(geoKm)} km géodésiques puis ${routeNumber.format(adjustedKm)} km après facteur ${routeNumber.format(routeFactor)}. Ce résultat est un pré-dimensionnement géométrique, pas un tracé de travaux.`
+  window.dispatchEvent(new CustomEvent('muze:route-updated'))
 }
 
 runRouteButton.addEventListener('click', runThermalRoute)
@@ -314,4 +312,17 @@ runRouteButton.addEventListener('click', runThermalRoute)
   .forEach(input => input.addEventListener('change', runThermalRoute))
 
 window.addEventListener('muze:territory-updated', runThermalRoute)
+
+window.MuzeEnergyRoute = Object.freeze({
+  currentModel: () => currentRouteModel,
+  thermalSource: THERMAL_SOURCE
+})
+
 runThermalRoute()
+
+if (!document.querySelector('script[data-physical-corridor]')) {
+  const physicalScript = document.createElement('script')
+  physicalScript.src = './physical.js'
+  physicalScript.dataset.physicalCorridor = 'true'
+  document.body.appendChild(physicalScript)
+}
