@@ -20,6 +20,7 @@ jobs:
           test -f public/index.html
           test -f public/privacy.html
           test -f public/information/index.html
+          test -f public/everyday-products/index.html
           test -f public/dpe/index.html
           test -f public/dpe/app.js
           test -f public/energy/index.html
@@ -59,6 +60,7 @@ jobs:
           grep -q 'href="./information/"' public/index.html
           grep -q 'href="./dpe/"' public/index.html
           grep -q 'href="./energy/"' public/index.html
+          grep -q 'href="./everyday-products/"' public/index.html
           grep -q 'href="./justice/"' public/index.html
           grep -q 'href="./number-information-lab/"' public/index.html
           grep -q 'href="./number-information-lab/argent/"' public/index.html
@@ -66,6 +68,8 @@ jobs:
           grep -q 'https://muse-irs.github.io/muze-x-open-learning-commons/swarm/' public/index.html
           grep -q 'https://muse-irs.github.io/rgpd-data-journey-audit/' public/index.html
           grep -q 'hub-nav.css' public/index.html
+          grep -q 'Pourquoi transportons-nous de l’air et de l’eau' public/everyday-products/index.html
+          grep -q 'RESSOURCES NÉCESSAIRES À LA FONCTION' public/everyday-products/index.html
           grep -q 'href="../trajectoire/"' public/number-information-lab/argent/portefeuille/index.html
           grep -q 'FR0010916924' public/number-information-lab/argent/extinction/index.html
           grep -q '125,7005' public/number-information-lab/argent/extinction/index.html
