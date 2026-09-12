@@ -361,3 +361,10 @@ window.addEventListener('muze:economics-updated', runValueFlow)
 window.addEventListener('muze:physical-updated', runValueFlow)
 window.addEventListener('muze:territory-updated', runValueFlow)
 runValueFlow()
+
+if (!document.querySelector('script[data-evidence-layer]')) {
+  const evidenceScript = document.createElement('script')
+  evidenceScript.src = './evidence.js'
+  evidenceScript.dataset.evidenceLayer = 'true'
+  document.body.appendChild(evidenceScript)
+}
