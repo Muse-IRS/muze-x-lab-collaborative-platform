@@ -132,9 +132,9 @@ const physicalInteger = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 
 const CORRIDOR_CLASSES = Object.freeze({
   'site-access': Object.freeze({ label: 'Sortie de site / desserte locale', factor: 1.10 }),
   'valley-axis': Object.freeze({ label: 'Axe de vallée / corridor linéaire', factor: 1.15 }),
-  'urban': Object.freeze({ label: 'Tissu urbain', factor: 1.30 }),
-  'industrial': Object.freeze({ label: 'Zone industrielle', factor: 1.20 }),
-  'crossing': Object.freeze({ label: 'Franchissement / contrainte forte', factor: 1.60 })
+  urban: Object.freeze({ label: 'Tissu urbain', factor: 1.30 }),
+  industrial: Object.freeze({ label: 'Zone industrielle', factor: 1.20 }),
+  crossing: Object.freeze({ label: 'Franchissement / contrainte forte', factor: 1.60 })
 })
 
 const physicalOverrides = new Map()
@@ -319,9 +319,23 @@ window.MuzeEnergyPhysical = Object.freeze({
 
 runPhysicalCorridor()
 
-if (!document.querySelector('script[data-economics-layer]')) {
-  const economicsScript = document.createElement('script')
+function loadValueLayer() {
+  if (document.querySelector('script[data-value-layer]')) return
+  const valueScript = document.createElement('script')
+  valueScript.src = './value.js'
+  valueScript.dataset.valueLayer = 'true'
+  document.body.appendChild(valueScript)
+}
+
+let economicsScript = document.querySelector('script[data-economics-layer]')
+if (!economicsScript) {
+  economicsScript = document.createElement('script')
   economicsScript.src = './economics.js'
   economicsScript.dataset.economicsLayer = 'true'
+  economicsScript.addEventListener('load', loadValueLayer, { once: true })
   document.body.appendChild(economicsScript)
+} else if (document.querySelector('#cout-complet')) {
+  loadValueLayer()
+} else {
+  economicsScript.addEventListener('load', loadValueLayer, { once: true })
 }
