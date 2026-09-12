@@ -20,12 +20,12 @@ const territoryNumber = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 
 const territoryInteger = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 })
 
 const TERRITORIES = Object.freeze([
-  { id: 'saint-clair-rhone', name: 'Saint-Clair-du-Rhône', households: 1649, selected: true },
-  { id: 'saint-maurice-exil', name: 'Saint-Maurice-l’Exil', households: 2690, selected: true },
-  { id: 'peage-roussillon', name: 'Le Péage-de-Roussillon', households: 2675, selected: true },
-  { id: 'roussillon', name: 'Roussillon', households: 3726, selected: true },
-  { id: 'salaise-sanne', name: 'Salaise-sur-Sanne', households: 1946, selected: true },
-  { id: 'saint-rambert', name: 'Saint-Rambert-d’Albon', households: 2673, selected: true }
+  { id: 'saint-clair-rhone', name: 'Saint-Clair-du-Rhône', households: 1649, lat: 45.4408333333, lon: 4.7736111111, selected: true },
+  { id: 'saint-maurice-exil', name: 'Saint-Maurice-l’Exil', households: 2690, lat: 45.4, lon: 4.783333, selected: true },
+  { id: 'peage-roussillon', name: 'Le Péage-de-Roussillon', households: 2675, lat: 45.3738888889, lon: 4.7980555556, selected: true },
+  { id: 'roussillon', name: 'Roussillon', households: 3726, lat: 45.3719444444, lon: 4.8272222222, selected: true },
+  { id: 'salaise-sanne', name: 'Salaise-sur-Sanne', households: 1946, lat: 45.3452777778, lon: 4.82, selected: true },
+  { id: 'saint-rambert', name: 'Saint-Rambert-d’Albon', households: 2673, lat: 45.2947222222, lon: 4.8175, selected: true }
 ])
 
 const BEZNAU_ELECTRIC_OPPORTUNITY_RATIO = 10 / 80
@@ -97,6 +97,7 @@ function runTerritory() {
   if (invalid) {
     territoryStatus.textContent = 'Sélectionner au moins une commune et vérifier les hypothèses : valeurs positives, rendements cohérents et heures inférieures ou égales à 8 760.'
     territoryResults.hidden = true
+    window.dispatchEvent(new CustomEvent('muze:territory-updated'))
     return
   }
 
@@ -127,6 +128,7 @@ function runTerritory() {
     : 'La capacité thermique testée ne couvre pas l’énergie annuelle du scénario sur le nombre d’heures saisi.'
 
   territoryStatus.textContent = `${selected.length} commune(s), ${territoryInteger.format(households)} ménages : ${capacityNote}`
+  window.dispatchEvent(new CustomEvent('muze:territory-updated'))
 }
 
 territoryList.addEventListener('change', runTerritory)
@@ -137,6 +139,11 @@ territorySourcePresets.forEach(button => {
     territorySourceMw.value = button.dataset.territorySourceMw
     runTerritory()
   })
+})
+
+window.MuzeEnergyTerritory = Object.freeze({
+  territories: TERRITORIES,
+  selectedTerritories
 })
 
 createTerritoryCards()
