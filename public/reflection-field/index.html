@@ -11,13 +11,16 @@
   <link rel="stylesheet" href="./reflection-field.css">
 </head>
 <body data-portal-exempt="reflection-field">
-  <main class="reflection-stage" aria-labelledby="reflection-title">
+  <main id="reflection-stage" class="reflection-stage" aria-labelledby="reflection-title">
+    <div id="qr-layer" class="qr-layer" aria-hidden="true">
+      <canvas id="portal-qr" aria-hidden="true"></canvas>
+    </div>
     <canvas id="reflection-field" aria-hidden="true"></canvas>
     <div class="reflection-chrome">
       <h1 id="reflection-title">Réflexion en cours</h1>
       <a class="back-link" href="../" aria-label="Retour à Muze-X Lab">Muze-X Lab</a>
     </div>
-    <p class="sr-only">Une grille fixe de points rose et violet varie en taille et en luminosité selon plusieurs champs d’intensité qui se déplacent lentement sur l’écran. La visualisation est calculée localement dans le navigateur.</p>
+    <p class="sr-only">Une grille fixe de points rose et violet varie en taille et en luminosité selon deux champs d’intensité dynamiques. Maintenez une pression au centre de l’écran pour disperser les essaims et révéler un QR code qui renvoie vers la plateforme publique Muze-X Lab.</p>
   </main>
   <script src="./reflection-field.js"></script>
 </body>
