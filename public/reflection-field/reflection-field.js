@@ -11,6 +11,7 @@
     swarmCount: 2,
     speed: 4.4,
     mode: 'dispersion',
+    density: 3,
     color: Object.freeze({ r: 244, g: 93, b: 211 })
   });
 
@@ -43,7 +44,8 @@
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
     const shortest = Math.min(state.width, state.height);
-    state.spacing = clamp(shortest / 22, 24, 42);
+    const baseSpacing = clamp(shortest / 22, 24, 42);
+    state.spacing = baseSpacing / Math.sqrt(CONFIG.density);
     state.cols = Math.ceil(state.width / state.spacing) + 2;
     state.rows = Math.ceil(state.height / state.spacing) + 2;
     state.x0 = (state.width - (state.cols - 1) * state.spacing) / 2;
