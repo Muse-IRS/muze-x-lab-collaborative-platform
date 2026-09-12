@@ -74,6 +74,11 @@
     '00000000000000000000000000000000000000000000000000000'
   ]);
 
+  const PHI = (1 + Math.sqrt(5)) / 2;
+  const PHI_INVERSE = 1 / PHI;
+  const GOLDEN_ANGLE_TURNS = 1 / (PHI * PHI);
+  const TAU = Math.PI * 2;
+
   const CONFIG = Object.freeze({
     swarmCount: 2,
     speed: 8.8,
@@ -81,15 +86,24 @@
     density: 27,
     automataMultiplier: 9,
     palette: Object.freeze({
-      neon: Object.freeze({ r: 255, g: 36, b: 214 }),
-      violet: Object.freeze({ r: 166, g: 72, b: 255 }),
-      deep: Object.freeze({ r: 78, g: 24, b: 145 }),
-      cycleSeconds: 9.5
+      cycleSeconds: 9.5,
+      stops: Object.freeze([
+        Object.freeze({ stop: 0.000, color: Object.freeze({ r: 5, g: 3, b: 10 }) }),
+        Object.freeze({ stop: 0.146, color: Object.freeze({ r: 42, g: 14, b: 94 }) }),
+        Object.freeze({ stop: 0.236, color: Object.freeze({ r: 75, g: 93, b: 255 }) }),
+        Object.freeze({ stop: 0.382, color: Object.freeze({ r: 57, g: 200, b: 114 }) }),
+        Object.freeze({ stop: 0.618, color: Object.freeze({ r: 232, g: 228, b: 74 }) }),
+        Object.freeze({ stop: 0.764, color: Object.freeze({ r: 255, g: 138, b: 43 }) }),
+        Object.freeze({ stop: 0.854, color: Object.freeze({ r: 255, g: 79, b: 210 }) }),
+        Object.freeze({ stop: 1.000, color: Object.freeze({ r: 255, g: 244, b: 255 }) })
+      ])
     }),
     heartbeat: Object.freeze({
       bpm: 72,
       expansion: 0.33,
       glow: 0.06,
+      phiModulation: 0.18,
+      phiRestGlow: 0.055,
       fadeStart: 1.35,
       fadeEnd: 1.75,
       separationGapRatio: 0.06,
@@ -142,36 +156,46 @@
     };
   }
 
+  function paletteColorAt(position) {
+    const stops = CONFIG.palette.stops;
+    const value = clamp(position, 0, 1);
+
+    for (let index = 0; index < stops.length - 1; index += 1) {
+      const current = stops[index];
+      const next = stops[index + 1];
+      if (value <= next.stop) {
+        const span = Math.max(0.000001, next.stop - current.stop);
+        const amount = smooth(clamp((value - current.stop) / span, 0, 1));
+        return interpolateColor(current.color, next.color, amount);
+      }
+    }
+
+    return stops[stops.length - 1].color;
+  }
+
+  function phiWave(seconds, phaseOffset = 0) {
+    if (reducedMotion) return 0.5;
+    const cyclesPerSecond = CONFIG.heartbeat.bpm / 60;
+    const phase = seconds * (cyclesPerSecond / PHI) + phaseOffset * PHI_INVERSE;
+    return 0.5 + 0.5 * Math.sin(TAU * phase);
+  }
+
   function dynamicColor(x, y, time, normalized) {
     const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
+    const xNorm = x / Math.max(1, state.width);
+    const yNorm = y / Math.max(1, state.height);
     const spatial =
-      (x / Math.max(1, state.width)) * 0.28 +
-      (y / Math.max(1, state.height)) * 0.18 +
-      normalized * 0.08;
-    const phase = ((elapsed / CONFIG.palette.cycleSeconds + spatial) % 1 + 1) % 1;
-    const third = 1 / 3;
+      xNorm * GOLDEN_ANGLE_TURNS +
+      yNorm * PHI_INVERSE +
+      normalized * 0.236;
+    const localPhi = phiWave(elapsed, spatial);
+    const phase = (
+      elapsed / CONFIG.palette.cycleSeconds +
+      spatial +
+      (localPhi - 0.5) * 0.146
+    ) % 1;
 
-    if (phase < third) {
-      return interpolateColor(
-        CONFIG.palette.neon,
-        CONFIG.palette.violet,
-        smooth(phase / third)
-      );
-    }
-
-    if (phase < third * 2) {
-      return interpolateColor(
-        CONFIG.palette.violet,
-        CONFIG.palette.deep,
-        smooth((phase - third) / third)
-      );
-    }
-
-    return interpolateColor(
-      CONFIG.palette.deep,
-      CONFIG.palette.neon,
-      smooth((phase - third * 2) / third)
-    );
+    return paletteColorAt((phase + 1) % 1);
   }
 
   function drawPortalQr() {
@@ -244,7 +268,10 @@
     const phase = (seconds * cyclesPerSecond + phaseOffset) % 1;
     const firstBeat = Math.exp(-Math.pow((phase - 0.12) / 0.055, 2));
     const secondBeat = 0.52 * Math.exp(-Math.pow((phase - 0.27) / 0.075, 2));
-    return clamp(firstBeat + secondBeat, 0, 1);
+    const pulse = clamp(firstBeat + secondBeat, 0, 1);
+    const phi = phiWave(seconds, phaseOffset);
+    const modulated = pulse * (1 - CONFIG.heartbeat.phiModulation + CONFIG.heartbeat.phiModulation * phi);
+    return clamp(modulated + CONFIG.heartbeat.phiRestGlow * phi, 0, 1);
   }
 
   function applyRevealRepulsion(centers) {
@@ -295,7 +322,7 @@
 
     const beats = [
       heartbeatEnvelope(elapsed, 0),
-      heartbeatEnvelope(elapsed, 0.5)
+      heartbeatEnvelope(elapsed, PHI_INVERSE)
     ];
 
     const centers = [
