@@ -1,0 +1,183 @@
+.case-study {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.case-study__header {
+  display: grid;
+  gap: .7rem;
+}
+
+.case-study__question {
+  margin: 0;
+  max-width: 24ch;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.case-study__function {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--muted, #a7a7b4);
+}
+
+.case-study__function strong {
+  color: var(--text, #f4f4f6);
+}
+
+.case-geometry {
+  display: grid;
+  grid-template-columns: minmax(220px, .8fr) minmax(0, 1.4fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.roll-diagram {
+  position: relative;
+  width: min(70vw, 320px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center,
+      #09090d 0 24%,
+      #c6c6cf 24.5% 49%,
+      #f4f4f6 49.5% 50%,
+      transparent 50.5%),
+    #17171d;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.roll-diagram::before,
+.roll-diagram::after {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: .3rem .5rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,.72);
+  color: #f7f7fb;
+  font-size: .76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.roll-diagram::before {
+  content: "Ø rouleau 90 mm";
+  top: 4%;
+}
+
+.roll-diagram::after {
+  content: "Ø mandrin 45 mm";
+  top: 46%;
+}
+
+.case-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .8rem;
+}
+
+.case-metric {
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 1rem;
+  background: rgba(255,255,255,.025);
+}
+
+.case-metric span,
+.case-metric small {
+  display: block;
+  color: var(--muted, #a7a7b4);
+}
+
+.case-metric strong {
+  display: block;
+  margin: .28rem 0;
+  font-size: clamp(1.35rem, 3vw, 2.15rem);
+  line-height: 1;
+}
+
+.case-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 1rem;
+}
+
+.case-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.case-table th,
+.case-table td {
+  padding: .8rem .9rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  vertical-align: top;
+}
+
+.case-table th {
+  color: #f3f3f7;
+  font-size: .83rem;
+}
+
+.case-table td {
+  color: var(--muted, #b2b2bf);
+}
+
+.case-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.case-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.case-card {
+  padding: 1.1rem;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 1rem;
+  background: rgba(255,255,255,.025);
+}
+
+.case-card h3 {
+  margin-top: 0;
+}
+
+.case-card p:last-child {
+  margin-bottom: 0;
+}
+
+.source-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.source-list li + li {
+  margin-top: .7rem;
+}
+
+.source-list a {
+  overflow-wrap: anywhere;
+}
+
+.case-note {
+  font-size: .92rem;
+  color: var(--muted, #aaaab7);
+}
+
+@media (max-width: 760px) {
+  .case-geometry,
+  .case-split {
+    grid-template-columns: 1fr;
+  }
+
+  .case-metrics {
+    grid-template-columns: 1fr;
+  }
+}

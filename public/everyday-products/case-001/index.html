@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Muze-X Lab — Cas 001 : papier toilette, géométrie du mandrin, volume logistique et contre-factuel sans mandrin.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>Cas 001 — Papier toilette — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/brand.css">
+  <link rel="stylesheet" href="../../assets/mesh-portal.css">
+  <link rel="stylesheet" href="../everyday-products.css">
+</head>
+<body>
+  <header class="subpage-header">
+    <div class="shell">
+      <img class="muze-brand-logo muze-brand-logo--compact" src="../../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+      <nav class="topnav" aria-label="Navigation principale">
+        <a class="home-link" href="../../">Muze-X Lab Collaborative Platform</a>
+        <div class="nav-links">
+          <a href="../">Produits du quotidien</a>
+          <a href="../../information/">Information</a>
+          <a href="../../energy/">Énergie</a>
+          <a href="../../privacy.html">Confidentialité</a>
+        </div>
+      </nav>
+      <p class="eyebrow">Produits du quotidien · Cas 001</p>
+      <h1 class="subpage-title">Papier toilette : pourquoi transporter un trou&nbsp;?</h1>
+      <p class="subpage-lead">Deux architectures peuvent fournir une fonction très proche : un rouleau avec mandrin et un rouleau sans mandrin. Avant de conclure, mesurons ce que représente géométriquement la zone centrale et ce que changerait un contre-factuel simple.</p>
+    </div>
+  </header>
+
+  <main class="shell content-stack">
+    <section class="notice-panel case-study" aria-labelledby="function-title">
+      <div class="case-study__header">
+        <p class="eyebrow">Fonction recherchée</p>
+        <h2 id="function-title" class="case-study__question">Fournir du papier hygiénique en rouleau.</h2>
+        <p class="case-study__function">Le mandrin peut avoir des fonctions industrielles ou d’usage. Le cas ne suppose donc pas qu’il est « absurde ». Il mesure d’abord <strong>le volume central qui n’est pas occupé par du papier</strong>, puis teste un scénario géométrique sans mandrin.</p>
+      </div>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="geometry-title">
+      <div>
+        <p class="eyebrow">01 · Géométrie observable</p>
+        <h2 id="geometry-title">Un rouleau, un cylindre extérieur et une zone centrale.</h2>
+      </div>
+      <div class="case-geometry">
+        <div class="roll-diagram" role="img" aria-label="Vue schématique d'un rouleau de 90 millimètres de diamètre avec un mandrin de 45 millimètres"></div>
+        <div>
+          <div class="case-metrics">
+            <article class="case-metric"><span>Diamètre extérieur</span><strong>90 mm</strong><small>D</small></article>
+            <article class="case-metric"><span>Diamètre mandrin</span><strong>45 mm</strong><small>d = D / 2</small></article>
+            <article class="case-metric"><span>Largeur du rouleau</span><strong>92 mm</strong><small>L</small></article>
+          </div>
+          <p class="case-note">Base géométrique : caractéristiques techniques publiées pour un rouleau PAPECO. La page commerciale contient aussi une phrase mentionnant 100 mm ; le tableau technique et les points clés indiquent 90 mm. Le calcul retient 90 mm et rend ce choix visible.</p>
+        </div>
+      </div>
+      <div class="platform-formula" aria-label="Calcul du volume cylindrique central">
+        <span>V<sub>centre</sub></span><span>=</span><span>π × (d / 2)² × L</span><span>=</span><strong>0,146 L</strong>
+      </div>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="cell-title">
+      <div>
+        <p class="eyebrow">02 · Cellule logistique théorique</p>
+        <h2 id="cell-title">Le trou central n’est pas le seul espace géométrique.</h2>
+        <p>Pour rendre les dénominateurs explicites, on place un rouleau dans une cellule carrée minimale de côté D et de longueur L. Ce modèle n’est pas un plan réel de palette : c’est une enveloppe géométrique reproductible.</p>
+      </div>
+      <div class="case-table-wrap">
+        <table class="case-table">
+          <thead><tr><th>Élément</th><th>Volume par rouleau</th><th>Part de la cellule carrée</th><th>Lecture</th></tr></thead>
+          <tbody>
+            <tr><td>Cylindre extérieur</td><td>0,585 L</td><td>78,54 %</td><td>Enveloppe circulaire du rouleau.</td></tr>
+            <tr><td>Zone centrale Ø 45 mm</td><td>0,146 L</td><td>19,63 %</td><td>Volume central non occupé par le papier dans ce modèle.</td></tr>
+            <tr><td>Coins de la cellule carrée</td><td>0,160 L</td><td>21,46 %</td><td>Espace extérieur au cylindre dans une cellule D × D.</td></tr>
+            <tr><td>Centre + coins</td><td>0,306 L</td><td><strong>41,10 %</strong></td><td>Somme de deux vides géométriques distincts.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><p><strong>Attention au dénominateur.</strong> Comme d / D = 0,5, la zone centrale représente 25 % du <em>cylindre extérieur</em>. Elle représente 19,63 % de la <em>cellule carrée</em>. Ce ne sont pas les mêmes grandeurs.</p></div>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="counterfactual-title">
+      <div>
+        <p class="eyebrow">03 · Contre-factuel géométrique</p>
+        <h2 id="counterfactual-title">Même enveloppe annulaire de papier, mais sans mandrin.</h2>
+        <p>On conserve l’aire annulaire du rouleau de départ et on demande quel diamètre aurait un cylindre plein équivalent. Ce n’est pas une recette industrielle : c’est un test géométrique.</p>
+      </div>
+      <div class="platform-formula" aria-label="Calcul du rayon contre-factuel">
+        <span>R′</span><span>=</span><span>√(R² − r²)</span><span>=</span><strong>38,97 mm</strong>
+      </div>
+      <div class="case-metrics">
+        <article class="case-metric"><span>Diamètre théorique</span><strong>77,94 mm</strong><small>au lieu de 90 mm</small></article>
+        <article class="case-metric"><span>Diamètre</span><strong>−13,4 %</strong><small>scénario géométrique</small></article>
+        <article class="case-metric"><span>Cellule carrée</span><strong>−25 %</strong><small>car le volume varie comme D² à largeur constante</small></article>
+      </div>
+      <div class="case-split">
+        <article class="case-card"><h3>Capacité</h3><p>Une cellule réduite à 75 % du volume initial permet théoriquement <strong>+33,3 % d’unités</strong> dans un volume identique : 1 / 0,75 = 1,333…</p></article>
+        <article class="case-card"><h3>Volume requis</h3><p>Pour transporter un nombre fixe d’unités, le même modèle donne <strong>−25 % de volume de cellules</strong>. Cela ne signifie pas « −33,3 % de camions ».</p></article>
+      </div>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="scale-title">
+      <div>
+        <p class="eyebrow">04 · Mise à l’échelle</p>
+        <h2 id="scale-title">Des litres par rouleau aux équivalents-volume.</h2>
+        <p>Le scénario préparatoire utilise N = <strong>7 115 445 588 rouleaux/an</strong> comme échelle de travail. Cette valeur sert ici de paramètre de scénario, pas de comptage officiel autonome : le calcul reste valide en remplaçant N par une autre valeur sourcée.</p>
+      </div>
+      <div class="case-table-wrap">
+        <table class="case-table">
+          <thead><tr><th>Volume géométrique</th><th>Échelle annuelle du scénario</th><th>Équivalent à 90 m³</th></tr></thead>
+          <tbody>
+            <tr><td>Zone centrale</td><td>≈ 1,041 million m³</td><td>≈ 11 568 volumes de 90 m³</td></tr>
+            <tr><td>Coins de cellule</td><td>≈ 1,138 million m³</td><td>≈ 12 643 volumes de 90 m³</td></tr>
+            <tr><td>Centre + coins</td><td>≈ 2,179 millions m³</td><td>≈ 24 212 volumes de 90 m³</td></tr>
+            <tr><td>Cellule carrée totale</td><td>≈ 5,302 millions m³</td><td>≈ 58 916 volumes de 90 m³</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><p><strong>Ce ne sont pas des trajets réels ni des trajets évitables.</strong> Ce sont des équivalents de volume issus d’un modèle géométrique. Emballages multiples, compression, disposition, palettes, taux de remplissage, contraintes de masse et réseaux logistiques peuvent changer fortement le résultat opérationnel.</p></div>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="market-title">
+      <div>
+        <p class="eyebrow">05 · Le contre-factuel existe déjà</p>
+        <h2 id="market-title">Des rouleaux sans mandrin sont commercialisés.</h2>
+      </div>
+      <p>Essity indique avoir déployé sa technologie « coreless » sur plusieurs marchés et l’avoir appliquée en France à Lotus Just-1 en 2025. Le fabricant attribue à certains produits sans mandrin jusqu’à <strong>6 % de réduction des émissions de CO₂</strong> et affirme que leur format compact peut nécessiter <strong>un tiers de camions et d’espace d’entreposage en moins</strong> pour une même quantité de produits.</p>
+      <p class="case-note">Ces chiffres sont des affirmations du fabricant, fondées selon Essity sur des analyses de cycle de vie revues par un tiers indépendant. Ils ne doivent pas être confondus avec notre réduction géométrique théorique de 25 %, qui repose sur un autre produit, une autre géométrie et un modèle simplifié.</p>
+    </section>
+
+    <section class="panel case-study" aria-labelledby="sources-title">
+      <div>
+        <p class="eyebrow">Sources et reproductibilité</p>
+        <h2 id="sources-title">Séparer données observées, calculs et affirmations commerciales.</h2>
+      </div>
+      <ul class="source-list">
+        <li><a href="https://www.bricozor.com/rouleaux-papier-toilette-ecolabel-papeco.html" rel="noreferrer noopener">Bricozor — rouleau PAPECO Ecolabel</a> : dimensions utilisées pour la base géométrique (90 mm, mandrin 45 mm, largeur 92 mm).</li>
+        <li><a href="https://www.essity.com/media/news-features/2025/essitys-coreless-technology/" rel="noreferrer noopener">Essity — Coreless technology, 2025</a> : existence commerciale en France et affirmations du fabricant sur CO₂, transport et stockage.</li>
+      </ul>
+      <div class="platform-formula" aria-label="Chaîne de preuve du cas 001">
+        <span>DIMENSIONS PUBLIÉES</span><span>→</span><span>GÉOMÉTRIE</span><span>→</span><span>CONTRE-FACTUEL</span><span>→</span><strong>LIMITES VISIBLES</strong>
+      </div>
+    </section>
+
+    <section class="callout" aria-labelledby="conclusion-title">
+      <h2 id="conclusion-title">Conclusion provisoire</h2>
+      <p>Le mandrin et la géométrie circulaire occupent une part mesurable de l’enveloppe logistique. Une architecture sans mandrin existe et peut être plus compacte. En revanche, la géométrie seule ne démontre ni le nombre réel de trajets évités ni le bilan environnemental global. Le Cas 001 établit donc une <strong>question quantifiée</strong>, pas un verdict.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <span>Muze-X Lab Collaborative Platform</span>
+      <span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span>
+      <a href="../">Retour aux produits du quotidien</a>
+    </div>
+  </footer>
+  <script src="../../assets/mesh-portal.js"></script>
+</body>
+</html>
