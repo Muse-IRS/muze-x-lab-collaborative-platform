@@ -138,6 +138,24 @@
       contactGlow: 0.28,
       auraStrength: 0.045
     }),
+    sun: Object.freeze({
+      xRatio: 0.50,
+      yRatio: 0.50,
+      radiusMin: 5.5,
+      radiusMax: 13.5,
+      haloRatio: 5.4,
+      fieldRadiusRatio: 0.56,
+      geometricStrength: 0.105,
+      shapeStrength: 0.30,
+      shapeCrossCompression: 0.16,
+      chromaticStrength: 0.72,
+      pulseSeconds: PI * PHI * 2.4,
+      polarity: 1,
+      swarmPolarities: Object.freeze([-1, 1]),
+      yellow: Object.freeze({ r: 255, g: 220, b: 74 }),
+      orange: Object.freeze({ r: 255, g: 150, b: 42 }),
+      white: Object.freeze({ r: 255, g: 250, b: 220 })
+    }),
     field: Object.freeze({
       unionGain: 1.18,
       unionPower: 1.12,
@@ -182,6 +200,7 @@
     reveal: 0,
     revealTarget: 0,
     binaryInteraction: 0,
+    sun: null,
     pointer: {
       x: 0,
       y: 0,
@@ -248,6 +267,60 @@
     const span = CONFIG.binary.influenceStartRatio - CONFIG.binary.strongInteractionRatio;
     return smooth(
       clamp((CONFIG.binary.influenceStartRatio - ratio) / Math.max(0.001, span), 0, 1)
+    );
+  }
+
+  function solarState(time) {
+    const elapsed = reducedMotion ? 0 : (time - state.start) / 1000;
+    const shortest = Math.min(state.width, state.height);
+    const pulse = reducedMotion
+      ? 0.5
+      : 0.5 + 0.5 * Math.sin(TAU * elapsed / CONFIG.sun.pulseSeconds);
+    return {
+      x: state.width * CONFIG.sun.xRatio,
+      y: state.height * CONFIG.sun.yRatio,
+      radius: clamp(shortest * 0.018, CONFIG.sun.radiusMin, CONFIG.sun.radiusMax) *
+        (0.92 + pulse * 0.14),
+      fieldRadius: shortest * CONFIG.sun.fieldRadiusRatio,
+      pulse,
+      polarity: CONFIG.sun.polarity
+    };
+  }
+
+  function solarField(point, sun) {
+    const dx = sun.x - point.x;
+    const dy = sun.y - point.y;
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const influence = Math.exp(-Math.pow(distance / Math.max(1, sun.fieldRadius), 2));
+    return {
+      dx,
+      dy,
+      distance,
+      ux: dx / distance,
+      uy: dy / distance,
+      influence
+    };
+  }
+
+  function blendAngles(from, to, amount) {
+    const x = (1 - amount) * Math.cos(from) + amount * Math.cos(to);
+    const y = (1 - amount) * Math.sin(from) + amount * Math.sin(to);
+    return Math.atan2(y, x);
+  }
+
+  function solarTone(exposure) {
+    const value = clamp(exposure, 0, 1);
+    if (value <= 0.55) {
+      return interpolateColor(
+        CONFIG.sun.yellow,
+        CONFIG.sun.orange,
+        smooth(value / 0.55)
+      );
+    }
+    return interpolateColor(
+      CONFIG.sun.orange,
+      CONFIG.sun.white,
+      smooth((value - 0.55) / 0.45)
     );
   }
 
@@ -354,6 +427,8 @@
     const w = state.width;
     const h = state.height;
     const shortest = Math.min(w, h);
+    const sun = solarState(time);
+    state.sun = sun;
 
     const dispersionWave = 0.5 - 0.5 * Math.cos(t * 0.18);
     const baryX = w * (0.50 + 0.030 * Math.sin(t * 0.055));
@@ -399,11 +474,29 @@
     const firstPerspective = 1 + firstDepth * CONFIG.binary.perspectiveScale;
     const secondPerspective = 1 + secondDepth * CONFIG.binary.perspectiveScale;
 
-    const firstX = baryX - orbitX * firstPerspective;
-    const firstY = baryY - orbitY * firstPerspective;
-    const secondX = baryX + orbitX * secondPerspective;
-    const secondY = baryY + orbitY * secondPerspective;
-    const axis = Math.atan2(secondY - firstY, secondX - firstX);
+    const rawPoints = [
+      { x: baryX - orbitX * firstPerspective, y: baryY - orbitY * firstPerspective },
+      { x: baryX + orbitX * secondPerspective, y: baryY + orbitY * secondPerspective }
+    ];
+
+    const solarMeta = rawPoints.map((point, index) => {
+      const field = solarField(point, sun);
+      const swarmPolarity = CONFIG.sun.swarmPolarities[index] || 1;
+      const forceSign = -sun.polarity * swarmPolarity;
+      const displacement = shortest * CONFIG.sun.geometricStrength * field.influence * forceSign;
+      point.x += field.ux * displacement;
+      point.y += field.uy * displacement;
+      return {
+        influence: field.influence,
+        forceSign,
+        angle: Math.atan2(sun.y - point.y, sun.x - point.x)
+      };
+    });
+
+    const axis = Math.atan2(
+      rawPoints[1].y - rawPoints[0].y,
+      rawPoints[1].x - rawPoints[0].x
+    );
     const bpmScale = 1 + CONFIG.binary.heartbeatBoost * interaction;
 
     const beats = [
@@ -416,24 +509,36 @@
     const tidalShort = 1 - CONFIG.binary.tidalCompression * interaction;
     const scales = [firstPerspective, secondPerspective];
     const depths = [firstDepth, secondDepth];
-    const points = [
-      { x: firstX, y: firstY },
-      { x: secondX, y: secondY }
-    ];
 
-    const centers = points.map((point, index) => {
+    const centers = rawPoints.map((point, index) => {
       const pulseScale = 1 + CONFIG.heartbeat.expansion * beats[index];
       const depthLum = 1 + depths[index] * CONFIG.binary.depthBrightness;
+      const solar = solarMeta[index];
+      const deformation = CONFIG.sun.shapeStrength * solar.influence;
+      const attraction = solar.forceSign >= 0;
+      const solarLong = attraction
+        ? 1 + deformation
+        : Math.max(0.72, 1 - deformation * 0.48);
+      const solarShort = attraction
+        ? Math.max(0.78, 1 - deformation * CONFIG.sun.shapeCrossCompression)
+        : 1 + deformation * 0.62;
+      const angleBlend = clamp(solar.influence * 0.76, 0, 0.72);
+      const localAngle = blendAngles(axis, solar.angle, angleBlend);
+
       return {
         x: point.x,
         y: point.y,
         z: depths[index],
-        sx: baseSigma * tidalLong * pulseScale * scales[index],
-        sy: baseSigma * tidalShort * pulseScale * scales[index],
+        sx: baseSigma * tidalLong * pulseScale * scales[index] * solarLong,
+        sy: baseSigma * tidalShort * pulseScale * scales[index] * solarShort,
         a: (1.02 - dispersionWave * 0.25) *
           (1 + CONFIG.heartbeat.glow * beats[index]) *
-          depthLum,
-        angle: axis
+          depthLum *
+          (1 + solar.influence * 0.05),
+        angle: localAngle,
+        solarInfluence: solar.influence,
+        solarForceSign: solar.forceSign,
+        sunAngle: solar.angle
       };
     });
 
@@ -618,6 +723,7 @@
         latitudeTurns: 0.5,
         centerIndex: chosenIndex,
         facing: 0,
+        sunExposure: 0,
         orbitalDepth: chosen?.center?.z || 0
       };
     }
@@ -652,6 +758,23 @@
       facing = smooth(clamp((dot + 0.20) / 1.20, 0, 1));
     }
 
+    let sunExposure = 0;
+    if (state.sun) {
+      const toSunX = state.sun.x - chosen.center.x;
+      const toSunY = state.sun.y - chosen.center.y;
+      const toSunLength = Math.max(1, Math.hypot(toSunX, toSunY));
+      const surfaceX = x - chosen.center.x;
+      const surfaceY = y - chosen.center.y;
+      const surfaceLength = Math.max(1, Math.hypot(surfaceX, surfaceY));
+      const dot =
+        (surfaceX / surfaceLength) * (toSunX / toSunLength) +
+        (surfaceY / surfaceLength) * (toSunY / toSunLength);
+      sunExposure =
+        smooth(clamp((dot + 0.18) / 1.18, 0, 1)) *
+        (chosen.center.solarInfluence || 0) *
+        (0.42 + depth * 0.58);
+    }
+
     const orbitalDepth = chosen.center.z || 0;
     return {
       depth,
@@ -666,6 +789,7 @@
       latitudeTurns,
       centerIndex: chosenIndex,
       facing,
+      sunExposure,
       orbitalDepth
     };
   }
@@ -707,7 +831,54 @@
       0.88
     );
     const hot = paletteColorAt(0.764 + 0.236 * planet.depth);
-    return interpolateColor(shaded, hot, exchange);
+    const binaryColor = interpolateColor(shaded, hot, exchange);
+    const solarAmount = clamp(
+      planet.sunExposure *
+        CONFIG.sun.chromaticStrength *
+        (0.34 + normalized * 0.66),
+      0,
+      0.88
+    );
+    return interpolateColor(
+      binaryColor,
+      solarTone(planet.sunExposure),
+      solarAmount
+    );
+  }
+
+  function drawSun(time) {
+    const sun = state.sun || solarState(time);
+    const visible = 1 - smooth(clamp(state.reveal, 0, 1));
+    if (visible <= 0.01) return;
+
+    const haloRadius = sun.radius * CONFIG.sun.haloRatio;
+    const gradient = ctx.createRadialGradient(
+      sun.x,
+      sun.y,
+      0,
+      sun.x,
+      sun.y,
+      haloRadius
+    );
+    gradient.addColorStop(0, `rgba(255, 250, 220, ${0.96 * visible})`);
+    gradient.addColorStop(0.16, `rgba(255, 220, 74, ${0.82 * visible})`);
+    gradient.addColorStop(0.48, `rgba(255, 150, 42, ${0.28 * visible})`);
+    gradient.addColorStop(1, 'rgba(255, 150, 42, 0)');
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, haloRadius, 0, TAU);
+    ctx.fill();
+
+    ctx.shadowColor = `rgba(255, 220, 74, ${0.78 * visible})`;
+    ctx.shadowBlur = sun.radius * (1.8 + sun.pulse * 1.2);
+    ctx.fillStyle = `rgba(255, 226, 92, ${0.94 * visible})`;
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, sun.radius, 0, TAU);
+    ctx.fill();
+    ctx.restore();
   }
 
   function drawBinaryAura(centers, time) {
@@ -825,6 +996,7 @@
     ctx.clearRect(0, 0, state.width, state.height);
 
     const centers = movingCenters(time);
+    drawSun(time);
     drawBinaryAura(centers, time);
 
     for (let row = 0; row < state.rows; row += 1) {
