@@ -122,7 +122,7 @@
     binary: Object.freeze({
       influenceStartRatio: 0.62,
       strongInteractionRatio: 0.20,
-      orbitSeconds: PI * PHI * 3.2,
+      orbitSeconds: PI * PHI * 1.6,
       precessionSeconds: PI * PHI * 8.0,
       orbitInclination: PI / 3.15,
       nodeAngle: PI / 11,
@@ -358,7 +358,8 @@
     const dispersionWave = 0.5 - 0.5 * Math.cos(t * 0.18);
     const baryX = w * (0.50 + 0.030 * Math.sin(t * 0.055));
     const baryY = h * (0.54 + 0.025 * Math.cos(t * 0.047));
-    const rawRadius = shortest * (0.135 + dispersionWave * 0.125);
+    const frameRadius = Math.hypot(w, h) * 0.5;
+    const rawRadius = frameRadius * (0.22 + dispersionWave * 0.98);
 
     const orbitPhase = reducedMotion
       ? PI * PHI_INVERSE
