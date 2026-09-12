@@ -106,11 +106,7 @@ function projectNodes(nodes) {
   const pad = 62
   const meanLat = nodes.reduce((sum, node) => sum + node.lat, 0) / nodes.length
   const lonScale = Math.cos(meanLat * Math.PI / 180)
-  const points = nodes.map(node => ({
-    ...node,
-    px: node.lon * lonScale,
-    py: node.lat
-  }))
+  const points = nodes.map(node => ({ ...node, px: node.lon * lonScale, py: node.lat }))
   const xs = points.map(point => point.px)
   const ys = points.map(point => point.py)
   const minX = Math.min(...xs)
@@ -147,14 +143,7 @@ function renderRouteMap(nodes, edgeModels, sourceMw) {
     const a = projectedById.get(edge.parent.id)
     const b = projectedById.get(edge.child.id)
     const width = sourceMw > 0 ? 2.5 + Math.min(8, (edge.designPowerMw / sourceMw) * 8) : 3
-    const line = svgElement('line', {
-      x1: a.x,
-      y1: a.y,
-      x2: b.x,
-      y2: b.y,
-      class: 'route-edge',
-      'stroke-width': width
-    })
+    const line = svgElement('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'route-edge', 'stroke-width': width })
     const title = svgElement('title')
     title.textContent = `${edge.parent.name} → ${edge.child.name} · ${routeNumber.format(edge.adjustedKm)} km · DN ${edge.dn}`
     line.appendChild(title)
@@ -171,20 +160,12 @@ function renderRouteMap(nodes, edgeModels, sourceMw) {
     })
     group.appendChild(circle)
 
-    const text = svgElement('text', {
-      x: node.x + 14,
-      y: node.y - 7,
-      class: 'route-label'
-    })
+    const text = svgElement('text', { x: node.x + 14, y: node.y - 7, class: 'route-label' })
     text.textContent = node.source ? 'CNPE Saint-Alban' : node.name
     group.appendChild(text)
 
     if (!node.source) {
-      const small = svgElement('text', {
-        x: node.x + 14,
-        y: node.y + 10,
-        class: 'route-small'
-      })
+      const small = svgElement('text', { x: node.x + 14, y: node.y + 10, class: 'route-small' })
       small.textContent = `${routeInteger.format(node.households)} ménages`
       group.appendChild(small)
     }
@@ -274,17 +255,7 @@ function runThermalRoute() {
     const pressureDropPa = pressureGradient * roundTripM
     const pumpPowerW = (pressureDropPa * volumeFlowM3S) / pumpEfficiency
 
-    return {
-      ...edge,
-      adjustedKm,
-      downstreamHouseholds,
-      designPowerMw,
-      massFlowKgS,
-      volumeFlowM3S,
-      diameterM,
-      dn,
-      pumpPowerW
-    }
+    return { ...edge, adjustedKm, downstreamHouseholds, designPowerMw, massFlowKgS, volumeFlowM3S, diameterM, dn, pumpPowerW }
   })
 
   const geoKm = edgeModels.reduce((sum, edge) => sum + edge.distanceKm, 0)
@@ -348,3 +319,10 @@ window.MuzeEnergyRoute = Object.freeze({
 })
 
 runThermalRoute()
+
+if (!document.querySelector('script[data-physical-corridor]')) {
+  const physicalScript = document.createElement('script')
+  physicalScript.src = './physical.js'
+  physicalScript.dataset.physicalCorridor = 'true'
+  document.body.appendChild(physicalScript)
+}
