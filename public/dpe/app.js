@@ -8,6 +8,7 @@ const addressDetails = document.querySelector('#address-details')
 const fullAddress = document.querySelector('#full-address')
 const historicalPanel = document.querySelector('#dpe-historical-panel')
 const historicalSummary = document.querySelector('#dpe-historical-summary')
+const historicalMethodExplanation = document.querySelector('#dpe-historical-method-explanation')
 const calculationPanel = document.querySelector('#dpe-calculation-panel')
 const calculationSummary = document.querySelector('#dpe-calculation-summary')
 const fieldsPanel = document.querySelector('#dpe-fields-panel')
@@ -30,8 +31,35 @@ const CALCULATION_FIELDS = {
   surface: ['surface_reference', 'surface_habitable_logement']
 }
 
+const HISTORICAL_ENERGY_THRESHOLDS = [
+  { label: 'A', max: 50 },
+  { label: 'B', max: 90 },
+  { label: 'C', max: 150 },
+  { label: 'D', max: 230 },
+  { label: 'E', max: 330 },
+  { label: 'F', max: 450 },
+  { label: 'G', max: Infinity }
+]
+
+const HISTORICAL_GES_THRESHOLDS = [
+  { label: 'A', max: 5 },
+  { label: 'B', max: 10 },
+  { label: 'C', max: 20 },
+  { label: 'D', max: 35 },
+  { label: 'E', max: 55 },
+  { label: 'F', max: 80 },
+  { label: 'G', max: Infinity }
+]
+
 function normalize(value) {
   return String(value || '').trim().toUpperCase()
+}
+
+function normalizeSearchText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
 }
 
 function hasValue(value) {
@@ -191,11 +219,155 @@ function historicalValidity(row) {
   return { expiry, status: statusLabel, rule }
 }
 
+function historicalClass(value, thresholds) {
+  const number = Number(value)
+  if (!Number.isFinite(number) || number < 0) return null
+  return thresholds.find(item => number <= item.max)?.label || null
+}
+
+function historicalEnergyClass(value) {
+  return historicalClass(value, HISTORICAL_ENERGY_THRESHOLDS)
+}
+
+function historicalGesClass(value) {
+  return historicalClass(value, HISTORICAL_GES_THRESHOLDS)
+}
+
+function historicalClassCheck(value, published, thresholds, unit) {
+  const expected = historicalClass(value, thresholds)
+  const publishedLabel = normalize(published)
+  if (!expected) return 'Valeur numérique insuffisante pour recomposer la classe.'
+  if (!/^[A-G]$/.test(publishedLabel)) {
+    return `Classe recomposée à partir de la valeur : ${expected}. La classe publiée « ${publishedLabel || '—'} » n’est pas comparable directement à l’échelle logement A–G.`
+  }
+  const relation = expected === publishedLabel ? 'identique à la classe publiée' : `différente de la classe publiée (${publishedLabel})`
+  return `${expected} — ${relation}, à partir de ${formatNumber(value, unit)}.`
+}
+
+function historicalMethodProfile(row) {
+  const rawMethod = String(row.nom_methode_dpe || '').trim()
+  const rawVersion = String(row.version_methode_dpe || '').trim()
+  const text = normalizeSearchText(`${rawMethod} ${rawVersion}`)
+  const v13 = /1[.,]3|v\s*2012|version\s*2012/.test(text)
+
+  if (/factur|consommation(s)?\s+reell|releve/.test(text)) {
+    return {
+      id: 'bills',
+      label: 'Méthode sur consommations réelles / factures',
+      versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+      input: 'Consommations réellement relevées ou facturées, en principe moyennées sur les trois années précédant le diagnostic ; des règles de repli existaient lorsque cette période complète n’était pas disponible.',
+      chain: 'Factures ou relevés par énergie → conversion dans une unité énergétique commune → énergie finale en kWh → énergie primaire → rapport à la surface → étiquette énergie ; les émissions sont calculées en parallèle à partir des énergies consommées.',
+      replay: 'La vue agrégée ADEME ne contient pas les factures sources ni le détail annuel. Elle permet donc d’expliquer la transformation réglementaire, mais pas de recalculer la moyenne historique exacte.'
+    }
+  }
+
+  if (/3cl/.test(text)) {
+    return {
+      id: '3cl',
+      label: v13 ? '3CL-DPE v1.3 / version 2012' : '3CL-DPE historique',
+      versionNote: v13
+        ? 'La version 1.3 correspond à la révision 2012 de la méthode, appliquée aux DPE à partir de 2013.'
+        : (rawVersion || 'Version exacte non reconnue dans le libellé ADEME.'),
+      input: 'Caractéristiques thermiques et géométriques du logement, parois et baies, orientation, renouvellement d’air, climat conventionnel et systèmes de chauffage, d’eau chaude sanitaire et de refroidissement.',
+      chain: 'Déperditions de l’enveloppe et renouvellement d’air − apports solaires et internes → besoin de chauffage → rendement et pertes des systèmes → consommations finales ; l’eau chaude sanitaire et le refroidissement sont ajoutés, puis les énergies sont converties en énergie primaire.',
+      replay: 'La ligne historique agrégée ne contient pas les données composant par composant nécessaires pour rejouer intégralement 3CL-DPE. Elle permet cependant de reconstruire la logique et de vérifier le passage de la valeur finale à la classe.'
+    }
+  }
+
+  if (/del\s*6|del6/.test(text)) {
+    return {
+      id: 'dynamic',
+      label: 'DEL6-DPE — simulation dynamique historique',
+      versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+      input: 'Description thermique et géométrique du bâtiment et de ses systèmes, utilisée dans une simulation dynamique à pas de temps horaire.',
+      chain: 'Simulation horaire des besoins et comportements thermiques → consommations conventionnelles de chauffage, eau chaude sanitaire et refroidissement → énergie primaire et émissions → classes historiques.',
+      replay: 'Le moteur DEL6 et ses entrées détaillées ne sont pas présents dans la vue agrégée ; la page conserve donc une explication de chaîne sans prétendre reproduire la simulation.'
+    }
+  }
+
+  if (/comfie/.test(text)) {
+    return {
+      id: 'dynamic',
+      label: 'Comfie-DPE — simulation dynamique historique',
+      versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+      input: 'Description thermique et géométrique du bâtiment et de ses systèmes, utilisée dans une simulation dynamique à pas de temps horaire.',
+      chain: 'Simulation horaire des besoins thermiques → consommations conventionnelles de chauffage, eau chaude sanitaire et refroidissement → énergie primaire et émissions → classes historiques.',
+      replay: 'Le moteur Comfie et ses entrées détaillées ne sont pas présents dans la vue agrégée ; la page conserve donc une explication de chaîne sans prétendre reproduire la simulation.'
+    }
+  }
+
+  if (/th.?c.?e|thce/.test(text)) {
+    return {
+      id: 'thce',
+      label: 'TH-C-E ex / méthode thermique conventionnelle historique',
+      versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+      input: 'Données thermiques du bâtiment et des équipements, traitées dans le référentiel conventionnel indiqué par le DPE.',
+      chain: 'Modélisation thermique conventionnelle → besoins et consommations des usages couverts → énergie finale → énergie primaire et émissions → classes historiques.',
+      replay: 'Le libellé ADEME identifie la famille, mais la vue agrégée ne fournit ni les paramètres détaillés ni le moteur utilisé. Aucun rejeu numérique complet n’est donc affirmé.'
+    }
+  }
+
+  if (/convention/.test(text)) {
+    return {
+      id: 'conventional',
+      label: 'Méthode conventionnelle historique',
+      versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+      input: 'Caractéristiques du bâtiment et de ses équipements selon le champ d’application de la méthode déclarée.',
+      chain: 'Données conventionnelles → besoins → consommations finales → énergie primaire et émissions → classes historiques.',
+      replay: 'La famille est identifiable, mais le nom/version disponible ne suffit pas à sélectionner un moteur historique précis.'
+    }
+  }
+
+  return {
+    id: 'unknown',
+    label: 'Méthode historique non reconnue automatiquement',
+    versionNote: rawVersion || 'Version non renseignée dans la vue agrégée ADEME.',
+    input: 'Le nom et la version publiés sont conservés sans les assimiler à une méthode connue.',
+    chain: 'La valeur énergie et la valeur GES publiées peuvent encore être reliées aux anciennes grilles A–G lorsque ces valeurs sont numériques.',
+    replay: 'Aucune formule propre à cette méthode n’est affichée tant que son référentiel n’est pas identifié de manière suffisamment sûre.'
+  }
+}
+
 function historicalMethodMode(row) {
-  const method = `${row.nom_methode_dpe || ''} ${row.version_methode_dpe || ''}`.toLowerCase()
-  if (/factur|consommation réelle|consommations réelles/.test(method)) return 'Consommations sur factures / consommations réelles déclarées'
-  if (/3cl|th-c-e|thce|convention/.test(method)) return 'Méthode conventionnelle historique déclarée'
-  return 'Méthode historique déclarée dans la ligne ADEME'
+  return historicalMethodProfile(row).label
+}
+
+function createMethodCard(title, text) {
+  const article = document.createElement('article')
+  const strong = document.createElement('strong')
+  const span = document.createElement('span')
+  strong.textContent = title
+  span.textContent = text
+  article.append(strong, span)
+  return article
+}
+
+function renderHistoricalMethodExplanation(row) {
+  if (!historicalMethodExplanation) return
+  historicalMethodExplanation.innerHTML = ''
+
+  const profile = historicalMethodProfile(row)
+  const grid = document.createElement('div')
+  grid.className = 'principle-grid'
+
+  grid.append(
+    createMethodCard('Référentiel identifié', `${profile.label}. ${profile.versionNote}`),
+    createMethodCard('Entrées qui alimentaient le calcul', profile.input),
+    createMethodCard('Chaîne de production de la valeur', profile.chain),
+    createMethodCard('Conversion historique en énergie primaire', 'Pour le régime historique des logements : facteur 2,58 pour l’électricité et 1 pour les autres énergies, puis rapport de l’énergie primaire retenue à la surface du logement.'),
+    createMethodCard('Classe énergie recomposée', historicalClassCheck(row.consommation_energie, row.classe_consommation_energie, HISTORICAL_ENERGY_THRESHOLDS, 'kWhEP/m²/an')),
+    createMethodCard('Classe climat recomposée', historicalClassCheck(row.estimation_ges, row.classe_estimation_ges, HISTORICAL_GES_THRESHOLDS, 'kgCO₂e/m²/an'))
+  )
+
+  const replay = document.createElement('div')
+  replay.className = 'callout'
+  const replayText = document.createElement('p')
+  const replayStrong = document.createElement('strong')
+  replayStrong.textContent = 'Niveau de rejeu possible avec cette ligne ADEME : '
+  replayText.append(replayStrong, document.createTextNode(profile.replay))
+  replay.append(replayText)
+
+  historicalMethodExplanation.append(grid, replay)
 }
 
 function renderHistorical(row, dataset) {
@@ -211,14 +383,17 @@ function renderHistorical(row, dataset) {
   addDefinition(historicalSummary, 'Génération du DPE', 'Avant le 1er juillet 2021')
   addDefinition(historicalSummary, 'Méthode déclarée par l’ADEME', row.nom_methode_dpe)
   addDefinition(historicalSummary, 'Version de méthode', row.version_methode_dpe)
-  addDefinition(historicalSummary, 'Mode de lecture', historicalMethodMode(row), 'qualification construite uniquement à partir du libellé de méthode disponible')
+  addDefinition(historicalSummary, 'Référentiel interprété', historicalMethodMode(row), 'identification fondée sur nom_methode_dpe + version_methode_dpe')
   addDefinition(historicalSummary, 'Consommation énergie publiée', formatNumber(row.consommation_energie, 'kWhEP/m²/an'))
   addDefinition(historicalSummary, 'Classe énergie historique', row.classe_consommation_energie)
+  addDefinition(historicalSummary, 'Classe énergie recomposée', historicalEnergyClass(row.consommation_energie), 'grille historique logement A–G')
   addDefinition(historicalSummary, 'Estimation GES publiée', formatNumber(row.estimation_ges, 'kgCO₂e/m²/an'))
   addDefinition(historicalSummary, 'Classe GES historique', row.classe_estimation_ges)
+  addDefinition(historicalSummary, 'Classe GES recomposée', historicalGesClass(row.estimation_ges), 'grille historique logement A–G')
   addDefinition(historicalSummary, 'Statut réglementaire aujourd’hui', validity.status)
   addDefinition(historicalSummary, 'Échéance de validité', formatIsoDateFr(validity.expiry), validity.rule)
 
+  renderHistoricalMethodExplanation(row)
   historicalPanel.hidden = false
 }
 
@@ -345,6 +520,7 @@ async function renderFieldDictionary(found) {
 function resetExtendedViews() {
   if (historicalPanel) historicalPanel.hidden = true
   if (historicalSummary) historicalSummary.innerHTML = ''
+  if (historicalMethodExplanation) historicalMethodExplanation.innerHTML = ''
   if (calculationPanel) calculationPanel.hidden = true
   if (calculationSummary) calculationSummary.innerHTML = ''
   if (fieldsPanel) fieldsPanel.hidden = true
@@ -427,7 +603,7 @@ form.addEventListener('submit', async event => {
     }
     render(found, number)
     status.textContent = isHistoricalDataset(found.dataset)
-      ? 'DPE historique retrouvé dans la source publique ADEME. Il est présenté selon son référentiel d’origine et n’est pas assimilé à un DPE 3CL-2021.'
+      ? 'DPE historique retrouvé. Le nom et la version de méthode sont utilisés pour ouvrir son référentiel d’origine et recomposer les anciennes classes à partir des valeurs publiées.'
       : 'DPE retrouvé dans la source publique ADEME. Le dictionnaire des colonnes est chargé séparément.'
     await renderFieldDictionary(found)
   } catch (error) {
