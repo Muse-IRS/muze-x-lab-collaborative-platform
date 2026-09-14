@@ -1,10 +1,164 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Retrouver les informations essentielles d’un DPE depuis les données publiques ADEME."><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'"><title>Vérifier mon DPE — Muze-X Lab</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/brand.css"><link rel="stylesheet" href="../assets/mesh-portal.css"></head><body>
-<header class="subpage-header"><div class="shell"><img class="muze-brand-logo muze-brand-logo--compact" src="../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform"><nav class="topnav" aria-label="Navigation principale"><a class="home-link" href="../">Muze-X Lab Collaborative Platform</a><div class="nav-links"><a href="../energy/">Énergie</a><a href="../pgca-demonstrator/">PGC-A</a><a href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Site RGPD</a><a href="../privacy.html">Confidentialité</a></div></nav><p class="eyebrow">Logement · DPE</p><h1 class="subpage-title">Vérifier mon DPE</h1><p class="subpage-lead">Retrouver les informations essentielles transmises à la source publique ADEME à partir du numéro du DPE. L’interface présente les données disponibles sans produire de verdict réglementaire ou juridique.</p></div></header>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Retrouver, expliquer et relier les données publiques ADEME d’un DPE à la méthode 3CL-DPE 2021.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
+  <title>Comprendre mon DPE — Muze-X Lab</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/brand.css">
+  <link rel="stylesheet" href="../assets/mesh-portal.css">
+</head>
+<body>
+<header class="subpage-header">
+  <div class="shell">
+    <img class="muze-brand-logo muze-brand-logo--compact" src="../assets/brand-logo.svg" alt="Muze-X Lab — Collaborative Platform">
+    <nav class="topnav" aria-label="Navigation principale">
+      <a class="home-link" href="../">Muze-X Lab Collaborative Platform</a>
+      <div class="nav-links">
+        <a href="../energy/">Énergie</a>
+        <a href="../pgca-demonstrator/">PGC-A</a>
+        <a href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Site RGPD</a>
+        <a href="../privacy.html">Confidentialité</a>
+      </div>
+    </nav>
+    <p class="eyebrow">Logement · DPE</p>
+    <h1 class="subpage-title">Comprendre mon DPE</h1>
+    <p class="subpage-lead">Retrouver un DPE depuis la source publique ADEME, ouvrir sa ligne Excel, comprendre les colonnes disponibles et relier les principaux résultats à la chaîne de calcul 3CL-DPE 2021.</p>
+  </div>
+</header>
+
 <main class="shell content-stack">
-<section class="panel rgpd-local-header" aria-labelledby="dpe-rgpd-title"><p class="eyebrow">RGPD local · ce module</p><h2 id="dpe-rgpd-title">Où vont les données dans le module DPE ?</h2><div class="principle-grid rgpd-module-grid"><article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans la source publique ADEME.</span></article><article><strong>Source externe</strong><span>Requête directe du navigateur vers data.ademe.fr. Pas de serveur Muze-X Lab intermédiaire.</span></article><article><strong>Affichage</strong><span>Résumé minimisé. Adresse complète seulement après action explicite de l’utilisateur.</span></article><article><strong>Limite</strong><span>Lecture documentaire. Aucun verdict juridique ou réglementaire automatique.</span></article></div></section>
-<section class="panel" aria-labelledby="dpe-pgca-title"><p class="eyebrow">Couche PGC-A · cohérence documentaire</p><h2 id="dpe-pgca-title">Comparer plusieurs représentations du même logement.</h2><p>La donnée ADEME peut être confrontée au document DPE, au bail ou à une caractéristique effectivement observable. PGC-A ne transforme pas automatiquement un écart en non-conformité : il indique seulement où les représentations convergent, divergent ou restent indéterminées.</p><div class="platform-formula" aria-label="Lecture PGC-A du DPE"><strong>ADEME</strong><span>↔</span><strong>DOCUMENT DPE</strong><span>↔</span><strong>BAIL</strong><span>↔</span><strong>OBSERVATION</strong></div><div class="principle-grid"><article><strong>CONVERGENT</strong><span>Les états comparés décrivent la même information.</span></article><article><strong>À VÉRIFIER</strong><span>Un écart est visible ; une pièce ou une mesure discriminante est nécessaire.</span></article><article><strong>INFORMATION MANQUANTE</strong><span>Une source ne permet pas encore la comparaison.</span></article><article><strong>Test</strong><span>Ajouter uniquement la source discriminante puis rejouer la comparaison.</span></article></div><a class="button secondary" href="../pgca-demonstrator/">Voir le mécanisme PGC-A</a></section>
-<section class="panel" aria-labelledby="lookup-title"><p class="eyebrow">Source publique ADEME</p><h2 id="lookup-title">Rechercher un DPE</h2><form id="dpe-form"><div class="field full"><label for="dpe-number">Numéro de DPE</label><input id="dpe-number" name="dpe-number" type="text" maxlength="13" autocomplete="off" placeholder="1234A1234567B" aria-describedby="dpe-help dpe-status"><span id="dpe-help" class="help">Format postérieur à juillet 2021 : 13 caractères. La requête part directement du navigateur vers l’ADEME.</span></div><div class="actions"><button type="submit">Récupérer les données</button><a class="button secondary" href="https://observatoire-dpe-audit.ademe.fr/accueil" target="_blank" rel="noopener noreferrer">Observatoire ADEME</a></div></form><p id="dpe-status" class="status" role="status" aria-live="polite">Aucune recherche effectuée.</p></section>
-<section id="dpe-result" class="result-panel" hidden aria-labelledby="result-title"><p class="eyebrow">Résultat ADEME</p><h2 id="result-title">DPE retrouvé</h2><dl id="dpe-summary" class="summary-grid"></dl><div class="actions"><a id="xlsx-link" class="button secondary" href="#" target="_blank" rel="noopener noreferrer" hidden>Télécharger la ligne ADEME (.xlsx)</a></div><details id="address-details" hidden><summary>Afficher l’adresse complète renvoyée par la source publique</summary><p id="full-address" class="muted"></p></details></section>
-<section class="panel"><h2>Comment lire ce résultat ?</h2><div class="callout"><p><strong>Un DPE est une donnée réglementaire déclarée et calculée.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p></div><p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement.</p></section>
-<section class="panel"><p class="eyebrow">Confidentialité</p><h2>Adresse minimisée par défaut</h2><p>Lorsque la source ADEME renvoie une adresse complète, le résumé affiche uniquement une localisation réduite lorsque cela est possible. L’adresse complète n’apparaît qu’après une action explicite.</p><a class="inline" href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Ouvrir le site RGPD autonome</a><span aria-hidden="true"> · </span><a class="inline" href="../privacy.html">Lire la notice de confidentialité</a></section></main>
-<footer class="site-footer"><div class="shell footer-inner"><span>Muze-X Lab Collaborative Platform</span><span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span><a href="../">Retour à l’accueil</a></div></footer><script src="./app.js"></script><script src="../assets/mesh-portal.js"></script></body></html>
+  <section class="panel rgpd-local-header" aria-labelledby="dpe-rgpd-title">
+    <p class="eyebrow">RGPD local · ce module</p>
+    <h2 id="dpe-rgpd-title">Où vont les données dans le module DPE ?</h2>
+    <div class="principle-grid rgpd-module-grid">
+      <article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans la source publique ADEME.</span></article>
+      <article><strong>Source externe</strong><span>Requête directe du navigateur vers data.ademe.fr. Pas de serveur Muze-X Lab intermédiaire.</span></article>
+      <article><strong>Affichage</strong><span>Résumé minimisé. Adresse complète seulement après action explicite ; adresse précise et coordonnées masquées dans le dictionnaire détaillé.</span></article>
+      <article><strong>Limite</strong><span>Lecture documentaire et pédagogique. Aucun nouveau DPE réglementaire n’est produit.</span></article>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="dpe-pgca-title">
+    <p class="eyebrow">Couche PGC-A · cohérence documentaire</p>
+    <h2 id="dpe-pgca-title">Comparer plusieurs représentations du même logement.</h2>
+    <p>La donnée ADEME peut être confrontée au document DPE, au bail ou à une caractéristique effectivement observable. PGC-A ne transforme pas automatiquement un écart en non-conformité : il indique seulement où les représentations convergent, divergent ou restent indéterminées.</p>
+    <div class="platform-formula" aria-label="Lecture PGC-A du DPE"><strong>ADEME</strong><span>↔</span><strong>DOCUMENT DPE</strong><span>↔</span><strong>BAIL</strong><span>↔</span><strong>OBSERVATION</strong></div>
+    <div class="principle-grid">
+      <article><strong>CONVERGENT</strong><span>Les états comparés décrivent la même information.</span></article>
+      <article><strong>À VÉRIFIER</strong><span>Un écart est visible ; une pièce ou une mesure discriminante est nécessaire.</span></article>
+      <article><strong>INFORMATION MANQUANTE</strong><span>Une source ne permet pas encore la comparaison.</span></article>
+      <article><strong>Test</strong><span>Ajouter uniquement la source discriminante puis rejouer la comparaison.</span></article>
+    </div>
+    <a class="button secondary" href="../pgca-demonstrator/">Voir le mécanisme PGC-A</a>
+  </section>
+
+  <section class="panel" aria-labelledby="lookup-title">
+    <p class="eyebrow">Source publique ADEME</p>
+    <h2 id="lookup-title">Rechercher un DPE</h2>
+    <form id="dpe-form">
+      <div class="field full">
+        <label for="dpe-number">Numéro de DPE</label>
+        <input id="dpe-number" name="dpe-number" type="text" maxlength="13" autocomplete="off" placeholder="1234A1234567B" aria-describedby="dpe-help dpe-status">
+        <span id="dpe-help" class="help">Format postérieur à juillet 2021 : 13 caractères. La requête part directement du navigateur vers l’ADEME.</span>
+      </div>
+      <div class="actions">
+        <button type="submit">Récupérer les données</button>
+        <a class="button secondary" href="https://observatoire-dpe-audit.ademe.fr/accueil" target="_blank" rel="noopener noreferrer">Observatoire ADEME</a>
+      </div>
+    </form>
+    <p id="dpe-status" class="status" role="status" aria-live="polite">Aucune recherche effectuée.</p>
+  </section>
+
+  <section id="dpe-result" class="result-panel" hidden aria-labelledby="result-title">
+    <p class="eyebrow">Résultat ADEME</p>
+    <h2 id="result-title">DPE retrouvé</h2>
+    <dl id="dpe-summary" class="summary-grid"></dl>
+    <div class="actions">
+      <a id="xlsx-link" class="button secondary" href="#" target="_blank" rel="noopener noreferrer" hidden>Télécharger la ligne ADEME (.xlsx)</a>
+    </div>
+    <details id="address-details" hidden>
+      <summary>Afficher l’adresse complète renvoyée par la source publique</summary>
+      <p id="full-address" class="muted"></p>
+    </details>
+  </section>
+
+  <section id="dpe-calculation-panel" class="panel" hidden aria-labelledby="calculation-title">
+    <p class="eyebrow">Résultats calculés · lecture 3CL</p>
+    <h2 id="calculation-title">Comment les valeurs conduisent-elles à l’étiquette ?</h2>
+    <dl id="dpe-calculation-summary" class="summary-grid"></dl>
+    <div class="platform-formula" aria-label="Chaîne de calcul 3CL-DPE">
+      <strong>ENTRÉES</strong><span>→</span><strong>DÉPERDITIONS &amp; APPORTS</strong><span>→</span><strong>BESOINS</strong><span>→</span><strong>SYSTÈMES</strong><span>→</span><strong>ÉNERGIE FINALE</strong><span>→</span><strong>EP &amp; GES</strong><span>→</span><strong>ÉTIQUETTE</strong>
+    </div>
+    <div class="principle-grid">
+      <article><strong>1 · Entrées</strong><span>Géométrie, parois, baies, orientation, isolation, renouvellement d’air, climat et équipements décrivent le logement conventionnellement évalué.</span></article>
+      <article><strong>2 · Besoins</strong><span>La méthode évalue les pertes et les apports puis les besoins conventionnels de chauffage, d’eau chaude sanitaire et, le cas échéant, de refroidissement.</span></article>
+      <article><strong>3 · Systèmes</strong><span>Les rendements et pertes de génération, distribution, émission et stockage, ainsi que les auxiliaires et l’éclairage, conduisent aux consommations d’énergie finale.</span></article>
+      <article><strong>4 · Conversion</strong><span>L’énergie finale est convertie en énergie primaire selon l’énergie utilisée ; les facteurs d’émission conduisent en parallèle aux émissions de gaz à effet de serre.</span></article>
+      <article><strong>5 · Deux indicateurs</strong><span>Les résultats des cinq usages sont rapportés à la surface de référence : CEP en kWhEP/m²/an et EGES en kgCO₂e/m²/an.</span></article>
+      <article><strong>6 · Note finale</strong><span>L’étiquette DPE applique un double seuil : la classe finale est contrainte par la plus défavorable des deux dimensions énergie primaire et émissions.</span></article>
+    </div>
+    <div class="callout">
+      <p><strong>Seuils de base — logement de plus de 40 m² situé sous 800 m d’altitude :</strong> A &lt; 70 / 6 ; B &lt; 110 / 11 ; C &lt; 180 / 30 ; D &lt; 250 / 50 ; E &lt; 330 / 70 ; F &lt; 420 / 100 ; G au-delà de l’un des deux seuils. Les seuils sont adaptés pour les petites surfaces et certaines situations d’altitude/zone climatique.</p>
+    </div>
+    <p class="muted">Le coefficient de conversion de l’électricité en énergie primaire est temporel : 1,9 depuis le 1er janvier 2026 ; 1,7 à compter du 1er janvier 2027. L’interface affiche le coefficient correspondant à la date du DPE et celui applicable au jour de consultation, sans recalculer artificiellement un DPE à partir de données agrégées insuffisantes.</p>
+    <div class="actions">
+      <a class="button secondary" href="https://rt-re-batiment.developpement-durable.gouv.fr/IMG/pdf/consolide_annexe_1_arrete_du_31_03_2021_relatif_aux_methodes_et_procedures_applicables.pdf" target="_blank" rel="noopener noreferrer">Méthode officielle 3CL-DPE 2021</a>
+      <a class="button secondary" href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000043353335/" target="_blank" rel="noopener noreferrer">Arrêté DPE consolidé</a>
+    </div>
+  </section>
+
+  <section id="dpe-fields-panel" class="panel" hidden aria-labelledby="fields-title">
+    <p class="eyebrow">XLSX · dictionnaire ADEME</p>
+    <h2 id="fields-title">Que signifie chaque colonne ?</h2>
+    <p>Le bouton Excel exporte la ligne du jeu ADEME interrogé. Le dictionnaire ci-dessous est construit au moment de la consultation depuis le <strong>schéma API du même jeu de données</strong> : nom public, clé technique, type, groupe et description officielle lorsqu’elle est fournie.</p>
+    <p id="dpe-fields-status" class="status" role="status" aria-live="polite"></p>
+    <div id="dpe-fields-container" class="content-stack"></div>
+    <div class="callout">
+      <p><strong>Valeur manquante ≠ valeur nulle calculée.</strong> Un tiret signifie que la colonne existe dans le schéma mais qu’aucune valeur n’est présente dans la ligne retournée. Les champs d’adresse précise et de coordonnées sont volontairement masqués dans cette vue détaillée.</p>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="calculator-status-title">
+    <p class="eyebrow">Calculateur · état de la chaîne</p>
+    <h2 id="calculator-status-title">Pourquoi le recalcul complet est séparé de la ligne Open Data ?</h2>
+    <p>La ligne ADEME accessible ici est une vue synthétique : elle suffit pour expliquer les résultats publiés et de nombreuses variables, mais pas nécessairement pour rejouer toutes les équations 3CL composant par composant. Un recalcul intégral exige les données d’entrée détaillées du DPE — parois, baies, ponts thermiques, installations et générateurs — puis un moteur 3CL versionné.</p>
+    <div class="principle-grid">
+      <article><strong>API Open Data ADEME</strong><span>Active ici : recherche, ligne JSON, schéma des colonnes et export XLSX.</span></article>
+      <article><strong>XML DPE complet</strong><span>Donnée d’entrée adaptée à un rejeu 3CL complet. Elle ne doit pas conduire à exposer une clé ou un secret dans une page statique.</span></article>
+      <article><strong>Moteur 3CL</strong><span>Doit être versionné, testable et clairement distingué d’un logiciel réglementaire de diagnostic.</span></article>
+      <article><strong>Comparaison</strong><span>La cible est : valeur ADEME ↔ valeur recalculée ↔ écart ↔ explication, sans transformer automatiquement un écart en verdict.</span></article>
+    </div>
+    <p class="muted">Le moteur Open3CL constitue une piste technique publique pour le rejeu pédagogique. Il n’est pas appelé automatiquement par cette version de la page.</p>
+    <a class="inline" href="https://open3cl.github.io/engine/build" target="_blank" rel="noopener noreferrer">Consulter le démonstrateur Open3CL</a>
+  </section>
+
+  <section class="panel">
+    <h2>Comment lire ce résultat ?</h2>
+    <div class="callout"><p><strong>Un DPE est une donnée réglementaire déclarée et calculée.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p></div>
+    <p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement.</p>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">Confidentialité</p>
+    <h2>Adresse minimisée par défaut</h2>
+    <p>Lorsque la source ADEME renvoie une adresse complète, le résumé affiche uniquement une localisation réduite lorsque cela est possible. L’adresse complète n’apparaît qu’après une action explicite.</p>
+    <a class="inline" href="https://muse-irs.github.io/rgpd-data-journey-audit/" target="_blank" rel="noopener noreferrer">Ouvrir le site RGPD autonome</a><span aria-hidden="true"> · </span><a class="inline" href="../privacy.html">Lire la notice de confidentialité</a>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <span>Muze-X Lab Collaborative Platform</span>
+    <span class="brand-credit">Identité visuelle co-conçue : Muze-X × ChatGPT (OpenAI)</span>
+    <a href="../">Retour à l’accueil</a>
+  </div>
+</footer>
+<script src="./app.js"></script>
+<script src="../assets/mesh-portal.js"></script>
+</body>
+</html>
