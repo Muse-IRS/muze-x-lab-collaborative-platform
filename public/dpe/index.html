@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Retrouver et comprendre les DPE publics ADEME, y compris les DPE historiques antérieurs à juillet 2021, puis relier les DPE actuels à la méthode 3CL-DPE 2021.">
+  <meta name="description" content="Retrouver et comprendre les DPE publics ADEME, y compris les méthodes historiques antérieures à juillet 2021, puis relier les DPE actuels à la méthode 3CL-DPE 2021.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
   <title>Comprendre mon DPE — Muze-X Lab</title>
@@ -27,7 +27,7 @@
     </nav>
     <p class="eyebrow">Logement · DPE</p>
     <h1 class="subpage-title">Comprendre mon DPE</h1>
-    <p class="subpage-lead">Retrouver un DPE dans les jeux publics ADEME, identifier sa génération méthodologique, ouvrir sa ligne Excel, comprendre les colonnes disponibles et, pour les DPE depuis juillet 2021, relier les principaux résultats à la chaîne de calcul 3CL-DPE 2021.</p>
+    <p class="subpage-lead">Retrouver un DPE dans les jeux publics ADEME, identifier sa génération méthodologique, ouvrir sa ligne Excel, comprendre les colonnes disponibles et relier ses valeurs au référentiel qui les a effectivement produites.</p>
   </div>
 </header>
 
@@ -89,22 +89,28 @@
 
   <section id="dpe-historical-panel" class="panel" hidden aria-labelledby="historical-title">
     <p class="eyebrow">DPE historique · avant juillet 2021</p>
-    <h2 id="historical-title">Lire l’ancien DPE dans son référentiel d’origine.</h2>
+    <h2 id="historical-title">Ouvrir la méthode qui a produit l’ancienne valeur.</h2>
     <dl id="dpe-historical-summary" class="summary-grid"></dl>
     <div class="platform-formula" aria-label="Chaîne de lecture d’un DPE historique">
-      <strong>RÉFÉRENTIEL D’ORIGINE</strong><span>→</span><strong>MÉTHODE DÉCLARÉE OU FACTURES</strong><span>→</span><strong>ÉNERGIE &amp; GES</strong><span>→</span><strong>ÉTIQUETTES HISTORIQUES</strong>
+      <strong>nom_methode_dpe + version_methode_dpe</strong><span>→</span><strong>RÉFÉRENTIEL</strong><span>→</span><strong>ENTRÉES</strong><span>→</span><strong>CALCUL / FACTURES</strong><span>→</span><strong>EP &amp; GES</strong><span>→</span><strong>CLASSES HISTORIQUES</strong>
     </div>
+    <div id="dpe-historical-method-explanation" class="content-stack" aria-live="polite"></div>
     <div class="principle-grid">
-      <article><strong>Source historique</strong><span>La ligne provient du jeu ADEME « DPE Logements (avant juillet 2021) », séparé des jeux issus de la réforme de 2021.</span></article>
-      <article><strong>Méthode préservée</strong><span>Le nom et la version de méthode publiés par l’ADEME sont affichés tels quels. Selon le DPE, l’évaluation pouvait être conventionnelle ou reposer sur des consommations sur factures.</span></article>
-      <article><strong>Validité</strong><span>Les DPE de 2013 à 2017 ont expiré au 31 décembre 2022 ; ceux du 1er janvier 2018 au 30 juin 2021 ont expiré au 31 décembre 2024.</span></article>
-      <article><strong>Pas de faux recalcul</strong><span>La page n’applique pas rétroactivement Open3CL/3CL-DPE 2021 à un ancien DPE. Une simulation actuelle, si elle devient possible avec des entrées suffisantes, devra être affichée séparément comme projection.</span></article>
+      <article><strong>3CL-DPE historique</strong><span>La méthode conventionnelle calcule les besoins à partir du bâtiment et d’un usage standardisé, puis les consommations de chauffage, d’eau chaude sanitaire et de refroidissement.</span></article>
+      <article><strong>Factures / consommations réelles</strong><span>Lorsque ce référentiel s’appliquait, la valeur pouvait provenir de consommations réellement relevées ou facturées, généralement moyennées sur les années précédant le diagnostic.</span></article>
+      <article><strong>Énergie primaire historique</strong><span>Dans le régime historique logement, l’électricité était convertie avec un facteur 2,58 et les autres énergies avec un facteur 1 avant classement par rapport à la surface.</span></article>
+      <article><strong>Deux étiquettes indépendantes</strong><span>L’ancienne étiquette énergie dépendait de la consommation primaire ; l’ancienne étiquette climat dépendait séparément des émissions. Il n’existait pas le double seuil de la méthode 2021.</span></article>
+    </div>
+    <div class="callout">
+      <p><strong>Grilles historiques logement :</strong> énergie A ≤ 50, B ≤ 90, C ≤ 150, D ≤ 230, E ≤ 330, F ≤ 450, G &gt; 450 kWhEP/m².an ; climat A ≤ 5, B ≤ 10, C ≤ 20, D ≤ 35, E ≤ 55, F ≤ 80, G &gt; 80 kgCO₂e/m².an. La page recompose la classe à partir de la valeur ADEME et la compare à la classe publiée sans transformer automatiquement un écart en erreur réglementaire.</p>
     </div>
     <div class="callout">
       <p><strong>Historique ≠ actuel.</strong> Une ancienne classe A à G reste une information sur le DPE établi à l’époque. Elle ne constitue pas une nouvelle étiquette réglementaire selon la méthode en vigueur aujourd’hui.</p>
     </div>
     <div class="actions">
       <a class="button secondary" href="https://data.ademe.fr/datasets/dpe-france" target="_blank" rel="noopener noreferrer">Jeu ADEME historique</a>
+      <a class="button secondary" href="https://rt-re-batiment.developpement-durable.gouv.fr/IMG/pdf/annexe_methode_de_calcul_3cl-dpe_v1.3.pdf" target="_blank" rel="noopener noreferrer">Méthode officielle 3CL-DPE v1.3</a>
+      <a class="button secondary" href="https://www.legifrance.gouv.fr/loda/id/LEGITEXT000020491551/2021-04-03/" target="_blank" rel="noopener noreferrer">Référentiel historique — Légifrance</a>
       <a class="button secondary" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F16096" target="_blank" rel="noopener noreferrer">Validité des DPE — Service Public</a>
     </div>
   </section>
@@ -148,12 +154,12 @@
   <section class="panel" aria-labelledby="calculator-status-title">
     <p class="eyebrow">Calculateur · état de la chaîne</p>
     <h2 id="calculator-status-title">Pourquoi le recalcul complet est-il séparé de la ligne Open Data ?</h2>
-    <p>La ligne ADEME accessible ici est une vue synthétique. Pour un DPE depuis juillet 2021, elle suffit pour expliquer les résultats publiés et de nombreuses variables, mais pas nécessairement pour rejouer toutes les équations 3CL composant par composant. Pour un DPE historique, il faut en plus préserver le référentiel d’origine au lieu de lui appliquer rétroactivement la méthode 2021.</p>
+    <p>La ligne ADEME accessible ici est une vue synthétique. Pour un DPE depuis juillet 2021, elle suffit pour expliquer les résultats publiés et de nombreuses variables, mais pas nécessairement pour rejouer toutes les équations 3CL composant par composant. Pour un DPE historique, le module ouvre maintenant le référentiel identifié par son nom et sa version avant de déterminer ce qui peut réellement être recomposé.</p>
     <div class="principle-grid">
       <article><strong>API Open Data ADEME</strong><span>Active ici : recherche actuelle et historique, ligne JSON, schéma des colonnes et export XLSX.</span></article>
       <article><strong>DPE depuis juillet 2021</strong><span>Le XML détaillé est l’entrée adaptée à un rejeu 3CL complet. Il ne doit pas conduire à exposer une clé ou un secret dans une page statique.</span></article>
-      <article><strong>DPE avant juillet 2021</strong><span>La méthode et sa version sont d’abord documentées. Toute simulation avec un référentiel actuel doit rester séparée du résultat historique.</span></article>
-      <article><strong>Comparaison</strong><span>Pour un DPE 3CL rejouable, la cible est : valeur ADEME ↔ valeur recalculée ↔ écart ↔ explication, sans transformer automatiquement un écart en verdict.</span></article>
+      <article><strong>DPE avant juillet 2021</strong><span>Le couple méthode/version sélectionne une explication historique ; les valeurs finales permettent de recomposer les classes, mais pas nécessairement tout le moteur qui les a produites.</span></article>
+      <article><strong>Comparaison</strong><span>Pour un DPE rejouable, la cible reste : valeur ADEME ↔ valeur recalculée ↔ écart ↔ explication, sans transformer automatiquement un écart en verdict.</span></article>
     </div>
     <p class="muted">Open3CL est un moteur open source indépendant implémentant 3CL-DPE 2021. Il constitue une piste technique pour le rejeu pédagogique des DPE compatibles avec ce référentiel ; il n’est pas utilisé ici comme moteur de recalcul des DPE antérieurs à juillet 2021.</p>
     <a class="inline" href="https://open3cl.github.io/engine/build" target="_blank" rel="noopener noreferrer">Consulter le démonstrateur Open3CL</a>
