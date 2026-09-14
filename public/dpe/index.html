@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Retrouver, expliquer et relier les données publiques ADEME d’un DPE à la méthode 3CL-DPE 2021.">
+  <meta name="description" content="Retrouver et comprendre les DPE publics ADEME, y compris les DPE historiques antérieurs à juillet 2021, puis relier les DPE actuels à la méthode 3CL-DPE 2021.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://data.ademe.fr; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'">
   <title>Comprendre mon DPE — Muze-X Lab</title>
@@ -27,7 +27,7 @@
     </nav>
     <p class="eyebrow">Logement · DPE</p>
     <h1 class="subpage-title">Comprendre mon DPE</h1>
-    <p class="subpage-lead">Retrouver un DPE depuis la source publique ADEME, ouvrir sa ligne Excel, comprendre les colonnes disponibles et relier les principaux résultats à la chaîne de calcul 3CL-DPE 2021.</p>
+    <p class="subpage-lead">Retrouver un DPE dans les jeux publics ADEME, identifier sa génération méthodologique, ouvrir sa ligne Excel, comprendre les colonnes disponibles et, pour les DPE depuis juillet 2021, relier les principaux résultats à la chaîne de calcul 3CL-DPE 2021.</p>
   </div>
 </header>
 
@@ -36,7 +36,7 @@
     <p class="eyebrow">RGPD local · ce module</p>
     <h2 id="dpe-rgpd-title">Où vont les données dans le module DPE ?</h2>
     <div class="principle-grid rgpd-module-grid">
-      <article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans la source publique ADEME.</span></article>
+      <article><strong>Donnée saisie</strong><span>Numéro de DPE, utilisé pour rechercher une ligne dans les sources publiques ADEME actuelles puis historiques.</span></article>
       <article><strong>Source externe</strong><span>Requête directe du navigateur vers data.ademe.fr. Pas de serveur Muze-X Lab intermédiaire.</span></article>
       <article><strong>Affichage</strong><span>Résumé minimisé. Adresse complète seulement après action explicite ; adresse précise et coordonnées masquées dans le dictionnaire détaillé.</span></article>
       <article><strong>Limite</strong><span>Lecture documentaire et pédagogique. Aucun nouveau DPE réglementaire n’est produit.</span></article>
@@ -64,7 +64,7 @@
       <div class="field full">
         <label for="dpe-number">Numéro de DPE</label>
         <input id="dpe-number" name="dpe-number" type="text" maxlength="13" autocomplete="off" placeholder="1234A1234567B" aria-describedby="dpe-help dpe-status">
-        <span id="dpe-help" class="help">Format postérieur à juillet 2021 : 13 caractères. La requête part directement du navigateur vers l’ADEME.</span>
+        <span id="dpe-help" class="help">Saisir les 13 caractères du numéro ADEME. La recherche couvre les jeux depuis juillet 2021 et le jeu historique des logements antérieur à juillet 2021.</span>
       </div>
       <div class="actions">
         <button type="submit">Récupérer les données</button>
@@ -85,6 +85,28 @@
       <summary>Afficher l’adresse complète renvoyée par la source publique</summary>
       <p id="full-address" class="muted"></p>
     </details>
+  </section>
+
+  <section id="dpe-historical-panel" class="panel" hidden aria-labelledby="historical-title">
+    <p class="eyebrow">DPE historique · avant juillet 2021</p>
+    <h2 id="historical-title">Lire l’ancien DPE dans son référentiel d’origine.</h2>
+    <dl id="dpe-historical-summary" class="summary-grid"></dl>
+    <div class="platform-formula" aria-label="Chaîne de lecture d’un DPE historique">
+      <strong>RÉFÉRENTIEL D’ORIGINE</strong><span>→</span><strong>MÉTHODE DÉCLARÉE OU FACTURES</strong><span>→</span><strong>ÉNERGIE &amp; GES</strong><span>→</span><strong>ÉTIQUETTES HISTORIQUES</strong>
+    </div>
+    <div class="principle-grid">
+      <article><strong>Source historique</strong><span>La ligne provient du jeu ADEME « DPE Logements (avant juillet 2021) », séparé des jeux issus de la réforme de 2021.</span></article>
+      <article><strong>Méthode préservée</strong><span>Le nom et la version de méthode publiés par l’ADEME sont affichés tels quels. Selon le DPE, l’évaluation pouvait être conventionnelle ou reposer sur des consommations sur factures.</span></article>
+      <article><strong>Validité</strong><span>Les DPE de 2013 à 2017 ont expiré au 31 décembre 2022 ; ceux du 1er janvier 2018 au 30 juin 2021 ont expiré au 31 décembre 2024.</span></article>
+      <article><strong>Pas de faux recalcul</strong><span>La page n’applique pas rétroactivement Open3CL/3CL-DPE 2021 à un ancien DPE. Une simulation actuelle, si elle devient possible avec des entrées suffisantes, devra être affichée séparément comme projection.</span></article>
+    </div>
+    <div class="callout">
+      <p><strong>Historique ≠ actuel.</strong> Une ancienne classe A à G reste une information sur le DPE établi à l’époque. Elle ne constitue pas une nouvelle étiquette réglementaire selon la méthode en vigueur aujourd’hui.</p>
+    </div>
+    <div class="actions">
+      <a class="button secondary" href="https://data.ademe.fr/datasets/dpe-france" target="_blank" rel="noopener noreferrer">Jeu ADEME historique</a>
+      <a class="button secondary" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F16096" target="_blank" rel="noopener noreferrer">Validité des DPE — Service Public</a>
+    </div>
   </section>
 
   <section id="dpe-calculation-panel" class="panel" hidden aria-labelledby="calculation-title">
@@ -115,7 +137,7 @@
   <section id="dpe-fields-panel" class="panel" hidden aria-labelledby="fields-title">
     <p class="eyebrow">XLSX · dictionnaire ADEME</p>
     <h2 id="fields-title">Que signifie chaque colonne ?</h2>
-    <p>Le bouton Excel exporte la ligne du jeu ADEME interrogé. Le dictionnaire ci-dessous est construit au moment de la consultation depuis le <strong>schéma API du même jeu de données</strong> : nom public, clé technique, type, groupe et description officielle lorsqu’elle est fournie.</p>
+    <p>Le bouton Excel exporte la ligne du jeu ADEME réellement interrogé. Le dictionnaire ci-dessous est construit au moment de la consultation depuis le <strong>schéma API du même jeu de données</strong> : nom public, clé technique, type, groupe et description officielle lorsqu’elle est fournie. Le dictionnaire s’adapte donc également au jeu historique.</p>
     <p id="dpe-fields-status" class="status" role="status" aria-live="polite"></p>
     <div id="dpe-fields-container" class="content-stack"></div>
     <div class="callout">
@@ -125,22 +147,22 @@
 
   <section class="panel" aria-labelledby="calculator-status-title">
     <p class="eyebrow">Calculateur · état de la chaîne</p>
-    <h2 id="calculator-status-title">Pourquoi le recalcul complet est séparé de la ligne Open Data ?</h2>
-    <p>La ligne ADEME accessible ici est une vue synthétique : elle suffit pour expliquer les résultats publiés et de nombreuses variables, mais pas nécessairement pour rejouer toutes les équations 3CL composant par composant. Un recalcul intégral exige les données d’entrée détaillées du DPE — parois, baies, ponts thermiques, installations et générateurs — puis un moteur 3CL versionné.</p>
+    <h2 id="calculator-status-title">Pourquoi le recalcul complet est-il séparé de la ligne Open Data ?</h2>
+    <p>La ligne ADEME accessible ici est une vue synthétique. Pour un DPE depuis juillet 2021, elle suffit pour expliquer les résultats publiés et de nombreuses variables, mais pas nécessairement pour rejouer toutes les équations 3CL composant par composant. Pour un DPE historique, il faut en plus préserver le référentiel d’origine au lieu de lui appliquer rétroactivement la méthode 2021.</p>
     <div class="principle-grid">
-      <article><strong>API Open Data ADEME</strong><span>Active ici : recherche, ligne JSON, schéma des colonnes et export XLSX.</span></article>
-      <article><strong>XML DPE complet</strong><span>Donnée d’entrée adaptée à un rejeu 3CL complet. Elle ne doit pas conduire à exposer une clé ou un secret dans une page statique.</span></article>
-      <article><strong>Moteur 3CL</strong><span>Doit être versionné, testable et clairement distingué d’un logiciel réglementaire de diagnostic.</span></article>
-      <article><strong>Comparaison</strong><span>La cible est : valeur ADEME ↔ valeur recalculée ↔ écart ↔ explication, sans transformer automatiquement un écart en verdict.</span></article>
+      <article><strong>API Open Data ADEME</strong><span>Active ici : recherche actuelle et historique, ligne JSON, schéma des colonnes et export XLSX.</span></article>
+      <article><strong>DPE depuis juillet 2021</strong><span>Le XML détaillé est l’entrée adaptée à un rejeu 3CL complet. Il ne doit pas conduire à exposer une clé ou un secret dans une page statique.</span></article>
+      <article><strong>DPE avant juillet 2021</strong><span>La méthode et sa version sont d’abord documentées. Toute simulation avec un référentiel actuel doit rester séparée du résultat historique.</span></article>
+      <article><strong>Comparaison</strong><span>Pour un DPE 3CL rejouable, la cible est : valeur ADEME ↔ valeur recalculée ↔ écart ↔ explication, sans transformer automatiquement un écart en verdict.</span></article>
     </div>
-    <p class="muted">Le moteur Open3CL constitue une piste technique publique pour le rejeu pédagogique. Il n’est pas appelé automatiquement par cette version de la page.</p>
+    <p class="muted">Open3CL est un moteur open source indépendant implémentant 3CL-DPE 2021. Il constitue une piste technique pour le rejeu pédagogique des DPE compatibles avec ce référentiel ; il n’est pas utilisé ici comme moteur de recalcul des DPE antérieurs à juillet 2021.</p>
     <a class="inline" href="https://open3cl.github.io/engine/build" target="_blank" rel="noopener noreferrer">Consulter le démonstrateur Open3CL</a>
   </section>
 
   <section class="panel">
     <h2>Comment lire ce résultat ?</h2>
-    <div class="callout"><p><strong>Un DPE est une donnée réglementaire déclarée et calculée.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p></div>
-    <p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement.</p>
+    <div class="callout"><p><strong>Un DPE est une donnée réglementaire déclarée et calculée dans un référentiel daté.</strong> Une consommation réelle, une observation du logement ou un autre document peuvent apporter un contexte différent sans constituer, à eux seuls, un verdict sur le DPE.</p></div>
+    <p class="muted">Pour une vérification approfondie, comparer les informations avec le document DPE, les justificatifs disponibles et les caractéristiques effectivement observables du logement, en conservant la méthode applicable à sa date d’établissement.</p>
   </section>
 
   <section class="panel">

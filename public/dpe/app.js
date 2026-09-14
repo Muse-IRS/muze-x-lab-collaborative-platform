@@ -6,6 +6,8 @@ const summary = document.querySelector('#dpe-summary')
 const xlsxLink = document.querySelector('#xlsx-link')
 const addressDetails = document.querySelector('#address-details')
 const fullAddress = document.querySelector('#full-address')
+const historicalPanel = document.querySelector('#dpe-historical-panel')
+const historicalSummary = document.querySelector('#dpe-historical-summary')
 const calculationPanel = document.querySelector('#dpe-calculation-panel')
 const calculationSummary = document.querySelector('#dpe-calculation-summary')
 const fieldsPanel = document.querySelector('#dpe-fields-panel')
@@ -13,11 +15,12 @@ const fieldsStatus = document.querySelector('#dpe-fields-status')
 const fieldsContainer = document.querySelector('#dpe-fields-container')
 
 const API_ROOT = 'https://data.ademe.fr/data-fair/api/v1/datasets'
-const DPE_PATTERN = /^\d{4}[A-Z]\d{7}[A-Z]$/
+const DPE_PATTERN = /^[0-9A-Z]{13}$/
 const DATASETS = [
-  { id: 'dpe03existant', label: 'Logement existant' },
-  { id: 'dpe02neuf', label: 'Logement neuf' },
-  { id: 'dpe01tertiaire', label: 'Tertiaire' }
+  { id: 'dpe03existant', label: 'Logement existant — depuis juillet 2021', generation: 'current' },
+  { id: 'dpe02neuf', label: 'Logement neuf — depuis juillet 2021', generation: 'current' },
+  { id: 'dpe01tertiaire', label: 'Tertiaire — depuis juillet 2021', generation: 'current' },
+  { id: 'dpe-france', label: 'Logement historique — avant juillet 2021', generation: 'historical' }
 ]
 const metadataCache = new Map()
 
@@ -33,6 +36,10 @@ function normalize(value) {
 
 function hasValue(value) {
   return value !== undefined && value !== null && value !== ''
+}
+
+function isHistoricalDataset(dataset) {
+  return dataset?.generation === 'historical' || dataset?.id === 'dpe-france'
 }
 
 function buildUrl(datasetId, number, format = '') {
@@ -91,9 +98,20 @@ function coarseLocation(row) {
   const city = row.nom_commune_ban || row.nom_commune || row.commune || ''
   if (postal || city) return `${postal} ${city}`.trim()
 
-  const address = String(row.adresse_ban || row.adresse || '').trim()
+  const address = String(row.adresse_ban || row.adresse || row.geo_adresse || '').trim()
   const match = address.match(/\b(\d{5})\s+(.+)$/)
-  return match ? `${match[1]} ${match[2]}` : address ? 'Localisation disponible' : null
+  if (match) return `${match[1]} ${match[2]}`
+
+  const department = row.tv016_departement_code || ''
+  const insee = row.code_insee_commune_actualise || ''
+  if (department || insee) {
+    const parts = []
+    if (department) parts.push(`département ${department}`)
+    if (insee) parts.push(`code INSEE ${insee}`)
+    return parts.join(' · ')
+  }
+
+  return address ? 'Localisation disponible' : null
 }
 
 function addDefinition(target, label, value, detail = '') {
@@ -113,8 +131,8 @@ function addDefinition(target, label, value, detail = '') {
   target.append(wrapper)
 }
 
-function addSummary(label, value) {
-  addDefinition(summary, label, value)
+function addSummary(label, value, detail = '') {
+  addDefinition(summary, label, value, detail)
 }
 
 function pickFirst(row, keys) {
@@ -129,6 +147,79 @@ function electricityFactorForDate(value) {
   if (raw >= '2027-01-01') return 1.7
   if (raw >= '2026-01-01') return 1.9
   return 2.3
+}
+
+function formatIsoDateFr(value) {
+  const raw = String(value || '').slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw || null
+  const date = new Date(`${raw}T00:00:00Z`)
+  if (Number.isNaN(date.getTime())) return raw
+  return new Intl.DateTimeFormat('fr-FR', { timeZone: 'UTC' }).format(date)
+}
+
+function addTenYears(value) {
+  const raw = String(value || '').slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null
+  const date = new Date(`${raw}T00:00:00Z`)
+  if (Number.isNaN(date.getTime())) return null
+  date.setUTCFullYear(date.getUTCFullYear() + 10)
+  return date.toISOString().slice(0, 10)
+}
+
+function historicalValidity(row) {
+  const established = String(row.date_etablissement_dpe || '').slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(established)) {
+    return { expiry: null, status: 'DPE historique — validité à vérifier à partir de sa date d’établissement' }
+  }
+
+  let expiry = null
+  let rule = ''
+
+  if (established >= '2013-01-01' && established <= '2017-12-31') {
+    expiry = '2022-12-31'
+    rule = 'échéance transitoire applicable aux DPE établis de 2013 à 2017'
+  } else if (established >= '2018-01-01' && established <= '2021-06-30') {
+    expiry = '2024-12-31'
+    rule = 'échéance transitoire applicable aux DPE établis du 1er janvier 2018 au 30 juin 2021'
+  } else {
+    expiry = addTenYears(established)
+    rule = 'durée de validité de référence de dix ans ; les DPE les plus anciens sont aujourd’hui expirés'
+  }
+
+  const today = new Date().toISOString().slice(0, 10)
+  const statusLabel = expiry && today > expiry ? 'Expiré' : 'Validité à vérifier'
+  return { expiry, status: statusLabel, rule }
+}
+
+function historicalMethodMode(row) {
+  const method = `${row.nom_methode_dpe || ''} ${row.version_methode_dpe || ''}`.toLowerCase()
+  if (/factur|consommation réelle|consommations réelles/.test(method)) return 'Consommations sur factures / consommations réelles déclarées'
+  if (/3cl|th-c-e|thce|convention/.test(method)) return 'Méthode conventionnelle historique déclarée'
+  return 'Méthode historique déclarée dans la ligne ADEME'
+}
+
+function renderHistorical(row, dataset) {
+  if (!historicalPanel || !historicalSummary) return
+  if (!isHistoricalDataset(dataset)) {
+    historicalPanel.hidden = true
+    return
+  }
+
+  historicalSummary.innerHTML = ''
+  const validity = historicalValidity(row)
+
+  addDefinition(historicalSummary, 'Génération du DPE', 'Avant le 1er juillet 2021')
+  addDefinition(historicalSummary, 'Méthode déclarée par l’ADEME', row.nom_methode_dpe)
+  addDefinition(historicalSummary, 'Version de méthode', row.version_methode_dpe)
+  addDefinition(historicalSummary, 'Mode de lecture', historicalMethodMode(row), 'qualification construite uniquement à partir du libellé de méthode disponible')
+  addDefinition(historicalSummary, 'Consommation énergie publiée', formatNumber(row.consommation_energie, 'kWhEP/m²/an'))
+  addDefinition(historicalSummary, 'Classe énergie historique', row.classe_consommation_energie)
+  addDefinition(historicalSummary, 'Estimation GES publiée', formatNumber(row.estimation_ges, 'kgCO₂e/m²/an'))
+  addDefinition(historicalSummary, 'Classe GES historique', row.classe_estimation_ges)
+  addDefinition(historicalSummary, 'Statut réglementaire aujourd’hui', validity.status)
+  addDefinition(historicalSummary, 'Échéance de validité', formatIsoDateFr(validity.expiry), validity.rule)
+
+  historicalPanel.hidden = false
 }
 
 function renderCalculation(row, dataset) {
@@ -252,6 +343,8 @@ async function renderFieldDictionary(found) {
 }
 
 function resetExtendedViews() {
+  if (historicalPanel) historicalPanel.hidden = true
+  if (historicalSummary) historicalSummary.innerHTML = ''
   if (calculationPanel) calculationPanel.hidden = true
   if (calculationSummary) calculationSummary.innerHTML = ''
   if (fieldsPanel) fieldsPanel.hidden = true
@@ -263,18 +356,29 @@ function render(found, number) {
   const { row, dataset } = found
   summary.innerHTML = ''
 
+  const historical = isHistoricalDataset(dataset)
+  const validity = historical ? historicalValidity(row) : null
+  const energyLabel = row.etiquette_dpe || row.classe_consommation_energie
+  const climateLabel = row.etiquette_ges || row.classe_estimation_ges
+  const surface = row.surface_habitable_logement || row.surface_reference || row.surface_thermique_lot
+  const buildingType = row.type_batiment || row.tr002_type_batiment_description || row.tr001_modele_dpe_type_libelle
+
   addSummary('Source', dataset.label)
+  addSummary('Jeu ADEME', dataset.id)
   addSummary('Numéro DPE', row.numero_dpe)
-  addSummary('Étiquette DPE publiée', row.etiquette_dpe)
-  addSummary('Étiquette climat', row.etiquette_ges)
+  addSummary('Étiquette énergie publiée', energyLabel)
+  addSummary('Étiquette climat publiée', climateLabel)
   addSummary('Date d’établissement', row.date_etablissement_dpe)
-  addSummary('Fin de validité', row.date_fin_validite_dpe)
-  addSummary('Surface habitable / référence', formatSurface(row.surface_habitable_logement || row.surface_reference))
+  addSummary('Fin de validité', historical ? formatIsoDateFr(validity?.expiry) : row.date_fin_validite_dpe, historical ? validity?.rule : '')
+  addSummary('Statut réglementaire aujourd’hui', historical ? validity?.status : null)
+  addSummary('Méthode déclarée', historical ? row.nom_methode_dpe : null)
+  addSummary('Version de méthode', historical ? row.version_methode_dpe : null)
+  addSummary('Surface habitable / référence', formatSurface(surface))
   addSummary('Année de construction', row.annee_construction)
-  addSummary('Type de bâtiment', row.type_batiment)
+  addSummary('Type de bâtiment', buildingType)
   addSummary('Localisation', coarseLocation(row))
 
-  const address = String(row.adresse_ban || row.adresse || '').trim()
+  const address = String(row.adresse_ban || row.adresse || row.geo_adresse || '').trim()
   if (address) {
     fullAddress.textContent = address
     addressDetails.hidden = false
@@ -287,6 +391,7 @@ function render(found, number) {
   xlsxLink.href = buildUrl(dataset.id, number, 'xlsx')
   xlsxLink.hidden = false
   result.hidden = false
+  renderHistorical(row, dataset)
   renderCalculation(row, dataset)
 }
 
@@ -308,11 +413,11 @@ form.addEventListener('submit', async event => {
   resetExtendedViews()
 
   if (!DPE_PATTERN.test(number)) {
-    status.textContent = 'Numéro non reconnu. Vérifier les 13 caractères du DPE.'
+    status.textContent = 'Numéro non reconnu. Vérifier les 13 caractères alphanumériques du DPE.'
     return
   }
 
-  status.textContent = 'Recherche dans les jeux publics ADEME…'
+  status.textContent = 'Recherche dans les jeux publics ADEME, y compris le jeu historique antérieur à juillet 2021…'
 
   try {
     const found = await lookup(number)
@@ -321,7 +426,9 @@ form.addEventListener('submit', async event => {
       return
     }
     render(found, number)
-    status.textContent = 'DPE retrouvé dans la source publique ADEME. Le dictionnaire des colonnes est chargé séparément.'
+    status.textContent = isHistoricalDataset(found.dataset)
+      ? 'DPE historique retrouvé dans la source publique ADEME. Il est présenté selon son référentiel d’origine et n’est pas assimilé à un DPE 3CL-2021.'
+      : 'DPE retrouvé dans la source publique ADEME. Le dictionnaire des colonnes est chargé séparément.'
     await renderFieldDictionary(found)
   } catch (error) {
     console.error(error)
